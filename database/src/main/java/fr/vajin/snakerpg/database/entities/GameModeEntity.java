@@ -1,23 +1,75 @@
 package fr.vajin.snakerpg.database.entities;
 
 import java.util.Collection;
+import java.util.Objects;
 
-public interface GameModeEntity {
+public class GameModeEntity {
 
-    int getId();
+    private int id;
+    private String name;
+    private int minPlayer;
+    private int maxPlayer;
 
-    void setId(int id);
+    public GameModeEntity() {
+        this.id = -1;
+        this.name = "";
+        this.minPlayer= -1;
+        this.maxPlayer = -1;
+    }
 
-    String getName();
+    public GameModeEntity(int id, String name, int minPlayer, int maxPlayer) {
+        this.id = id;
+        this.name = name;
+        this.minPlayer = minPlayer;
+        this.maxPlayer = maxPlayer;
+    }
 
-    void setName(String name);
+    public int getId() {
+        return id;
+    }
 
-    int getMinPlayer();
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    void setMinPlayer(int minPlayer);
+    public String getName() {
+        return name;
+    }
 
-    int getMaxPlayer();
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    void setMaxPlayer(int maxPlayer);
+    public int getMinPlayer() {
+        return minPlayer;
+    }
 
+    public void setMinPlayer(int minPlayer) {
+        this.minPlayer = minPlayer;
+    }
+
+    public int getMaxPlayer() {
+        return maxPlayer;
+    }
+
+    public void setMaxPlayer(int maxPlayer) {
+        this.maxPlayer = maxPlayer;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GameModeEntity that = (GameModeEntity) o;
+        return id == that.id &&
+                minPlayer == that.minPlayer &&
+                maxPlayer == that.maxPlayer &&
+                Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, name, minPlayer, maxPlayer);
+    }
 }

@@ -1,29 +1,99 @@
 package fr.vajin.snakerpg.database.entities;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Objects;
 
-public interface UserEntity {
-    int getId();
+public class UserEntity {
 
-    void setId(int id);
+    private int id;
+    private String email;
+    private String accountName;
+    private String alias;
+    private String password;
+    private Collection<SnakeEntity> snakes;
 
-    String getEmail();
+    public UserEntity() {
+        id = -1;
+        email = "";
+        accountName = "";
+        alias = "";
+        password = "";
+        snakes = new HashSet<>();
+    }
 
-    void setEmail(String email);
+    public UserEntity(int id, String email, String accountName, String alias, String password, Collection<SnakeEntity> snakes) {
+        this.id = id;
+        this.email = email;
+        this.accountName = accountName;
+        this.alias = alias;
+        this.password = password;
+        this.snakes = snakes;
+    }
 
-    String getAccountName();
+    public int getId() {
+        return id;
+    }
 
-    void setAccountName(String accountName);
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    String getAlias();
+    public String getEmail() {
+        return email;
+    }
 
-    void setAlias(String alias);
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-    String getPassword();
+    public String getAccountName() {
+        return accountName;
+    }
 
-    void setPassword(String password);
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
+    }
 
-    Collection<SnakeEntity> getSnakes();
+    public String getAlias() {
+        return alias;
+    }
 
-    void setSnakes(Collection<SnakeEntity> snakes);
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Collection<SnakeEntity> getSnakes() {
+        return snakes;
+    }
+
+    public void setSnakes(Collection<SnakeEntity> snakes) {
+        this.snakes = snakes;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserEntity that = (UserEntity) o;
+        return id == that.id &&
+                Objects.equals(email, that.email) &&
+                Objects.equals(accountName, that.accountName) &&
+                Objects.equals(alias, that.alias) &&
+                Objects.equals(password, that.password);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, email, accountName, alias, password);
+    }
 }

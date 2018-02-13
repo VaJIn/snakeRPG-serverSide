@@ -12,7 +12,7 @@ apply plugin: "org.akhikhl.gretty"
 sourceCompatibility = 1.8
 
 gretty{
-    contextPath = '/snakeRPG'
+    contextPath = '/'
     servletContainer = 'tomcat8'
 }
 

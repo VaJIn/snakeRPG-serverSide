@@ -1,13 +1,13 @@
 package fr.vajin.snakerpg.database.test;
 
 import fr.vajin.snakerpg.database.entities.GameParticipationEntity;
-import fr.vajin.snakerpg.database.entities.GamesEntity;
+import fr.vajin.snakerpg.database.entities.GameEntity;
 import fr.vajin.snakerpg.database.entities.SnakeEntity;
 
 public class TestGameParticipationEntity implements GameParticipationEntity {
 
     private SnakeEntity snake;
-    private GamesEntity game;
+    private GameEntity game;
     private int score;
     private int deathCount;
     private int killCount;
@@ -15,7 +15,7 @@ public class TestGameParticipationEntity implements GameParticipationEntity {
     public TestGameParticipationEntity() {
     }
 
-    public TestGameParticipationEntity(SnakeEntity snake, GamesEntity game, int score, int deathCount, int killCount) {
+    public TestGameParticipationEntity(SnakeEntity snake, GameEntity game, int score, int deathCount, int killCount) {
         this.snake = snake;
         this.game = game;
         this.score = score;
@@ -57,12 +57,12 @@ public class TestGameParticipationEntity implements GameParticipationEntity {
     }
 
     @Override
-    public GamesEntity getGame() {
+    public GameEntity getGame() {
         return game;
     }
 
     @Override
-    public void setGame(GamesEntity game) {
+    public void setGame(GameEntity game) {
         if (this.game != game) {
             this.game = game;
             game.getGameParticipations().add(this);

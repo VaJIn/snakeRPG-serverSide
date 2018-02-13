@@ -63,13 +63,13 @@ public interface DataBaseAccess {
 
     List<GameParticipationEntity> getGameResultsByGame(int gameid, int sortBy);
 
-    Collection<GameParticipationEntity> getGameResultsByGame(GamesEntity gamesEntity);
+    Collection<GameParticipationEntity> getGameResultsByGame(GameEntity gameEntity);
 
-    GamesEntity getGame(int id);
+    GameEntity getGame(int id);
 
-    List<GamesEntity> getGameByDate(Timestamp earliest, Timestamp latest, int sortBy);
+    List<GameEntity> getGameByDate(Timestamp earliest, Timestamp latest, int sortBy);
 
-    List<GamesEntity> getGameByGamemode(GameModeEntity gameModeEntity, int sortBy);
+    List<GameEntity> getGameByGamemode(GameModeEntity gameModeEntity, int sortBy);
 
     GameModeEntity getGameMode(int id);
 
