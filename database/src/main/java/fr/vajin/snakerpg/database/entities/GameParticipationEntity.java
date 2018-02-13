@@ -1,32 +1,110 @@
 package fr.vajin.snakerpg.database.entities;
 
-public interface GameParticipationEntity {
+import java.util.Objects;
 
-    int getIdSnake();
+public class GameParticipationEntity {
 
-    void setIdSnake(int idSnake);
+    private int idSnake;
+    private int idGame;
+    private int score;
+    private int killCount;
+    private int deathCount;
+    private GameEntity game;
+    private SnakeEntity snake;
 
-    int getIdGame();
+    public GameParticipationEntity(){
+        this.idSnake = -1;
+        this.idGame = -1;
+        this.score = -1;
+        this.killCount = -1;
+        this.deathCount = -1;
+        this.game = new GameEntity();
+        this.snake = new SnakeEntity();
+    }
 
-    void setIdGame(int idGame);
+    public GameParticipationEntity(int idSnake, int idGame, int score, int killCount, int deathCount, GameEntity game, SnakeEntity snake) {
+        this.idSnake = idSnake;
+        this.idGame = idGame;
+        this.score = score;
+        this.killCount = killCount;
+        this.deathCount = deathCount;
+        this.game = game;
+        this.snake = snake;
+    }
 
-    int getScore();
+    public int getIdSnake() {
+        return idSnake;
+    }
 
-    void setScore(int score);
+    public void setIdSnake(int idSnake) {
+        this.idSnake = idSnake;
+    }
 
-    int getKillCount();
+    public int getIdGame() {
+        return idGame;
+    }
 
-    void setKillCount(int kill);
+    public void setIdGame(int idGame) {
+        this.idGame = idGame;
+    }
 
-    int getDeathCount();
+    public int getScore() {
+        return score;
+    }
 
-    void setDeathCount(int death);
+    public void setScore(int score) {
+        this.score = score;
+    }
 
-    SnakeEntity getSnake();
+    public int getKillCount() {
+        return killCount;
+    }
 
-    void setSnake(SnakeEntity snakes);
+    public void setKillCount(int killCount) {
+        this.killCount = killCount;
+    }
 
-    GamesEntity getGame();
+    public int getDeathCount() {
+        return deathCount;
+    }
 
-    void setGame(GamesEntity games);
+    public void setDeathCount(int deathCount) {
+        this.deathCount = deathCount;
+    }
+
+    public GameEntity getGame() {
+        return game;
+    }
+
+    public void setGame(GameEntity game) {
+        this.game = game;
+    }
+
+    public SnakeEntity getSnake() {
+        return snake;
+    }
+
+    public void setSnake(SnakeEntity snake) {
+        this.snake = snake;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GameParticipationEntity that = (GameParticipationEntity) o;
+        return idSnake == that.idSnake &&
+                idGame == that.idGame &&
+                score == that.score &&
+                killCount == that.killCount &&
+                deathCount == that.deathCount &&
+                Objects.equals(game, that.game) &&
+                Objects.equals(snake, that.snake);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(idSnake, idGame, score, killCount, deathCount, game, snake);
+    }
 }

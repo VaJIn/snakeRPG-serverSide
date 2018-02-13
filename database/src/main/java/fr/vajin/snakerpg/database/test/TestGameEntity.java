@@ -2,14 +2,14 @@ package fr.vajin.snakerpg.database.test;
 
 import fr.vajin.snakerpg.database.entities.GameModeEntity;
 import fr.vajin.snakerpg.database.entities.GameParticipationEntity;
-import fr.vajin.snakerpg.database.entities.GamesEntity;
+import fr.vajin.snakerpg.database.entities.GameEntity;
 
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TestGameEntity implements GamesEntity {
+public class TestGameEntity implements GameEntity {
 
     int id;
     GameModeEntity gameMode;
