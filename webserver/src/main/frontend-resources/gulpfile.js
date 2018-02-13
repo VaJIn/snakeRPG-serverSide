@@ -20,6 +20,12 @@ gulp.task('js-plugins', function () {
         './node_modules/jquery/jquery.min.js',
         './node_modules/bootstrap/dist/js/bootstrap.min.js',
         './node_modules/popper.js/dist/umd/popper.min.js',
+    ]).pipe(gulp.dest('../webapp/inc/js/plugins', {overwrite: true}));
+});
+
+gulp.task('js', function () {
+    gulp.src([
+        './js/*.js'
     ]).pipe(gulp.dest('../webapp/inc/js', {overwrite: true}));
 });
 
