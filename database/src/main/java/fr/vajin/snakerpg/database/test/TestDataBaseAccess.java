@@ -13,12 +13,12 @@ public class TestDataBaseAccess implements DataBaseAccess {
 
     Set<UserEntity> userEntitySet;
     Set<SnakeEntity> snakesEntities;
-    Set<GamesEntity> gamesEntitySet;
+    Set<GameEntity> gameEntitySet;
 
     public TestDataBaseAccess() {
         this.userEntitySet = new HashSet<>();
         this.snakesEntities = new HashSet<>();
-        this.gamesEntitySet = new HashSet<>();
+        this.gameEntitySet = new HashSet<>();
 
 
         int id = 0;
@@ -45,9 +45,9 @@ public class TestDataBaseAccess implements DataBaseAccess {
 
         id = 0;
 
-        GamesEntity g1 = new TestGameEntity(++id, TestGameModeEntity.SINGLE_PLAYER, new Timestamp(2018, 01, 23, 14, 13, 0, 0), new Timestamp(2018, 01, 23, 14, 15, 23, 0));
+        GameEntity g1 = new TestGameEntity(++id, TestGameModeEntity.SINGLE_PLAYER, new Timestamp(2018, 01, 23, 14, 13, 0, 0), new Timestamp(2018, 01, 23, 14, 15, 23, 0));
         g1.getGameParticipations().add(new TestGameParticipationEntity(sp, g1, 400, 1, 0));
-        GamesEntity g2 = new TestGameEntity(++id, TestGameModeEntity.CLASSIC_DM, new Timestamp(1561416), new Timestamp(1861516));
+        GameEntity g2 = new TestGameEntity(++id, TestGameModeEntity.CLASSIC_DM, new Timestamp(1561416), new Timestamp(1861516));
         g2.getGameParticipations().add(new TestGameParticipationEntity(sp, g2, 556, 0, 1));
         g2.getGameParticipations().add(new TestGameParticipationEntity(sv, g2, 482, 1, 1));
         g2.getGameParticipations().add(new TestGameParticipationEntity(sj2, g2, 185, 1, 0));
@@ -171,46 +171,46 @@ public class TestDataBaseAccess implements DataBaseAccess {
 
     @Override
     public List<GameParticipationEntity> getGameResultsByGame(int gameid, int sortBy) {
-        GamesEntity gamesEntity = this.getGame(gameid);
-        if (gamesEntity == null) {
+        GameEntity gameEntity = this.getGame(gameid);
+        if (gameEntity == null) {
             return null; //TODO exception NoGameFound
         }
 
-        List<GameParticipationEntity> resultList = new ArrayList<>(gamesEntity.getGameParticipations());
+        List<GameParticipationEntity> resultList = new ArrayList<>(gameEntity.getGameParticipations());
 
         return sortGameParticipationEntity(resultList, sortBy);
     }
 
     @Override
-    public Collection<GameParticipationEntity> getGameResultsByGame(GamesEntity gamesEntity) {
-        return gamesEntity.getGameParticipations();
+    public Collection<GameParticipationEntity> getGameResultsByGame(GameEntity gameEntity) {
+        return gameEntity.getGameParticipations();
     }
 
     @Override
-    public GamesEntity getGame(int id) {
-        Optional<GamesEntity> opt = gamesEntitySet.stream().filter(gamesEntity -> gamesEntity.getId() == id).findFirst();
+    public GameEntity getGame(int id) {
+        Optional<GameEntity> opt = gameEntitySet.stream().filter(gamesEntity -> gamesEntity.getId() == id).findFirst();
         if (opt.isPresent()) {
             return opt.get();
         }
         return null; //TODO Exception NoGameFound
     }
 
-    private List<GamesEntity> sortGames(List<GamesEntity> gamesEntityList, int sortBy) {
+    private List<GameEntity> sortGames(List<GameEntity> gameEntityList, int sortBy) {
         switch (sortBy) {
             case SORT_BY_EARLIEST_DATE:
-                gamesEntityList.sort(Comparator.comparing(GamesEntity::getEndTime));
+                gameEntityList.sort(Comparator.comparing(GameEntity::getEndTime));
                 break;
             case SORT_BY_LATEST_DATE:
-                gamesEntityList.sort(Comparator.comparing(GamesEntity::getEndTime).reversed());
+                gameEntityList.sort(Comparator.comparing(GameEntity::getEndTime).reversed());
                 break;
         } //TODO MAY BE : sort by the best score in the game
-        return gamesEntityList;
+        return gameEntityList;
     }
 
     @Override
-    public List<GamesEntity> getGameByDate(Timestamp earliest, Timestamp latest, int sortBy) {
+    public List<GameEntity> getGameByDate(Timestamp earliest, Timestamp latest, int sortBy) {
 
-        Predicate<GamesEntity> timestampPredicate;
+        Predicate<GameEntity> timestampPredicate;
 
         if (earliest != null) {
             if (latest != null) {
@@ -230,14 +230,14 @@ public class TestDataBaseAccess implements DataBaseAccess {
             timestampPredicate = participation -> true;
         }
 
-        List<GamesEntity> resultList = gamesEntitySet.parallelStream().filter(timestampPredicate).collect(Collectors.toList());
+        List<GameEntity> resultList = gameEntitySet.parallelStream().filter(timestampPredicate).collect(Collectors.toList());
 
         return this.sortGames(resultList, sortBy);
     }
 
     @Override
-    public List<GamesEntity> getGameByGamemode(GameModeEntity gameModeEntity, int sortBy) {
-        List<GamesEntity> resultList = gamesEntitySet.parallelStream().
+    public List<GameEntity> getGameByGamemode(GameModeEntity gameModeEntity, int sortBy) {
+        List<GameEntity> resultList = gameEntitySet.parallelStream().
                 filter(gamesEntity -> gamesEntity.getGameMode().equals(gameModeEntity)).
                 collect(Collectors.toList());
 
