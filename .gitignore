@@ -227,6 +227,6 @@ webserver/src/main/webapp/inc/js/bootstrap\.min\.js
 
 webserver/src/main/webapp/inc/js/popper\.min\.js
 
-*.sql~Updated upstream
-
 *.sql~Stashed changes
+
+*.sql~Updated upstream
