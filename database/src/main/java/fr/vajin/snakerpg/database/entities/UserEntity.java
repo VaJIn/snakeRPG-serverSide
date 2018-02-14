@@ -22,13 +22,13 @@ public class UserEntity {
         snakes = new HashSet<>();
     }
 
-    public UserEntity(int id, String email, String accountName, String alias, String password, Collection<SnakeEntity> snakes) {
+    public UserEntity(int id, String alias, String email, String accountName, String password) {
         this.id = id;
         this.email = email;
         this.accountName = accountName;
         this.alias = alias;
         this.password = password;
-        this.snakes = snakes;
+        this.snakes = new HashSet<>();
     }
 
     public int getId() {
@@ -93,7 +93,6 @@ public class UserEntity {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(id, email, accountName, alias, password);
     }
 }
