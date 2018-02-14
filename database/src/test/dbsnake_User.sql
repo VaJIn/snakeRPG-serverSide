@@ -1,0 +1,3 @@
+INSERT INTO dbsnake.User (id, alias, email, accountName, password) VALUES (1, 'leBGdu72', 'bigbossbg@hotmail.fr', 'pseudo2ouf', 'ABABABAB');
+INSERT INTO dbsnake.User (id, alias, email, accountName, password) VALUES (2, 'jules<3', 'paulin.violette@etud.univ-angers.fr', 'mistermuscu', 'ABABABAB');
+INSERT INTO dbsnake.User (id, alias, email, accountName, password) VALUES (3, 'jules<3', 'valentine.rahier@etud.univ-angers.fr', 'celibGirl', 'ABABABAB');
