@@ -1,17 +1,18 @@
 package fr.vajin.snakerpg.database.entities;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Objects;
 
 public class SnakeEntity {
 
     private int userId;
     private int id;
+    private int snakeClassId;
     private String name;
     private int expPoint;
     private byte[] info;
     private UserEntity user;
+    private SnakeClassEntity snakeClass;
 
     public SnakeEntity() {
         this.userId = -1;
@@ -20,15 +21,18 @@ public class SnakeEntity {
         this.expPoint = -1;
         info = new byte[0];
         this.user = new UserEntity();
+        this.snakeClass = new SnakeClassEntity();
     }
 
-    public SnakeEntity(int userId, int id, String name, int expPoint, byte[] info, UserEntity user) {
-        this.userId = userId;
+    public SnakeEntity(int id, String name, int expPoint, byte[] info, UserEntity user, SnakeClassEntity snakeClass) {
+        this.userId = user.getId();
         this.id = id;
+        this.snakeClassId = snakeClass.getId();
         this.name = name;
         this.expPoint = expPoint;
         this.info = info;
         this.user = user;
+        this.snakeClass = snakeClass;
     }
 
     public int getUserId() {
