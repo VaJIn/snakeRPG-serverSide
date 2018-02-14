@@ -8,24 +8,34 @@
         <servlet-name>MainPageServlet</servlet-name>
         <servlet-class>fr.vajin.snakerpg.MainPageServlet</servlet-class>
     </servlet>
+
+
     <servlet>
         <servlet-name>PlayerProfileServlet</servlet-name>
         <servlet-class>fr.vajin.snakerpg.PlayerProfileServlet</servlet-class>
     </servlet>
+
+
     <servlet>
         <servlet-name>LeaderBoardServlet</servlet-name>
         <servlet-class>fr.vajin.snakerpg.LeaderBoardServlet</servlet-class>
     </servlet>
+
     <servlet>
         <servlet-name>GameViewServlet</servlet-name>
         <servlet-class>fr.vajin.snakerpg.GameViewServlet</servlet-class>
     </servlet>
 
+    <servlet>
+        <servlet-name>DataUserServlet</servlet-name>
+        <servlet-class>fr.vajin.snakerpg.servlet.data.DataUserServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>RegistrationServlet</servlet-name>
+        <servlet-class>fr.vajin.snakerpg.RegistrationServlet</servlet-class>
+    </servlet>
 
-    <servlet-mapping>
-        <servlet-name>MainPageServlet</servlet-name>
-        <url-pattern>/home</url-pattern>
-    </servlet-mapping>
+
     <servlet-mapping>
         <servlet-name>PlayerProfileServlet</servlet-name>
         <url-pattern>/player/*</url-pattern>
@@ -37,5 +47,17 @@
     <servlet-mapping>
         <servlet-name>GameViewServlet</servlet-name>
         <url-pattern>/game/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MainPageServlet</servlet-name>
+        <url-pattern>/home</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DataUserServlet</servlet-name>
+        <url-pattern>/data/user</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RegistrationServlet</servlet-name>
+        <url-pattern>/register/</url-pattern>
     </servlet-mapping>
 </web-app>

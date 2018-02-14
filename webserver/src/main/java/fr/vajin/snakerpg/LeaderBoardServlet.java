@@ -26,6 +26,6 @@ public class LeaderBoardServlet extends HttpServlet {
 
         request.setAttribute("leaderboard_playerlist", listPlayer);
 
-        this.getServletContext().getRequestDispatcher("/WEB-INF/leaderboardView.jsp").include(request, response);
+        this.getServletContext().getRequestDispatcher("/WEB-INF/views/leaderboardView.jsp").include(request, response);
     }
 }
