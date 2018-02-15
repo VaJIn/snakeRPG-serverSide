@@ -1,5 +1,5 @@
-INSERT INTO dbsnake.GameParticipation (idGame, idSnake) VALUES (1, 1);
-INSERT INTO dbsnake.GameParticipation (idGame, idSnake) VALUES (1, 5);
-INSERT INTO dbsnake.GameParticipation (idGame, idSnake) VALUES (2, 6);
-INSERT INTO dbsnake.GameParticipation (idGame, idSnake) VALUES (3, 7);
-INSERT INTO dbsnake.GameParticipation (idGame, idSnake) VALUES (3, 8);
+INSERT INTO dbsnake.GameParticipation (idGame, idSnake, score, killCount, deathCount) VALUES (1, 1, 0, 0, 0);
+INSERT INTO dbsnake.GameParticipation (idGame, idSnake, score, killCount, deathCount) VALUES (1, 5, 0, 0, 0);
+INSERT INTO dbsnake.GameParticipation (idGame, idSnake, score, killCount, deathCount) VALUES (2, 6, 0, 0, 0);
+INSERT INTO dbsnake.GameParticipation (idGame, idSnake, score, killCount, deathCount) VALUES (3, 7, 0, 0, 0);
+INSERT INTO dbsnake.GameParticipation (idGame, idSnake, score, killCount, deathCount) VALUES (3, 8, 0, 0, 0);

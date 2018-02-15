@@ -25,8 +25,11 @@ FOREIGN KEY (idGameMode) REFERENCES GameMode (id);
 
 CREATE TABLE GameParticipation
 (
-  idGame  INT(10) NOT NULL,
-  idSnake INT(10) NOT NULL,
+  idGame     INT(10) NOT NULL,
+  idSnake    INT(10) NOT NULL,
+  score      INT(10) NOT NULL,
+  killCount  INT(10) NOT NULL,
+  deathCount INT(10) NOT NULL,
   PRIMARY KEY (idGame, idSnake),
   CONSTRAINT GameParticipation_Game_id_fk
   FOREIGN KEY (idGame) REFERENCES Game (id)
@@ -74,5 +77,4 @@ CREATE UNIQUE INDEX User_accountName_uindex
 ALTER TABLE Snake
   ADD CONSTRAINT snake_User_id_fk
 FOREIGN KEY (userID) REFERENCES User (id);
-
 
