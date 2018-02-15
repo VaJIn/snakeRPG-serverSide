@@ -3,22 +3,33 @@ package fr.vajin.snakerpg.database.test;
 import fr.vajin.snakerpg.database.DataBaseAccess;
 import fr.vajin.snakerpg.database.entities.*;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class TestDatabase implements DataBaseAccess{
 
+    private static String db_adr = "jdbc:mysql://localhost:3306/dbsnake";
     private Statement statement;
 
     public TestDatabase(){
 
         Connection con = null;
         try {
-            con = DriverManager.getConnection("dbsnake","symfony","symfony");
+            Properties connectionProp = new Properties();
+            connectionProp.loadFromXML(new FileInputStream(new File("src/test/resources/connection.xml")));
+            con = DriverManager.getConnection(db_adr,connectionProp);
             this.statement = con.createStatement();
         } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (InvalidPropertiesFormatException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 

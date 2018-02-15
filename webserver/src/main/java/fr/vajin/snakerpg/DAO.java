@@ -1,7 +1,6 @@
 package fr.vajin.snakerpg;
 
 import fr.vajin.snakerpg.database.DataBaseAccess;
-import fr.vajin.snakerpg.database.test.TestDataBaseAccess;
 
 public class DAO {
 
