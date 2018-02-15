@@ -50,7 +50,7 @@ public class TestDatabase implements DataBaseAccess{
 
     @Override
     public List<GameParticipationEntity> getGameResultsByUser(int userId, int sortBy, Timestamp earliest, Timestamp latest) {
-        String query = "SELECT gp.idGame, gp.idSnake, g.id, g.startTime, g.endTime, g.idGameMode "
+        String query = "SELECT gp.idGame, gp.idSnake, gp.score, gp.killCount, gp.deathCount, g.id, g.startTime, g.endTime, g.idGameMode "
                 + "FROM GameParticipation gp "
                 + "JOIN (SELECT * FROM Game where (startTime >"+earliest+") AND (startTime <"+latest+") as g "
                 + "ON gp.idGame = g.id "
@@ -67,6 +67,9 @@ public class TestDatabase implements DataBaseAccess{
                 GameParticipationEntity gp = new GameParticipationEntity();
                 gp.setIdGame(rs.getInt("idGame"));
                 gp.setIdSnake(rs.getInt("idSnake"));
+                gp.setScore(rs.getInt("score"));
+                gp.setKillCount(rs.getInt("killCount"));
+                gp.setDeathCount(rs.getInt("deathCount"));
 
                 GameEntity g = new GameEntity();
                 g.setId(rs.getInt("id"));
@@ -94,7 +97,7 @@ public class TestDatabase implements DataBaseAccess{
 
     @Override
     public List<GameParticipationEntity> getGameResultsByGame(int gameid, int sortBy) {
-        String query = "SELECT gp.idGame, gp.idSnake, g.id, g.startTime, g.endTime "
+        String query = "SELECT gp.idGame, gp.idSnake, gp.score, gp.killCount, gp.deathCount, g.id, g.startTime, g.endTime "
                     +"FROM GameParticipation gp "
                     +"JOIN (SELECT id, startTime, endTime FROM Game WHERE id="+gameid+") as g "
                     +"ON gp.idGame=g.id "
@@ -108,6 +111,9 @@ public class TestDatabase implements DataBaseAccess{
                 GameParticipationEntity gp = new GameParticipationEntity();
                 gp.setIdGame(rs.getInt("idGame"));
                 gp.setIdSnake(rs.getInt("idSnake"));
+                gp.setScore(rs.getInt("score"));
+                gp.setKillCount(rs.getInt("killCount"));
+                gp.setDeathCount(rs.getInt("deathCount"));
 
                 GameEntity g = new GameEntity();
                 g.setId(rs.getInt("id"));
@@ -139,7 +145,10 @@ public class TestDatabase implements DataBaseAccess{
 
     @Override
     public List<GameEntity> getGameByDate(Timestamp earliest, Timestamp latest, int sortBy) {
-        String query = "SELECT * FROM Game "
+        String query = "SELECT g.id, g.startTime, g.endTime, g.idGameMode, gm.name, gm.minPlayer, gm.maxPlayer "
+                +"FROM Game g "
+                +"JOIN (SELECT * FROM GameMode) as gm "
+                +"ON g.idGameMode=gm.id "
                 +"WHERE (startTime>"+earliest+") AND (startTime<"+latest+") "
                 +sortBy(sortBy);
 
@@ -152,6 +161,9 @@ public class TestDatabase implements DataBaseAccess{
                 g.setId(rs.getInt("id"));
                 g.setStartTime(rs.getTimestamp("startTime"));
                 g.setEndTime(rs.getTimestamp("endTime"));
+                GameModeEntity gm = new GameModeEntity(rs.getInt("idGameMode"),rs.getString("name"),rs.getInt("minPlayer"),rs.getInt("maxPlayer"));
+
+                g.setGameMode(gm);
 
                 games.add(g);
 
