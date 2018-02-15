@@ -24,37 +24,145 @@ public class TestDatabase implements DataBaseAccess{
     }
 
 
-
-
     @Override
     public UserEntity getUser(int id) {
 
-        String query = "SELECT *" +
-                "FROM User" +
-                "WHERE id="+id;
+        String query = "SELECT * " +
+                "FROM User " +
+                "WHERE id= "+id;
 
+        UserEntity out = null;
 
+        try {
+            ResultSet rs = statement.executeQuery(query);
+            if (rs.next()) {
+                out = resultSetToUserEntity(rs);
+            }
+        } catch (SQLException e) {
+            return null;
+        }
+
+        return out;
 
     }
 
     @Override
     public Collection<UserEntity> getUserByAlias(String pseudo) {
-        return null;
+
+        String query = "SELECT * " +
+                "FROM User " +
+                "WHERE alias= "+pseudo;
+
+        Collection<UserEntity> out = new ArrayList<>();
+
+        try {
+            ResultSet rs = statement.executeQuery(query);
+
+            while (rs.next()){
+                try{
+                    out.add(resultSetToUserEntity(rs));
+                }
+                catch (SQLException e){
+                    //Means that a row of the sql table has incorrect value(s). Not returning null nor returning empty list so that the other
+                    //potentially read rows are correctly retrieved.
+                    e.printStackTrace();
+                }
+
+            }
+
+        } catch (SQLException e) {
+            return null; //Only if the query is not well formed
+        }
+
+        return out;
+
     }
 
     @Override
     public SnakeEntity getSnakeById(int id) {
-        return null;
+
+        String query = "SELECT *" +
+                "FROM Snake " +
+                "WHERE id= "+id;
+
+        SnakeEntity out = null;
+
+        try {
+            ResultSet rs = statement.executeQuery(query);
+
+            if (rs.next()){
+                out = resultSetToSnakeEntity(rs);
+            }
+
+        } catch (SQLException e) {
+            return null;
+        }
+
+        return out;
+
+
     }
 
     @Override
     public Collection<SnakeEntity> getSnakeByUser(UserEntity userEntity) {
-        return null;
+        return getSnakeByUser(userEntity.getId());
     }
 
     @Override
     public Collection<SnakeEntity> getSnakeByUser(int userId) {
-        return null;
+
+        String query = "SELECT * " +
+                "FROM Snake " +
+                "WHERE userId= "+userId;
+
+        Collection<SnakeEntity> out = new ArrayList<>();
+
+        try {
+            ResultSet rs = statement.executeQuery(query);
+
+            while(rs.next()){
+                try {
+                    out.add(resultSetToSnakeEntity(rs));
+                }
+                catch (SQLException e){
+                    //Means that a row of the sql table has incorrect value(s). Not returning null nor returning empty list so that the other
+                    //potentially read rows are correctly retrieved.
+                    e.printStackTrace();
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return out;
+
+    }
+
+    @Override
+    public SnakeClassEntity getSnakeClassById(int snakeClassId) {
+
+        String query = "SELECT * " +
+                "FROM SnakeClass " +
+                "WHERE id= "+snakeClassId;
+
+        SnakeClassEntity out = null;
+
+        try {
+            ResultSet rs = statement.executeQuery(query);
+
+            if (rs.next()){
+                out = resultSetToSnakeClassEntity(rs);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            out = null;
+        }
+
+        return out;
+
     }
 
     @Override
@@ -62,40 +170,12 @@ public class TestDatabase implements DataBaseAccess{
         String query = "SELECT gp.idGame, gp.idSnake, gp.score, gp.killCount, gp.deathCount, g.id, g.startTime, g.endTime, g.idGameMode "
                 + "FROM GameParticipation gp "
                 + "JOIN (SELECT * FROM Game where (startTime >"+earliest+") AND (startTime <"+latest+") as g "
-                + "ON gp.idGame = g.id "
+                + "ON gp.idGame  = g.id "
                 + "WHERE gp.idSnake in (SELECT id from Snake where userID="+userId+") "
                 + sortBy(sortBy);
 
 
-
-        ResultSet rs = null;
-        List<GameParticipationEntity> gameResults = new ArrayList<GameParticipationEntity>();
-        try {
-            rs = statement.executeQuery(query);
-            while (rs.next()) {
-                GameParticipationEntity gp = new GameParticipationEntity();
-                gp.setIdGame(rs.getInt("idGame"));
-                gp.setIdSnake(rs.getInt("idSnake"));
-                gp.setScore(rs.getInt("score"));
-                gp.setKillCount(rs.getInt("killCount"));
-                gp.setDeathCount(rs.getInt("deathCount"));
-
-                GameEntity g = new GameEntity();
-                g.setId(rs.getInt("id"));
-                g.setStartTime(rs.getTimestamp("startTime"));
-                g.setEndTime(rs.getTimestamp("endTime"));
-
-                gp.setGame(g);
-
-                gameResults.add(gp);
-
-
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return gameResults;
+        return gameParticipationQuery(query);
 
     }
 
@@ -108,37 +188,33 @@ public class TestDatabase implements DataBaseAccess{
     public List<GameParticipationEntity> getGameResultsByGame(int gameid, int sortBy) {
         String query = "SELECT gp.idGame, gp.idSnake, gp.score, gp.killCount, gp.deathCount, g.id, g.startTime, g.endTime "
                     +"FROM GameParticipation gp "
-                    +"JOIN (SELECT id, startTime, endTime FROM Game WHERE id="+gameid+") as g "
+                    +"JOIN (SELECT id, startTime, endTime, idGameMode FROM Game WHERE id="+gameid+") as g "
                     +"ON gp.idGame=g.id "
                     +sortBy(sortBy);
 
-        ResultSet rs = null;
+
+        return gameParticipationQuery(query);
+    }
+
+    private List<GameParticipationEntity> gameParticipationQuery(String query){
         List<GameParticipationEntity> gameResults = new ArrayList<GameParticipationEntity>();
         try {
-            rs = statement.executeQuery(query);
+            ResultSet rs = statement.executeQuery(query);
             while (rs.next()) {
-                GameParticipationEntity gp = new GameParticipationEntity();
-                gp.setIdGame(rs.getInt("idGame"));
-                gp.setIdSnake(rs.getInt("idSnake"));
-                gp.setScore(rs.getInt("score"));
-                gp.setKillCount(rs.getInt("killCount"));
-                gp.setDeathCount(rs.getInt("deathCount"));
 
-                GameEntity g = new GameEntity();
-                g.setId(rs.getInt("id"));
-                g.setStartTime(rs.getTimestamp("startTime"));
-                g.setEndTime(rs.getTimestamp("endTime"));
-
-                gp.setGame(g);
-
-                gameResults.add(gp);
-
+                try {
+                    gameResults.add(resultSetToGameParticipationEntity(rs));
+                }
+                catch(SQLException e){
+                    //Means that a row of the sql table has incorrect value(s). Not returning null nor returning empty list so that the other
+                    //potentially read rows are correctly retrieved.
+                    e.printStackTrace();
+                }
 
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return gameResults;
     }
 
@@ -243,6 +319,69 @@ public class TestDatabase implements DataBaseAccess{
         String password = rs.getString("password");
 
         return new UserEntity(idGame, alias, email, accountName, password);
+    }
+
+    private SnakeEntity resultSetToSnakeEntity(ResultSet rs) throws SQLException{
+
+        int id = rs.getInt("id");
+        int userId = rs.getInt("userId");
+        String name = rs.getString("name");
+        int exp = rs.getInt("exp");
+        byte[] info = rs.getBytes("info");
+        int idSnakeClass = rs.getInt("idSnakeClass");
+
+        return new SnakeEntity(id, name, exp, info, getUser(userId), getSnakeClassById(idSnakeClass));
+
+    }
+
+
+
+
+    private GameEntity resultSetToGameEntity(ResultSet rs) throws SQLException {
+
+        int id = rs.getInt("id");
+        Timestamp startTime = rs.getTimestamp("startTime");
+        Timestamp endTime = rs.getTimestamp("endTime");
+        int idGameMode = rs.getInt("idGameMode");
+
+        return new GameEntity(id, startTime, endTime, getGameMode(idGameMode));
+
+    }
+
+    private GameModeEntity resultSetToGameModeEntity(ResultSet rs) throws SQLException {
+
+        int id = rs.getInt("id");
+        String name = rs.getString("name");
+        int minPlayer = rs.getInt("minPlayer");
+        int maxPlayer = rs.getInt("maxPlayer");
+
+        return new GameModeEntity(id, name, minPlayer, maxPlayer);
+    }
+
+    private GameParticipationEntity resultSetToGameParticipationEntity(ResultSet rs) throws SQLException {
+
+        int idGame = rs.getInt("idGame");
+        int idGameMode = rs.getInt("idGameMode");
+        int idSnake = rs.getInt("idSnake");
+        int score = rs.getInt("score");
+        int killCount = rs.getInt("killCount");
+        int deathCount = rs.getInt("deathCount");
+        Timestamp startTime = rs.getTimestamp("startTime");
+        Timestamp endTime = rs.getTimestamp("endTime");
+
+        GameEntity g = new GameEntity(idGame, startTime, endTime, getGameMode(idGameMode));
+
+        return new GameParticipationEntity(idGame, idSnake, score, killCount, deathCount, g, getSnakeById(idSnake));
+
+    }
+
+    private SnakeClassEntity resultSetToSnakeClassEntity(ResultSet rs) throws SQLException {
+
+        int id = rs.getInt("id");
+        String name = rs.getString("name");
+
+        return new SnakeClassEntity(id, name);
+
     }
 
 

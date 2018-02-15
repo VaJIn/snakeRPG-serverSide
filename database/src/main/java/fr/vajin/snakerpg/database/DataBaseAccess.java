@@ -53,6 +53,13 @@ public interface DataBaseAccess {
      */
     Collection<SnakeEntity> getSnakeByUser(int userId);
 
+    /**
+     * Returns the snake class matching the given ID
+     * @param snakeClassId
+     * @return
+     */
+    SnakeClassEntity getSnakeClassById(int snakeClassId);
+
     int SORT_BY_EARLIEST_DATE = 0;
     int SORT_BY_LATEST_DATE = 1;
     int SORT_BY_SCORE_ASC = 2;
