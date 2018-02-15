@@ -20,6 +20,10 @@ public interface DataBaseAccess {
      */
     UserEntity getUser(int id);
 
+    UserEntity getUserByAccountName(String accountName);
+
+    UserEntity getUser(String accountName, String password);
+
     /**
      * Return all user matching the given Pseudo.
      *

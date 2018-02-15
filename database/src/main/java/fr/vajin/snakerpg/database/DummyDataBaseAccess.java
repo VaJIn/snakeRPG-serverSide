@@ -4,6 +4,7 @@ import fr.vajin.snakerpg.database.entities.*;
 
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class DummyDataBaseAccess implements DataBaseAccess {
@@ -21,6 +22,7 @@ public class DummyDataBaseAccess implements DataBaseAccess {
         this.gameEntities = new HashSet<>();
         this.gameModeEntities = new HashSet<>();
         this.gameParticipationEntities = new HashSet<>();
+        this.snakeClassEntities = new HashSet<>();
 
         UserEntity u1 = new UserEntity(1, "meluch", "niquelesmediarcarque@fdg.fr", "melanchon2017", "ABABABAB");
         this.userEntities.add(u1);
@@ -48,10 +50,29 @@ public class DummyDataBaseAccess implements DataBaseAccess {
     }
 
     @Override
+    public UserEntity getUser(String accountName, String password) {
+        Optional<UserEntity> optional = userEntities.stream().filter(userEntity -> userEntity.getAccountName().equals(accountName) && userEntity.getPassword().equals(password)).findFirst();
+
+        if (optional.isPresent()) {
+            return optional.get();
+        }
+        return null;
+    }
+
+    @Override
     public Collection<UserEntity> getUserByAlias(String pseudo) {
         return userEntities.parallelStream()
                 .filter(userEntity -> userEntity.getAlias().equals(pseudo))
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public UserEntity getUserByAccountName(String accountName) {
+        Optional<UserEntity> optional = userEntities.stream().filter(userEntity -> userEntity.getAccountName().equals(accountName)).findFirst();
+        if (optional.isPresent()) {
+            return optional.get();
+        }
+        return null;
     }
 
     @Override
@@ -73,24 +94,83 @@ public class DummyDataBaseAccess implements DataBaseAccess {
         return snakeEntities.parallelStream().filter(snakeEntity -> snakeEntity.getUserId() == userId).collect(Collectors.toSet());
     }
 
+    private void sortGameParticipationEntityList(List<GameParticipationEntity> list, int sortBy) {
+
+        Comparator<GameParticipationEntity> comparator;
+        switch (sortBy) {
+            case SORT_BY_EARLIEST_DATE:
+                comparator = (gameParticipationEntity, t1) -> gameParticipationEntity.getGame().getStartTime().compareTo(t1.getGame().getStartTime());
+                break;
+            case SORT_BY_LATEST_DATE:
+                comparator = (gameParticipationEntity, t1) -> t1.getGame().getStartTime().compareTo(gameParticipationEntity.getGame().getStartTime());
+                break;
+            case SORT_BY_SCORE_ASC:
+                comparator = Comparator.comparingInt(GameParticipationEntity::getScore);
+                break;
+            case SORT_BY_SCORE_DESC:
+                comparator = Comparator.comparingInt(GameParticipationEntity::getScore).reversed();
+                break;
+            default:
+                comparator = Comparator.comparingInt(GameParticipationEntity::getScore);
+        }
+
+        list.sort(comparator);
+    }
+
     @Override
     public List<GameParticipationEntity> getGameResultsByUser(int userId, int sortBy, Timestamp earliest, Timestamp latest) {
-        return null;
+        List<GameParticipationEntity> res = new LinkedList<>();
+
+        Predicate<GameParticipationEntity> datePredicate;
+
+        if (earliest != null) {
+            if (latest != null) {
+                datePredicate = gameParticipationEntity ->
+                        gameParticipationEntity.getGame().getStartTime().compareTo(earliest) >= 0
+                                && gameParticipationEntity.getGame().getStartTime().compareTo(latest) <= 0;
+            } else {
+                datePredicate = gameParticipationEntity -> gameParticipationEntity.getGame().getStartTime().compareTo(earliest) <= 0;
+            }
+        } else if (latest != null) {
+            datePredicate = gameParticipationEntity -> gameParticipationEntity.getGame().getEndTime().compareTo(latest) >= 0;
+        } else {
+            datePredicate = gameParticipationEntity -> true;
+        }
+
+        for (SnakeEntity s : getSnakeByUser(userId)) {
+
+            Predicate<GameParticipationEntity> predicate = datePredicate.and(gameParticipationEntity -> gameParticipationEntity.getIdSnake() == s.getId());
+
+            res.addAll(
+                    gameParticipationEntities
+                            .parallelStream()
+                            .filter(predicate)
+                            .collect(Collectors.toSet()));
+        }
+
+        sortGameParticipationEntityList(res, sortBy);
+
+        return res;
     }
 
     @Override
     public List<GameParticipationEntity> getGameResultsByUser(UserEntity userEntity, int sortBy, Timestamp earliest, Timestamp latest) {
-        return null;
+        return getGameResultsByUser(userEntity.getId(), sortBy, earliest, latest);
     }
 
     @Override
     public List<GameParticipationEntity> getGameResultsByGame(int gameid, int sortBy) {
-        return null;
+        List<GameParticipationEntity> res =
+                gameParticipationEntities.parallelStream()
+                        .filter(gameParticipationEntity -> gameParticipationEntity.getIdGame() == gameid)
+                        .collect(Collectors.toList());
+        sortGameParticipationEntityList(res, sortBy);
+        return res;
     }
 
     @Override
     public Collection<GameParticipationEntity> getGameResultsByGame(GameEntity gameEntity) {
-        return null;
+        return getGameResultsByGame(gameEntity.getId(), SORT_BY_SCORE_DESC);
     }
 
     @Override
