@@ -1,6 +1,7 @@
 package fr.vajin.snakerpg.database;
 
 import fr.vajin.snakerpg.database.entities.*;
+import fr.vajin.snakerpg.database.exceptions.*;
 
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -76,4 +77,9 @@ public interface DataBaseAccess {
     GameModeEntity getGameMode(String name);
 
     Collection<GameModeEntity> getAllGameModes();
+
+
+
+
+
 }

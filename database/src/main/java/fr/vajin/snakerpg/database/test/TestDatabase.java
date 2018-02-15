@@ -32,11 +32,20 @@ public class TestDatabase implements DataBaseAccess{
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
+
+
+
+
     @Override
     public UserEntity getUser(int id) {
-        return null;
+
+        String query = "SELECT *" +
+                "FROM User" +
+                "WHERE id="+id;
+
+
+
     }
 
     @Override
@@ -227,6 +236,24 @@ public class TestDatabase implements DataBaseAccess{
     @Override
     public Collection<GameModeEntity> getAllGameModes() {
         return null;
+    }
+
+
+    /**
+     * Returns a UserEntity from a ResultSet of the table User
+     * @param rs
+     * @return
+     * @throws SQLException
+     */
+    private UserEntity resultSetToUserEntity(ResultSet rs) throws SQLException {
+
+        int idGame = rs.getInt("id");
+        String alias = rs.getString("alias");
+        String email = rs.getString("email");
+        String accountName = rs.getString("accountName");
+        String password = rs.getString("password");
+
+        return new UserEntity(idGame, alias, email, accountName, password);
     }
 
 
