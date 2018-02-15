@@ -1,0 +1,4 @@
+package fr.vajin.snakerpg.database.exceptions;
+
+public class LaPartieNexistePasOhZutCestVraimentTropNulMaisDuCoupOnEstObligesDeRenvoyerUneExceptionOuAlorsPeutEtreDeRenvoyerNullMaisJePrefereLesExceptions extends Exception {
+}
