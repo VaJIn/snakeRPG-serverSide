@@ -63,7 +63,7 @@ public interface DataBaseAccess {
 
     List<GameParticipationEntity> getGameResultsByGame(int gameid, int sortBy);
 
-    Collection<GameParticipationEntity> getGameResultsByGame(GameEntity gameEntity);
+    Collection<GameParticipationEntity> getGameResultsByGame(GameEntity gameEntity, int sortBy);
 
     GameEntity getGame(int id);
 
