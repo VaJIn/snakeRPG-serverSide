@@ -19,11 +19,7 @@ public interface DataBaseAccess {
      * @param id the id of the user to retrieve
      * @return the UserEntity of the user matching the given id, or null if none is found
      */
-    UserEntity getUser(int id) throws LeJoueurNexistePasCestDommageDuCoupOnLanceUneException;
-
-    UserEntity getUserByAccountName(String accountName);
-
-    UserEntity getUser(String accountName, String password);
+    UserEntity getUser(int id);
 
     /**
      * Return all user matching the given Pseudo.
@@ -31,7 +27,7 @@ public interface DataBaseAccess {
      * @param pseudo
      * @return a collection of all users matching the given pseudo
      */
-    Collection<UserEntity> getUserByAlias(String pseudo) throws LeJoueurNexistePasCestDommageDuCoupOnLanceUneException;
+    Collection<UserEntity> getUserByAlias(String pseudo);
 
     /**
      * Return the Snake matching the given id
@@ -39,7 +35,7 @@ public interface DataBaseAccess {
      * @param id the id of the snake to retrieve
      * @return the SnakeEntity of the snake matching the given id
      */
-    SnakeEntity getSnakeById(int id) throws LeSerpentNexistePasCestDommageDuCoupOnLanceUneException;
+    SnakeEntity getSnakeById(int id);
 
     /**
      * Return all snake of the given user
@@ -47,7 +43,7 @@ public interface DataBaseAccess {
      * @param userEntity
      * @return a collection of all snake belonging to the given user.
      */
-    Collection<SnakeEntity> getSnakeByUser(UserEntity userEntity) throws LeSerpentNexistePasCestDommageDuCoupOnLanceUneException;
+    Collection<SnakeEntity> getSnakeByUser(UserEntity userEntity);
 
     /**
      * Return all snake for the user with the given id
@@ -55,32 +51,32 @@ public interface DataBaseAccess {
      * @param userId the id of the user.
      * @return a collection of all snake belonging to the user matching the given id. The collection is null is the user does not exists.
      */
-    Collection<SnakeEntity> getSnakeByUser(int userId) throws LeSerpentNexistePasCestDommageDuCoupOnLanceUneException;
+    Collection<SnakeEntity> getSnakeByUser(int userId);
 
     int SORT_BY_EARLIEST_DATE = 0;
     int SORT_BY_LATEST_DATE = 1;
     int SORT_BY_SCORE_ASC = 2;
     int SORT_BY_SCORE_DESC = 3;
 
-    List<GameParticipationEntity> getGameResultsByUser(int userId, int sortBy, Timestamp earliest, Timestamp latest) throws UnexistingGameParticipationException;
+    List<GameParticipationEntity> getGameResultsByUser(int userId, int sortBy, Timestamp earliest, Timestamp latest);
 
-    List<GameParticipationEntity> getGameResultsByUser(UserEntity userEntity, int sortBy, Timestamp earliest, Timestamp latest) throws UnexistingGameParticipationException;
+    List<GameParticipationEntity> getGameResultsByUser(UserEntity userEntity, int sortBy, Timestamp earliest, Timestamp latest);
 
-    List<GameParticipationEntity> getGameResultsByGame(int gameid, int sortBy) throws UnexistingGameParticipationException;
+    List<GameParticipationEntity> getGameResultsByGame(int gameid, int sortBy);
 
-    Collection<GameParticipationEntity> getGameResultsByGame(GameEntity gameEntity, int sortBy) throws UnexistingGameParticipationException;
+    Collection<GameParticipationEntity> getGameResultsByGame(GameEntity gameEntity, int sortBy);
 
-    GameEntity getGame(int id) throws LaPartieNexistePasOhZutCestVraimentTropNulMaisDuCoupOnEstObligesDeRenvoyerUneExceptionOuAlorsPeutEtreDeRenvoyerNullMaisJePrefereLesExceptions;
+    GameEntity getGame(int id);
 
-    List<GameEntity> getGameByDate(Timestamp earliest, Timestamp latest, int sortBy) throws LaPartieNexistePasOhZutCestVraimentTropNulMaisDuCoupOnEstObligesDeRenvoyerUneExceptionOuAlorsPeutEtreDeRenvoyerNullMaisJePrefereLesExceptions;
+    List<GameEntity> getGameByDate(Timestamp earliest, Timestamp latest, int sortBy);
 
-    List<GameEntity> getGameByGamemode(GameModeEntity gameModeEntity, int sortBy) throws LaPartieNexistePasOhZutCestVraimentTropNulMaisDuCoupOnEstObligesDeRenvoyerUneExceptionOuAlorsPeutEtreDeRenvoyerNullMaisJePrefereLesExceptions;
+    List<GameEntity> getGameByGamemode(GameModeEntity gameModeEntity, int sortBy);
 
-    GameModeEntity getGameMode(int id) throws TropTristLeModeDeJeuNExistePasObligeDeLancerUneException;
+    GameModeEntity getGameMode(int id);
 
-    GameModeEntity getGameMode(String name) throws TropTristLeModeDeJeuNExistePasObligeDeLancerUneException;
+    GameModeEntity getGameMode(String name);
 
-    Collection<GameModeEntity> getAllGameModes() throws TropTristLeModeDeJeuNExistePasObligeDeLancerUneException;
+    Collection<GameModeEntity> getAllGameModes();
 
 
 
