@@ -21,6 +21,10 @@ public interface DataBaseAccess {
      */
     UserEntity getUser(int id) throws LeJoueurNexistePasCestDommageDuCoupOnLanceUneException;
 
+    UserEntity getUserByAccountName(String accountName);
+
+    UserEntity getUser(String accountName, String password);
+
     /**
      * Return all user matching the given Pseudo.
      *
