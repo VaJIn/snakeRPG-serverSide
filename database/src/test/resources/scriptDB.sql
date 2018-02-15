@@ -2,8 +2,8 @@ CREATE TABLE Game
 (
   id         INT(10) AUTO_INCREMENT
     PRIMARY KEY,
-  startTime  TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP     NOT NULL,
-  endTime    TIMESTAMP(6) DEFAULT '0000-00-00 00:00:00' NOT NULL,
+  startTime  TIMESTAMP(19) DEFAULT CURRENT_TIMESTAMP     NOT NULL,
+  endTime    TIMESTAMP(19) DEFAULT '0000-00-00 00:00:00' NOT NULL,
   idGameMode INT(10)                                     NOT NULL
 );
 
@@ -25,8 +25,11 @@ FOREIGN KEY (idGameMode) REFERENCES GameMode (id);
 
 CREATE TABLE GameParticipation
 (
-  idGame  INT(10) NOT NULL,
-  idSnake INT(10) NOT NULL,
+  idGame     INT(10) NOT NULL,
+  idSnake    INT(10) NOT NULL,
+  score      INT(10) NOT NULL,
+  killCount  INT(10) NOT NULL,
+  deathCount INT(10) NOT NULL,
   PRIMARY KEY (idGame, idSnake),
   CONSTRAINT GameParticipation_Game_id_fk
   FOREIGN KEY (idGame) REFERENCES Game (id)
@@ -74,5 +77,4 @@ CREATE UNIQUE INDEX User_accountName_uindex
 ALTER TABLE Snake
   ADD CONSTRAINT snake_User_id_fk
 FOREIGN KEY (userID) REFERENCES User (id);
-
 
