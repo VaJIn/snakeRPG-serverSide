@@ -14,7 +14,6 @@ buildscript{
     dependencies{
         classpath "com.moowork.gradle:gradle-node-plugin:1.2.0"
         classpath "gradle.plugin.org.akhikhl.gretty:gretty:2.0.0"
-        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.1'
     }
 }
 
@@ -35,8 +34,6 @@ allprojects{
 project(":database"){
 
     apply plugin: "java"
-
-    apply plugin: 'org.junit.platform.gradle.plugin'
 
     dependencies{
         testCompile 'org.junit.jupiter:junit-jupiter-api:5.0.1'
@@ -60,6 +57,10 @@ project(":webserver"){
         compile project(":database")
         providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
         compile group: 'javax.servlet', name: 'jstl', version: '1.2'
+        compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+
+        // https://mvnrepository.com/artifact/commons-validator/commons-validator
+        compile group: 'commons-validator', name: 'commons-validator', version: '1.6'
     }
 }
 
