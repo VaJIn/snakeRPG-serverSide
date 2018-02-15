@@ -1,6 +1,5 @@
-#node
-/webserver/frontend-resources/.sass-cache/
-/webserver/frontend-resources/node_modules/
+#Frontend ressources destination directory
+webserver/src/main/webapp/inc
 
 # Compiled class file
 *.class
