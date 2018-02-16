@@ -2,7 +2,6 @@ package fr.vajin.snakerpg.database;
 
 import fr.vajin.snakerpg.database.entities.*;
 
-
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
@@ -31,7 +30,7 @@ public interface DataBaseAccess {
 
     UserEntity getUserByAccountName(String accountName);
 
-    UserEntity getUser(String accountName, String password);
+    UserEntity getUser(String accountName, String hash);
 
     /**
      * Return the Snake matching the given id

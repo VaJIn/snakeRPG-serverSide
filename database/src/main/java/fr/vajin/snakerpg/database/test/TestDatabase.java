@@ -40,7 +40,7 @@ public class TestDatabase implements DataBaseAccess{
 
         String query = "SELECT * " +
                 "FROM User " +
-                "WHERE id= "+id;
+                "WHERE id="+id;
 
         UserEntity out = null;
 
@@ -52,6 +52,8 @@ public class TestDatabase implements DataBaseAccess{
         } catch (SQLException e) {
             return null;
         }
+
+        
 
         return out;
 
@@ -91,12 +93,49 @@ public class TestDatabase implements DataBaseAccess{
 
     @Override
     public UserEntity getUserByAccountName(String accountName) {
-        return null;
+
+        String query = "SELECT * " +
+                "FROM User " +
+                "Where accountName="+accountName;
+
+        UserEntity out = null;
+
+        try {
+            ResultSet rs = statement.executeQuery(query);
+            if (rs.next()){
+                out = resultSetToUserEntity(rs);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return out;
+
     }
 
     @Override
-    public UserEntity getUser(String accountName, String password) {
-        return null;
+    public UserEntity getUser(String accountName, String hash) {
+
+        String query = "SELECT * " +
+                "FROM User " +
+                "WHERE accountName="+accountName+" AND password="+hash;
+
+        query+=";";
+        UserEntity out = null;
+
+        try{
+            ResultSet rs = statement.executeQuery(query);
+            if (rs.next()){
+                out = resultSetToUserEntity(rs);
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+
+
     }
 
     @Override
@@ -104,7 +143,7 @@ public class TestDatabase implements DataBaseAccess{
 
         String query = "SELECT *" +
                 "FROM Snake " +
-                "WHERE id= "+id;
+                "WHERE id="+id;
 
         SnakeEntity out = null;
 
@@ -166,7 +205,7 @@ public class TestDatabase implements DataBaseAccess{
 
         String query = "SELECT * " +
                 "FROM SnakeClass " +
-                "WHERE id= "+snakeClassId;
+                "WHERE id="+snakeClassId;
 
         SnakeClassEntity out = null;
 
@@ -246,7 +285,24 @@ public class TestDatabase implements DataBaseAccess{
 
     @Override
     public GameEntity getGame(int id) {
-        return null;
+
+        String query = "SELECT * " +
+                "FROM Game " +
+                "WHERE id="+id;
+
+        GameEntity out = null;
+
+        try {
+            ResultSet rs = statement.executeQuery(query);
+            out = resultSetToGameEntity(rs);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            out = null;
+        }
+
+        return out;
+
+
     }
 
     @Override
@@ -263,16 +319,20 @@ public class TestDatabase implements DataBaseAccess{
         try {
             rs = statement.executeQuery(query);
             while (rs.next()) {
-                GameEntity g = new GameEntity();
-                g.setId(rs.getInt("id"));
-                g.setStartTime(rs.getTimestamp("startTime"));
-                g.setEndTime(rs.getTimestamp("endTime"));
-                GameModeEntity gm = new GameModeEntity(rs.getInt("idGameMode"),rs.getString("name"),rs.getInt("minPlayer"),rs.getInt("maxPlayer"));
 
-                g.setGameMode(gm);
-
-                games.add(g);
-
+                try {
+                    GameEntity g = new GameEntity();
+                    g.setId(rs.getInt("id"));
+                    g.setStartTime(rs.getTimestamp("startTime"));
+                    g.setEndTime(rs.getTimestamp("endTime"));
+                    GameModeEntity gm = new GameModeEntity(rs.getInt("idGameMode"), rs.getString("name"), rs.getInt("minPlayer"), rs.getInt("maxPlayer"));
+                    g.setGameMode(gm);
+                    games.add(g);
+                }
+                catch (SQLException e){
+                    //Means that a row of the sql table has incorrect value(s). Not returning null nor returning empty list so that the other
+                    //potentially read rows are correctly retrieved.
+                }
 
             }
         } catch (SQLException e) {
@@ -293,13 +353,19 @@ public class TestDatabase implements DataBaseAccess{
         try {
             rs = statement.executeQuery(query);
             while (rs.next()) {
-                GameEntity g = new GameEntity();
-                g.setId(rs.getInt("id"));
-                g.setStartTime(rs.getTimestamp("startTime"));
-                g.setEndTime(rs.getTimestamp("endTime"));
-                g.setGameMode(gameModeEntity);
-                games.add(g);
 
+                try {
+                    GameEntity g = new GameEntity();
+                    g.setId(rs.getInt("id"));
+                    g.setStartTime(rs.getTimestamp("startTime"));
+                    g.setEndTime(rs.getTimestamp("endTime"));
+                    g.setGameMode(gameModeEntity);
+                    games.add(g);
+                }
+                catch (SQLException e){
+                    //Means that a row of the sql table has incorrect value(s). Not returning null nor returning empty list so that the other
+                    //potentially read rows are correctly retrieved.
+                }
 
             }
         } catch (SQLException e) {
@@ -311,17 +377,81 @@ public class TestDatabase implements DataBaseAccess{
 
     @Override
     public GameModeEntity getGameMode(int id) {
-        return null;
+
+        String query = "SELECT * " +
+                "FROM Gamemode " +
+                "WHERE id="+id;
+
+        GameModeEntity out = null;
+
+        try {
+            ResultSet rs = statement.executeQuery(query);
+
+            if (rs.next()){
+                out = resultSetToGameModeEntity(rs);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return out;
+
+
     }
 
     @Override
     public GameModeEntity getGameMode(String name) {
-        return null;
+
+        String query = "SELECT * " +
+                "FROM Gamemode " +
+                "WHERE name="+name;
+
+        GameModeEntity out = null;
+
+        try {
+            ResultSet rs = statement.executeQuery(query);
+
+            out = resultSetToGameModeEntity(rs);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return out;
+
     }
 
     @Override
     public Collection<GameModeEntity> getAllGameModes() {
-        return null;
+
+        String query = "SELECT * " +
+                "FROM Gamemode";
+
+        Collection<GameModeEntity> out = new ArrayList<>();
+
+
+        try {
+            ResultSet rs = statement.executeQuery(query);
+
+            while (rs.next()){
+
+                try {
+                    out.add(resultSetToGameModeEntity(rs));
+                }
+                catch (SQLException e){
+                    //Means that a row of the sql table has incorrect value(s). Not returning null nor returning empty list so that the other
+                    //potentially read rows are correctly retrieved.
+                }
+
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
 
