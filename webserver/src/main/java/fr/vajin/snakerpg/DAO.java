@@ -1,6 +1,7 @@
 package fr.vajin.snakerpg;
 
-import fr.vajin.snakerpg.database.access.DataBaseAccess;
+import fr.vajin.snakerpg.database.DataBaseAccess;
+import fr.vajin.snakerpg.database.DataBaseAccessImpl;
 
 public class DAO {
 
@@ -13,7 +14,7 @@ public class DAO {
     }
 
     private DAO() {
-        accessor = new TestDataBaseAccess();
+        accessor = new DataBaseAccessImpl();
     }
 
     public DataBaseAccess getAccessor() {
