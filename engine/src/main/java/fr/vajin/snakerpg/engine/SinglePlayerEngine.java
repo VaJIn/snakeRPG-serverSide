@@ -64,11 +64,11 @@ public class SinglePlayerEngine extends AbstractGameEngine implements EntityObse
                 }
             }
 
-            //For every entity that changed, we check for collision with other entities
+            //For each entity that changed, we check for collisions with other entities
             for (DynamicEntity de : updatedEntities) {
                 List<Position> newPosition = de.getNewPositions();
                 for (Position p : newPosition) {
-                    //For every new position we check for collision
+                    //For each new position we check for collision
                     for (Entity ce : entityList) {
                         if (de != ce) {
                             if (ce.coverPosition(p)) {

@@ -48,7 +48,6 @@ public abstract class AbstractMatrix<E> implements Matrix<E> {
 
     /**
      * {@inheritDoc}
-     * <p>
      * This implementation use the {@link Matrix#get(int, int)} method.
      *
      * @param p the position of the element to retrieve
