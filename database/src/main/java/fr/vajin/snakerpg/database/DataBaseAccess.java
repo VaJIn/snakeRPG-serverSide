@@ -1,7 +1,7 @@
 package fr.vajin.snakerpg.database;
 
 import fr.vajin.snakerpg.database.entities.*;
-import fr.vajin.snakerpg.database.exceptions.*;
+
 
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -24,10 +24,14 @@ public interface DataBaseAccess {
     /**
      * Return all user matching the given Pseudo.
      *
-     * @param pseudo
+     * @param alias
      * @return a collection of all users matching the given pseudo
      */
-    Collection<UserEntity> getUserByAlias(String pseudo);
+    Collection<UserEntity> getUserByAlias(String alias);
+
+    UserEntity getUserByAccountName(String accountName);
+
+    UserEntity getUser(String accountName, String password);
 
     /**
      * Return the Snake matching the given id

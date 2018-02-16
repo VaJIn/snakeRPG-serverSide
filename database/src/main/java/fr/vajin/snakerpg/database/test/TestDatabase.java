@@ -58,11 +58,11 @@ public class TestDatabase implements DataBaseAccess{
     }
 
     @Override
-    public Collection<UserEntity> getUserByAlias(String pseudo) {
+    public Collection<UserEntity> getUserByAlias(String alias) {
 
         String query = "SELECT * " +
                 "FROM User " +
-                "WHERE alias= "+pseudo;
+                "WHERE alias= " + alias;
 
         Collection<UserEntity> out = new ArrayList<>();
 
@@ -87,6 +87,16 @@ public class TestDatabase implements DataBaseAccess{
 
         return out;
 
+    }
+
+    @Override
+    public UserEntity getUserByAccountName(String accountName) {
+        return null;
+    }
+
+    @Override
+    public UserEntity getUser(String accountName, String password) {
+        return null;
     }
 
     @Override
