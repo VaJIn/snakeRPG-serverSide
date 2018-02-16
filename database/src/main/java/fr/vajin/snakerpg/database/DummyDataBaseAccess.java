@@ -1,5 +1,6 @@
 package fr.vajin.snakerpg.database;
 
+import fr.vajin.snakerpg.database.access.DataBaseAccess;
 import fr.vajin.snakerpg.database.entities.*;
 
 import java.sql.Timestamp;

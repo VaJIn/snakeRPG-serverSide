@@ -1,7 +1,7 @@
-import fr.vajin.snakerpg.database.DataBaseAccess;
+import fr.vajin.snakerpg.database.access.DataBaseAccess;
+import fr.vajin.snakerpg.database.access.DataBaseAccessImpl;
 import fr.vajin.snakerpg.database.entities.GameParticipationEntity;
 import fr.vajin.snakerpg.database.entities.UserEntity;
-import fr.vajin.snakerpg.database.test.TestDatabase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,7 +11,7 @@ import java.util.List;
 
 public class TestDatabaseAccessJDBC {
 
-    DataBaseAccess dataBaseAccess = new TestDatabase();
+    DataBaseAccess dataBaseAccess = new DataBaseAccessImpl();
 
     @Test
     @DisplayName("Test getUserById")

@@ -1,6 +1,5 @@
-package fr.vajin.snakerpg.database.test;
+package fr.vajin.snakerpg.database.access;
 
-import fr.vajin.snakerpg.database.DataBaseAccess;
 import fr.vajin.snakerpg.database.entities.*;
 
 import java.io.File;
@@ -10,12 +9,12 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.*;
 
-public class TestDatabase implements DataBaseAccess{
+public class DataBaseAccessImpl implements DataBaseAccess{
 
     private static String db_adr = "jdbc:mysql://localhost:3306/dbsnake";
     private Statement statement;
 
-    public TestDatabase(){
+    public DataBaseAccessImpl(){
 
         Connection con = null;
         try {
@@ -42,6 +41,7 @@ public class TestDatabase implements DataBaseAccess{
                 "FROM User " +
                 "WHERE id="+id;
 
+        query+=";";
         UserEntity out = null;
 
         try {
@@ -66,6 +66,7 @@ public class TestDatabase implements DataBaseAccess{
                 "FROM User " +
                 "WHERE alias= " + alias;
 
+        query+=";";
         Collection<UserEntity> out = new ArrayList<>();
 
         try {
@@ -98,6 +99,7 @@ public class TestDatabase implements DataBaseAccess{
                 "FROM User " +
                 "Where accountName="+accountName;
 
+        query+=";";
         UserEntity out = null;
 
         try {
@@ -133,7 +135,7 @@ public class TestDatabase implements DataBaseAccess{
             e.printStackTrace();
         }
 
-
+        return out;
 
 
     }
@@ -145,6 +147,7 @@ public class TestDatabase implements DataBaseAccess{
                 "FROM Snake " +
                 "WHERE id="+id;
 
+        query+=";";
         SnakeEntity out = null;
 
         try {
@@ -175,6 +178,7 @@ public class TestDatabase implements DataBaseAccess{
                 "FROM Snake " +
                 "WHERE userId= "+userId;
 
+        query+=";";
         Collection<SnakeEntity> out = new ArrayList<>();
 
         try {
@@ -207,6 +211,7 @@ public class TestDatabase implements DataBaseAccess{
                 "FROM SnakeClass " +
                 "WHERE id="+snakeClassId;
 
+        query+=";";
         SnakeClassEntity out = null;
 
         try {
@@ -290,6 +295,7 @@ public class TestDatabase implements DataBaseAccess{
                 "FROM Game " +
                 "WHERE id="+id;
 
+        query+=";";
         GameEntity out = null;
 
         try {
@@ -382,6 +388,7 @@ public class TestDatabase implements DataBaseAccess{
                 "FROM Gamemode " +
                 "WHERE id="+id;
 
+        query+=";";
         GameModeEntity out = null;
 
         try {
@@ -407,6 +414,7 @@ public class TestDatabase implements DataBaseAccess{
                 "FROM Gamemode " +
                 "WHERE name="+name;
 
+        query+=";";
         GameModeEntity out = null;
 
         try {
@@ -428,6 +436,7 @@ public class TestDatabase implements DataBaseAccess{
         String query = "SELECT * " +
                 "FROM Gamemode";
 
+        query+=";";
         Collection<GameModeEntity> out = new ArrayList<>();
 
 
@@ -450,6 +459,8 @@ public class TestDatabase implements DataBaseAccess{
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        return out;
 
 
     }
