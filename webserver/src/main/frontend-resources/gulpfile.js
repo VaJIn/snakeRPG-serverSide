@@ -20,7 +20,7 @@ gulp.task('js-plugins', function () {
         './node_modules/jquery/jquery.min.js',
         './node_modules/bootstrap/dist/js/bootstrap.min.js',
         './node_modules/popper.js/dist/umd/popper.min.js',
-    ]).pipe(gulp.dest('../webapp/inc/js/plugins', {overwrite: true}));
+    ]).pipe(gulp.dest('../webapp/inc/js/ext', {overwrite: true}));
 });
 
 gulp.task('js', function () {
@@ -31,6 +31,6 @@ gulp.task('js', function () {
 
 gulp.task('default', ['sass']);
 
-gulp.task('build', ['sass', 'js-plugins']);
+gulp.task('build', ['js', 'sass', 'js-plugins']);
 
 gulp.task('all', ['sass', 'js-plugins']);

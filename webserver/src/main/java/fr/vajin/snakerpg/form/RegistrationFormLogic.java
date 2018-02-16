@@ -66,15 +66,19 @@ public class RegistrationFormLogic {
         }
     }
 
+    public static final String ERROR_NULL_PASSWORD = "Please enter and confirm your password";
+    public static final String ERROR_PASSWORDS_NOT_MATCHING = "The passwords does not match";
+    public static final String ERROR_PASSWORD_TOO_SHORT = "Your password must be at least " + MIN_PASSWORD_LENGTH + " characters long";
+
     public void passwordValidation(String password, String confirmation) throws Exception {
         if (password == null || confirmation == null) {
-            throw new Exception("Please enter and confirm your password");
+            throw new Exception(ERROR_NULL_PASSWORD);
         }
         if (!password.equals(confirmation)) {
-            throw new Exception("The passwords does not match");
+            throw new Exception(ERROR_PASSWORDS_NOT_MATCHING);
         }
         if (password.length() < MIN_PASSWORD_LENGTH) {
-            throw new Exception("Your password must be at least " + MIN_PASSWORD_LENGTH + " characters long");
+            throw new Exception(ERROR_PASSWORD_TOO_SHORT);
         }
     }
 }

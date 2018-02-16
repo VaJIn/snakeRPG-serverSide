@@ -42,6 +42,8 @@ public class RegistrationFormLogicTest {
     @Test
     @DisplayName("Invalid email")
     public void failingEmailTest() {
+
+
         //Null string
         Assertions.assertThrows(Exception.class, () -> registrationFormLogic.emailValidation(null), RegistrationFormLogic.NULL_EMAIL_ERROR_MSG);
 
@@ -52,6 +54,9 @@ public class RegistrationFormLogicTest {
 
         //Plain text
         Assertions.assertThrows(Exception.class, () -> registrationFormLogic.emailValidation("plaintext"), RegistrationFormLogic.INVALID_EMAIL_ERROR_MSG);
+
+        //Invalid domain
+        Assertions.assertThrows(Exception.class, () -> registrationFormLogic.emailValidation("email@123.123.123.123"), RegistrationFormLogic.INVALID_EMAIL_ERROR_MSG);
 
         //Don't need to test tons of email format since we use the Apache Commons Email validator, which is already tested
     }
