@@ -41,6 +41,16 @@ public class DummyDataBaseAccess implements DataBaseAccess {
     }
 
     @Override
+    public SnakeClassEntity getSnakeClassById(int snakeClassId) {
+        return null;
+    }
+
+    @Override
+    public Collection<GameParticipationEntity> getGameResultsByGame(GameEntity gameEntity, int sortBy) {
+        return getGameResultsByGame(gameEntity.getId(), sortBy);
+    }
+
+    @Override
     public UserEntity getUser(int id) {
         Optional<UserEntity> opt = userEntities.parallelStream().filter(userEntity -> userEntity.getId() == id).findFirst();
         if (opt.isPresent()) {
@@ -60,9 +70,9 @@ public class DummyDataBaseAccess implements DataBaseAccess {
     }
 
     @Override
-    public Collection<UserEntity> getUserByAlias(String pseudo) {
+    public Collection<UserEntity> getUserByAlias(String alias) {
         return userEntities.parallelStream()
-                .filter(userEntity -> userEntity.getAlias().equals(pseudo))
+                .filter(userEntity -> userEntity.getAlias().equals(alias))
                 .collect(Collectors.toSet());
     }
 
@@ -166,11 +176,6 @@ public class DummyDataBaseAccess implements DataBaseAccess {
                         .collect(Collectors.toList());
         sortGameParticipationEntityList(res, sortBy);
         return res;
-    }
-
-    @Override
-    public Collection<GameParticipationEntity> getGameResultsByGame(GameEntity gameEntity) {
-        return getGameResultsByGame(gameEntity.getId(), SORT_BY_SCORE_DESC);
     }
 
     @Override
