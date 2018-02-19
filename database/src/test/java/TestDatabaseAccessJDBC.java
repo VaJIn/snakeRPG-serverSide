@@ -1,5 +1,5 @@
-import fr.vajin.snakerpg.database.access.DataBaseAccess;
-import fr.vajin.snakerpg.database.access.DataBaseAccessImpl;
+import fr.vajin.snakerpg.database.DataBaseAccess;
+import fr.vajin.snakerpg.database.DataBaseAccessImpl;
 import fr.vajin.snakerpg.database.entities.GameParticipationEntity;
 import fr.vajin.snakerpg.database.entities.UserEntity;
 import org.junit.jupiter.api.Assertions;

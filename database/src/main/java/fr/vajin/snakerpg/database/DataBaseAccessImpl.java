@@ -1,4 +1,4 @@
-package fr.vajin.snakerpg.database.access;
+package fr.vajin.snakerpg.database;
 
 import fr.vajin.snakerpg.database.entities.*;
 
