@@ -1,11 +1,12 @@
 import fr.vajin.snakerpg.database.DAOFactory;
+import fr.vajin.snakerpg.database.daoimpl.DAOFactoryImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class DAOFactoryTest {
 
-    DAOFactory factory;
+    DAOFactory factory = new DAOFactoryImpl();
 
     @Test
     @DisplayName("Test DAOFactory:getUserDAO()")

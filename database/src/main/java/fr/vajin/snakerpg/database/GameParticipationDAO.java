@@ -11,5 +11,5 @@ public interface GameParticipationDAO {
 
     List<GameParticipationEntity> getGameResultsByGame(int gameId, int sortBy);
 
-    GameParticipationEntity getGameParticipationByIds(int gameId, int snakeId);
+    List<GameParticipationEntity> getGameParticipationByIds(int gameId, int snakeId, int sortBy);
 }
