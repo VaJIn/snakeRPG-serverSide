@@ -55,7 +55,7 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
 
     @Override
     public List<GameParticipationEntity> getGameResultsByGame(int gameId, int sortBy) {
-        String query = "SELECT gp.idGame, gp.idSnake, gp.score, gp.killCount, gp.deathCount, g.id, g.startTime, g.endTime "
+        String query = "SELECT gp.idGame, gp.idSnake, gp.score, gp.killCount, gp.deathCount, g.id, g.startTime, g.endTime, g.idGameMode "
                 +"FROM GameParticipation gp "
                 +"JOIN (SELECT id, startTime, endTime, idGameMode FROM Game WHERE id="+gameId+") as g "
                 +"ON gp.idGame=g.id "
@@ -67,7 +67,7 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
 
     @Override
     public List<GameParticipationEntity> getGameParticipationByIds(int gameId, int snakeId, int sortBy) {
-        String query = "SELECT gp.idGame, gp.idSnake, gp.score, gp.killCount, gp.deathCount, g.id, g.startTime, g.endTime "
+        String query = "SELECT gp.idGame, gp.idSnake, gp.score, gp.killCount, gp.deathCount, g.id, g.startTime, g.endTime, g.idGameMode "
                 +"FROM GameParticipation gp "
                 +"JOIN (SELECT id, startTime, endTime, idGameMode FROM Game WHERE id="+gameId+") as g "
                 +"ON gp.idGame=g.id "

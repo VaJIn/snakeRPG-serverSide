@@ -51,7 +51,10 @@ public class GameDAOImpl implements GameDAO {
 
         try {
             ResultSet rs = statement.executeQuery(query);
-            out = resultSetToGameEntity(rs);
+            if(rs.next()){
+                out = resultSetToGameEntity(rs);
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
             out = null;
@@ -66,7 +69,7 @@ public class GameDAOImpl implements GameDAO {
                 +"FROM Game g "
                 +"JOIN (SELECT * FROM GameMode) as gm "
                 +"ON g.idGameMode=gm.id "
-                +"WHERE (startTime>"+earliest+") AND (startTime<"+latest+") "
+                +"WHERE (startTime>'"+earliest+"') AND (startTime<'"+latest+"') "
                 +sortBy(sortBy);
 
         ResultSet rs = null;

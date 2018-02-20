@@ -1,8 +1,11 @@
 import fr.vajin.snakerpg.database.UserDAO;
 import fr.vajin.snakerpg.database.daoimpl.UserDAOImpl;
+import fr.vajin.snakerpg.database.entities.UserEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.Collection;
 
 public class UserDAOTest {
 
@@ -27,7 +30,9 @@ public class UserDAOTest {
     @Test
     @DisplayName("Test UserDAO getUserByAlias")
     void testGetUserByAlias(){
-        Assertions.assertNull(userDAO.getUserByAlias(""));
+        Collection<UserEntity> users = userDAO.getUserByAlias("");
+        Assertions.assertNotNull(users);
+        Assertions.assertEquals(0,users.size());
         Assertions.assertNotNull(userDAO.getUserByAlias("leBGdu72"));
     }
 

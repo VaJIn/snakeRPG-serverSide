@@ -85,7 +85,7 @@ public class UserDAOImpl implements UserDAO {
     public Collection<UserEntity> getUserByAlias(String alias) {
         String query = "SELECT * " +
                 "FROM User " +
-                "WHERE alias= " + alias;
+                "WHERE alias='"+alias+"'";
 
         query+=";";
         Collection<UserEntity> out = new ArrayList<>();
@@ -95,7 +95,9 @@ public class UserDAOImpl implements UserDAO {
 
             while (rs.next()){
                 try{
-                    out.add(resultSetToUserEntity(rs));
+                    UserEntity user = resultSetToUserEntity(rs);
+                    System.out.println(user);
+                    out.add(user);
                 }
                 catch (SQLException e){
                     //Means that a row of the sql table has incorrect value(s). Not returning null nor returning empty list so that the other
