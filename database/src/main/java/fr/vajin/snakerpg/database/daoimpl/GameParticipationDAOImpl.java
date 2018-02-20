@@ -115,9 +115,9 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
         //TODO à vérifier aussi
         GameModeDAO gameModeDAO = new GameModeDAOImpl();
         SnakeDAO snakeDAO = new SnakeDAOImpl();
-        GameEntity g = new GameEntity(idGame, startTime, endTime, gameModeDAO.getGameMode(idGameMode));
+        GameEntity g = new GameEntity(idGame, startTime, endTime, gameModeDAO.getGameMode(idGameMode).get());
 
-        return new GameParticipationEntity(idGame, idSnake, score, killCount, deathCount, g, snakeDAO.getSnakeById(idSnake));
+        return new GameParticipationEntity(idGame, idSnake, score, killCount, deathCount, g, snakeDAO.getSnakeById(idSnake).get());
 
     }
 

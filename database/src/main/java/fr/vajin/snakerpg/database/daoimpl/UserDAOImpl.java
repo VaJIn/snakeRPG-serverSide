@@ -8,10 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.InvalidPropertiesFormatException;
-import java.util.Properties;
+import java.util.*;
 
 public class UserDAOImpl implements UserDAO {
 
@@ -37,7 +34,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public UserEntity getUser(int id) {
+    public Optional<UserEntity> getUser(int id) {
         String query = "SELECT * " +
                 "FROM User " +
                 "WHERE id="+id;
@@ -55,12 +52,11 @@ public class UserDAOImpl implements UserDAO {
         }
 
 
-
-        return out;
+        return Optional.ofNullable(out);
     }
 
     @Override
-    public UserEntity getUser(String accountName, String hash) {
+    public Optional<UserEntity> getUser(String accountName, String hash) {
         String query = "SELECT * " +
                 "FROM User " +
                 "WHERE accountName='"+accountName+"' AND password='"+hash+"'";
@@ -78,7 +74,7 @@ public class UserDAOImpl implements UserDAO {
             e.printStackTrace();
         }
 
-        return out;
+        return Optional.ofNullable(out);
     }
 
     @Override
@@ -115,7 +111,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public UserEntity getUserByAccountName(String accountName) {
+    public Optional<UserEntity> getUserByAccountName(String accountName) {
 
         String query = "SELECT * " +
                 "FROM User " +
@@ -133,7 +129,7 @@ public class UserDAOImpl implements UserDAO {
             e.printStackTrace();
         }
 
-        return out;
+        return Optional.ofNullable(out);
     }
 
     /**

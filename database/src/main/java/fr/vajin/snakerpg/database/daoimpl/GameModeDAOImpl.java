@@ -8,10 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.InvalidPropertiesFormatException;
-import java.util.Properties;
+import java.util.*;
 
 public class GameModeDAOImpl implements GameModeDAO {
 
@@ -69,7 +66,7 @@ public class GameModeDAOImpl implements GameModeDAO {
     }
 
     @Override
-    public GameModeEntity getGameMode(int id) {
+    public Optional<GameModeEntity> getGameMode(int id) {
         String query = "SELECT * " +
                 "FROM GameMode " +
                 "WHERE id="+id;
@@ -88,11 +85,11 @@ public class GameModeDAOImpl implements GameModeDAO {
             e.printStackTrace();
         }
 
-        return out;
+        return Optional.ofNullable(out);
     }
 
     @Override
-    public GameModeEntity getGameMode(String name) {
+    public Optional<GameModeEntity> getGameMode(String name) {
         String query = "SELECT * " +
                 "FROM GameMode " +
                 "WHERE name='"+name+"'";
@@ -115,7 +112,7 @@ public class GameModeDAOImpl implements GameModeDAO {
 
         }
 
-        return out;
+        return Optional.ofNullable(out);
     }
 
     private GameModeEntity resultSetToGameModeEntity(ResultSet rs) throws SQLException {

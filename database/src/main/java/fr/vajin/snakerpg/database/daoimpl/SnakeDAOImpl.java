@@ -3,6 +3,7 @@ package fr.vajin.snakerpg.database.daoimpl;
 import fr.vajin.snakerpg.database.SnakeClassDAO;
 import fr.vajin.snakerpg.database.SnakeDAO;
 import fr.vajin.snakerpg.database.UserDAO;
+import fr.vajin.snakerpg.database.entities.SnakeClassEntity;
 import fr.vajin.snakerpg.database.entities.SnakeEntity;
 
 import java.io.File;
@@ -10,10 +11,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.InvalidPropertiesFormatException;
-import java.util.Properties;
+import java.util.*;
 
 public class SnakeDAOImpl implements SnakeDAO {
 
@@ -39,7 +37,7 @@ public class SnakeDAOImpl implements SnakeDAO {
     }
 
     @Override
-    public SnakeEntity getSnakeById(int id) {
+    public Optional<SnakeEntity> getSnakeById(int id) {
         String query = "SELECT *" +
                 "FROM Snake " +
                 "WHERE id="+id;
@@ -58,7 +56,7 @@ public class SnakeDAOImpl implements SnakeDAO {
             return null;
         }
 
-        return out;
+        return Optional.ofNullable(out);
     }
 
     @Override
@@ -104,7 +102,6 @@ public class SnakeDAOImpl implements SnakeDAO {
         //TODO à vérifier aussi
         UserDAO userDAO = new UserDAOImpl();
         SnakeClassDAO snakeClassDAO = new SnakeClassDAOImpl();
-        return new SnakeEntity(id, name, exp, info, userDAO.getUser(userId), snakeClassDAO.getSnakeClassById(idSnakeClass));
-
+        return new SnakeEntity(id, name, exp, info, userDAO.getUser(userId).get(), snakeClassDAO.getSnakeClassById(idSnakeClass).orElse(new SnakeClassEntity()));
     }
 }

@@ -3,6 +3,7 @@ package fr.vajin.snakerpg.database;
 import fr.vajin.snakerpg.database.entities.GameModeEntity;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public interface GameModeDAO {
 
@@ -17,7 +18,7 @@ public interface GameModeDAO {
      * @param id the id of the gamemode to retrieve.
      * @return the gamemode with the given id, or null if none is found.
      */
-    GameModeEntity getGameMode(int id);
+    Optional<GameModeEntity> getGameMode(int id);
 
     /**
      * Retrieve the gamemode with the given name, or null if none is found.
@@ -25,5 +26,5 @@ public interface GameModeDAO {
      * @param name the name of the gamemode to retrieve.
      * @return the gamemode with the given name, or null if none is found.
      */
-    GameModeEntity getGameMode(String name);
+    Optional<GameModeEntity> getGameMode(String name);
 }

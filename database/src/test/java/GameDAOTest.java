@@ -1,3 +1,4 @@
+import fr.vajin.snakerpg.database.DAOFactory;
 import fr.vajin.snakerpg.database.GameDAO;
 import fr.vajin.snakerpg.database.daoimpl.GameDAOImpl;
 import fr.vajin.snakerpg.database.entities.GameEntity;
@@ -17,19 +18,19 @@ public class GameDAOTest {
     @DisplayName("Test GameDAO getGame(int id)")
     void testGetGame(){
 
-        Assertions.assertNull(gameDAO.getGame(-1));
-        Assertions.assertNotNull(gameDAO.getGame(1));
+        Assertions.assertFalse(gameDAO.getGame(-1).isPresent());
+        Assertions.assertTrue(gameDAO.getGame(1).isPresent());
     }
 
     @Test
     @DisplayName("Test GameDAO getGameByDate")
     void testGetGameByDate(){
 
-        Collection<GameEntity> games = gameDAO.getGameByDate(null,null,0);
+        Collection<GameEntity> games = gameDAO.getGameByDate(null, null, DAOFactory.SORT_BY_EARLIEST_DATE);
         Assertions.assertNotNull(games);
         Assertions.assertEquals(0,games.size());
-        Assertions.assertNotNull(gameDAO.getGameByDate(new Timestamp(0),new Timestamp(0),0));
 
+        Assertions.assertNotNull(gameDAO.getGameByDate(new Timestamp(0),new Timestamp(0),0));
 
     }
 

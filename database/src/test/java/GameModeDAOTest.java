@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 public class GameModeDAOTest {
 
     GameModeDAO gameModeDAO = new GameModeDAOImpl();
+
     @Test
     @DisplayName("Test GameModeDAO getAllGameMode")
     void testGetAllGameMode(){
@@ -16,15 +17,15 @@ public class GameModeDAOTest {
     @Test
     @DisplayName("Test GameModeDAO getGameMode(int id)")
     void testGetGameModeById(){
-        Assertions.assertNull(gameModeDAO.getGameMode(-1));
-        Assertions.assertNotNull(gameModeDAO.getGameMode(1));
+        Assertions.assertFalse(gameModeDAO.getGameMode(-1).isPresent());
+        Assertions.assertTrue(gameModeDAO.getGameMode(1).isPresent());
     }
 
     @Test
     @DisplayName("Test GameModeDAO getGameMode(String name)")
     void testGameModeByName(){
-        Assertions.assertNull(gameModeDAO.getGameMode(""));
-        Assertions.assertNotNull(gameModeDAO.getGameMode("defaultGame"));
+        Assertions.assertFalse(gameModeDAO.getGameMode("").isPresent());
+        Assertions.assertTrue(gameModeDAO.getGameMode("defaultGame").isPresent());
     }
 
 }

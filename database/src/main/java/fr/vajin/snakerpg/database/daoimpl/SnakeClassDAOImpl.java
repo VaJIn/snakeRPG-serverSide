@@ -1,7 +1,6 @@
 package fr.vajin.snakerpg.database.daoimpl;
 
 import fr.vajin.snakerpg.database.SnakeClassDAO;
-import fr.vajin.snakerpg.database.entities.GameModeEntity;
 import fr.vajin.snakerpg.database.entities.SnakeClassEntity;
 
 import java.io.File;
@@ -9,10 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.InvalidPropertiesFormatException;
-import java.util.Properties;
+import java.util.*;
 
 public class SnakeClassDAOImpl implements SnakeClassDAO {
 
@@ -38,7 +34,7 @@ public class SnakeClassDAOImpl implements SnakeClassDAO {
     }
 
     @Override
-    public SnakeClassEntity getSnakeClassById(int snakeClassId) {
+    public Optional<SnakeClassEntity> getSnakeClassById(int snakeClassId) {
         String query = "SELECT * " +
                 "FROM SnakeClass " +
                 "WHERE id="+snakeClassId;
@@ -58,7 +54,7 @@ public class SnakeClassDAOImpl implements SnakeClassDAO {
             out = null;
         }
 
-        return out;
+        return Optional.ofNullable(out);
     }
 
     @Override

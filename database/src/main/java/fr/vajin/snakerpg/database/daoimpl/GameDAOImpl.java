@@ -11,10 +11,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.InvalidPropertiesFormatException;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 
 public class GameDAOImpl implements GameDAO {
@@ -41,7 +38,7 @@ public class GameDAOImpl implements GameDAO {
     }
 
     @Override
-    public GameEntity getGame(int id) {
+    public Optional<GameEntity> getGame(int id) {
         String query = "SELECT * " +
                 "FROM Game " +
                 "WHERE id="+id;
@@ -60,7 +57,7 @@ public class GameDAOImpl implements GameDAO {
             out = null;
         }
 
-        return out;
+        return Optional.ofNullable(out);
     }
 
     @Override
@@ -144,8 +141,10 @@ public class GameDAOImpl implements GameDAO {
         //TODO à vérifier
         GameModeDAO gameModeDAO = new GameModeDAOImpl();
 
-        return new GameEntity(id, startTime, endTime, gameModeDAO.getGameMode(idGameMode));
+        //If it's not present there is a problem with the database
+        GameModeEntity gameModeEntity = gameModeDAO.getGameMode(idGameMode).get();
 
+        return new GameEntity(id, startTime, endTime, gameModeEntity);
     }
 
     private String sortBy(int sortBy){
@@ -159,7 +158,6 @@ public class GameDAOImpl implements GameDAO {
             case DAOFactory.SORT_BY_SCORE_DESC:
                 return "ORDER BY score DESC;";
         }
-
         return ";";
     }
 }

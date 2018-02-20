@@ -14,17 +14,17 @@ public class UserDAOTest {
     @Test
     @DisplayName("Test UserDAO getUser(int id)")
     void testGetUserById(){
-        Assertions.assertNull(userDAO.getUser(-1));
-        Assertions.assertNotNull(userDAO.getUser(1));
+        Assertions.assertFalse(userDAO.getUser(-1).isPresent());
+        Assertions.assertTrue(userDAO.getUser(1).isPresent());
     }
 
     @Test
     @DisplayName("Test UserDAO getUser(String accountName,String hash)")
     void testGetUserByAccountNameAndHash(){
-        Assertions.assertNull(userDAO.getUser("",""));
+        Assertions.assertFalse(userDAO.getUser("", "").isPresent());
 
         //TODO modifier le password en hash
-        Assertions.assertNotNull(userDAO.getUser("mistermuscu","ABABABAB"));
+        Assertions.assertTrue(userDAO.getUser("mistermuscu", "ABABABAB").isPresent());
     }
 
     @Test
@@ -33,13 +33,14 @@ public class UserDAOTest {
         Collection<UserEntity> users = userDAO.getUserByAlias("");
         Assertions.assertNotNull(users);
         Assertions.assertEquals(0,users.size());
+
         Assertions.assertNotNull(userDAO.getUserByAlias("leBGdu72"));
     }
 
     @Test
     @DisplayName("Test UserDAO getUserByAccountName")
     void testGetUserByAccountName(){
-        Assertions.assertNull(userDAO.getUserByAccountName(""));
-        Assertions.assertNotNull(userDAO.getUserByAccountName("mistermuscu"));
+        Assertions.assertFalse(userDAO.getUserByAccountName("").isPresent());
+        Assertions.assertTrue(userDAO.getUserByAccountName("mistermuscu").isPresent());
     }
 }

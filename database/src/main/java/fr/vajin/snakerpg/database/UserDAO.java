@@ -3,14 +3,15 @@ package fr.vajin.snakerpg.database;
 import fr.vajin.snakerpg.database.entities.UserEntity;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public interface UserDAO {
 
-    UserEntity getUser(int id);
+    Optional<UserEntity> getUser(int id);
 
-    UserEntity getUser(String accountName, String hash);
+    Optional<UserEntity> getUser(String accountName, String hash);
 
     Collection<UserEntity> getUserByAlias(String alias);
 
-    UserEntity getUserByAccountName(String accountName);
+    Optional<UserEntity> getUserByAccountName(String accountName);
 }

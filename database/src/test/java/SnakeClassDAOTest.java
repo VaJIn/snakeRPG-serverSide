@@ -11,8 +11,8 @@ public class SnakeClassDAOTest {
     @Test
     @DisplayName("Test SnakeClassDAO getSnakeClassById")
     void testGetSnakeClassById(){
-        Assertions.assertNull(snakeClassDAO.getSnakeClassById(-1));
-        Assertions.assertNotNull(snakeClassDAO.getSnakeClassById(1));
+        Assertions.assertFalse(snakeClassDAO.getSnakeClassById(-1).isPresent());
+        Assertions.assertTrue(snakeClassDAO.getSnakeClassById(1).isPresent());
     }
 
     @Test

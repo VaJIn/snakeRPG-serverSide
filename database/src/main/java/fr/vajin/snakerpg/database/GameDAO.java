@@ -5,10 +5,11 @@ import fr.vajin.snakerpg.database.entities.GameModeEntity;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 public interface GameDAO {
 
-    GameEntity getGame(int id);
+    Optional<GameEntity> getGame(int id);
 
     List<GameEntity> getGameByDate(Timestamp earliest, Timestamp latest, int sortBy);
 
