@@ -16,15 +16,10 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
 
     private DAOFactory daoFactory;
 
-    private Statement statement;
 
     public GameParticipationDAOImpl(DAOFactory daoFactory){
         this.daoFactory = daoFactory;
-        try {
-            statement = this.daoFactory.getConnection().createStatement();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
 
     }
 
@@ -69,6 +64,9 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
     private List<GameParticipationEntity> gameParticipationQuery(String query){
         List<GameParticipationEntity> gameResults = new ArrayList<GameParticipationEntity>();
         try {
+            Connection connection = daoFactory.getConnection();
+            Statement statement = connection.createStatement();
+
             ResultSet rs = statement.executeQuery(query);
             while (rs.next()) {
 
@@ -82,6 +80,8 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
                 }
 
             }
+
+            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

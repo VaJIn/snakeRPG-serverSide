@@ -10,16 +10,10 @@ import java.util.*;
 public class GameModeDAOImpl implements GameModeDAO {
 
     private DAOFactory daoFactory;
-    private Statement statement;
 
     public GameModeDAOImpl(DAOFactory daoFactory){
         this.daoFactory = daoFactory;
 
-        try {
-            statement = this.daoFactory.getConnection().createStatement();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -32,6 +26,9 @@ public class GameModeDAOImpl implements GameModeDAO {
 
 
         try {
+            Connection connection = daoFactory.getConnection();
+            Statement statement = connection.createStatement();
+
             ResultSet rs = statement.executeQuery(query);
 
             while (rs.next()){
@@ -46,7 +43,7 @@ public class GameModeDAOImpl implements GameModeDAO {
 
             }
 
-
+            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -64,12 +61,16 @@ public class GameModeDAOImpl implements GameModeDAO {
         GameModeEntity out = null;
 
         try {
+            Connection connection = daoFactory.getConnection();
+            Statement statement = connection.createStatement();
+
             ResultSet rs = statement.executeQuery(query);
 
             if (rs.next()){
                 out = resultSetToGameModeEntity(rs);
             }
 
+            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -88,12 +89,16 @@ public class GameModeDAOImpl implements GameModeDAO {
         GameModeEntity out = null;
 
         try {
+            Connection connection = daoFactory.getConnection();
+            Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(query);
 
             if(rs.next()){
 
                 out = resultSetToGameModeEntity(rs);
             }
+
+            connection.close();
 
         } catch (SQLException e) {
             e.printStackTrace();

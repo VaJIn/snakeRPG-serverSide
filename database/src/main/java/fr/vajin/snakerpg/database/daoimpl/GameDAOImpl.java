@@ -16,15 +16,9 @@ import java.util.*;
 public class GameDAOImpl implements GameDAO {
 
     private DAOFactory daoFactory;
-    private Statement statement;
 
     public GameDAOImpl(DAOFactory daoFactory) {
         this.daoFactory = daoFactory;
-        try {
-            statement = this.daoFactory.getConnection().createStatement();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
     }
 
@@ -32,6 +26,9 @@ public class GameDAOImpl implements GameDAO {
     public void addGame(GameEntity gameEntity) throws SQLException {
         String updateGame = "INSERT INTO Game (startTime, endTime, idGameMode)" +
                 "VALUES ('"+gameEntity.getStartTime()+"', '"+gameEntity.getEndTime()+"', "+gameEntity.getGameMode().getId()+");";
+
+        Connection connection = daoFactory.getConnection();
+        Statement statement = connection.createStatement();
         statement.addBatch(updateGame);
 
 
@@ -47,6 +44,7 @@ public class GameDAOImpl implements GameDAO {
 
         statement.executeBatch();
 
+        connection.close();
 
     }
 
@@ -57,13 +55,19 @@ public class GameDAOImpl implements GameDAO {
                 "WHERE id="+id;
 
         query+=";";
+
         GameEntity out = null;
 
         try {
+            Connection connection = daoFactory.getConnection();
+            Statement statement = connection.createStatement();
+
             ResultSet rs = statement.executeQuery(query);
             if(rs.next()){
                 out = resultSetToGameEntity(rs);
             }
+
+            connection.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -112,6 +116,9 @@ public class GameDAOImpl implements GameDAO {
         ResultSet rs = null;
         List<GameEntity> games= new ArrayList<GameEntity>();
         try {
+            Connection connection = daoFactory.getConnection();
+            Statement statement = connection.createStatement();
+
             rs = statement.executeQuery(query);
             while (rs.next()) {
 
@@ -129,6 +136,8 @@ public class GameDAOImpl implements GameDAO {
                 }
 
             }
+
+            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -145,6 +154,9 @@ public class GameDAOImpl implements GameDAO {
         ResultSet rs = null;
         List<GameEntity> games= new ArrayList<GameEntity>();
         try {
+            Connection connection = daoFactory.getConnection();
+            Statement statement = connection.createStatement();
+
             rs = statement.executeQuery(query);
             while (rs.next()) {
 
@@ -162,6 +174,8 @@ public class GameDAOImpl implements GameDAO {
                 }
 
             }
+
+            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -1,4 +1,6 @@
+import fr.vajin.snakerpg.database.DAOFactory;
 import fr.vajin.snakerpg.database.GameModeDAO;
+import fr.vajin.snakerpg.database.daoimpl.DAOFactoryImpl;
 import fr.vajin.snakerpg.database.daoimpl.GameModeDAOImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -6,7 +8,8 @@ import org.junit.jupiter.api.Test;
 
 public class GameModeDAOTest {
 
-    GameModeDAO gameModeDAO = new GameModeDAOImpl();
+    DAOFactory daoFactory = new DAOFactoryImpl();
+    GameModeDAO gameModeDAO = new GameModeDAOImpl(daoFactory);
 
     @Test
     @DisplayName("Test GameModeDAO getAllGameMode")

@@ -9,16 +9,11 @@ import java.util.*;
 
 public class UserDAOImpl implements UserDAO {
 
-    private Statement statement;
     private DAOFactory daoFactory;
 
     public UserDAOImpl(DAOFactory daoFactory){
         this.daoFactory = daoFactory;
-        try {
-            statement = this.daoFactory.getConnection().createStatement();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
 
     }
 
@@ -27,9 +22,11 @@ public class UserDAOImpl implements UserDAO {
         String updateUser = "INSERT INTO User (alias, email, accountName, password) "+
                 "VALUES ("+userEntity.getAlias()+", "+userEntity.getEmail()+", "+userEntity.getAccountName()+", "+userEntity.getPassword()+");";
 
+        Connection connection = daoFactory.getConnection();
+        Statement statement = connection.createStatement();
         statement.addBatch(updateUser);
-
         statement.executeBatch();
+        connection.close();
 
 
     }
@@ -44,10 +41,13 @@ public class UserDAOImpl implements UserDAO {
         UserEntity out = null;
 
         try {
+            Connection connection = daoFactory.getConnection();
+            Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(query);
             if (rs.next()) {
                 out = resultSetToUserEntity(rs);
             }
+            connection.close();
         } catch (SQLException e) {
             return null;
         }
@@ -66,10 +66,13 @@ public class UserDAOImpl implements UserDAO {
         UserEntity out = null;
 
         try{
+            Connection connection = daoFactory.getConnection();
+            Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(query);
             if (rs.next()){
                 out = resultSetToUserEntity(rs);
             }
+            connection.close();
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -88,6 +91,8 @@ public class UserDAOImpl implements UserDAO {
         Collection<UserEntity> out = new ArrayList<>();
 
         try {
+            Connection connection = daoFactory.getConnection();
+            Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(query);
 
             while (rs.next()){
@@ -103,6 +108,7 @@ public class UserDAOImpl implements UserDAO {
                 }
 
             }
+            connection.close();
 
         } catch (SQLException e) {
             return null; //Only if the query is not well formed
@@ -122,10 +128,13 @@ public class UserDAOImpl implements UserDAO {
         UserEntity out = null;
 
         try {
+            Connection connection = daoFactory.getConnection();
+            Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(query);
             if (rs.next()){
                 out = resultSetToUserEntity(rs);
             }
+            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

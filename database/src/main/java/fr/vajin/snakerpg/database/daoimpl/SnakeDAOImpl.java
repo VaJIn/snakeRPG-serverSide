@@ -13,15 +13,10 @@ import java.util.*;
 public class SnakeDAOImpl implements SnakeDAO {
 
     private DAOFactory daoFactory;
-    private Statement statement;
 
     public SnakeDAOImpl(DAOFactory daoFactory){
         this.daoFactory = daoFactory;
-        try {
-            statement = this.daoFactory.getConnection().createStatement();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
     }
 
     @Override
@@ -29,10 +24,12 @@ public class SnakeDAOImpl implements SnakeDAO {
         String updateSnake = "INSERT INTO Snake (userID, name, exp, info, idSnakeClass)" +
                 "VALUES ('"+snakeEntity.getUser().getId()+"', '"+snakeEntity.getName()+"', "+snakeEntity.getExpPoint()+"+" +
                 ", "+snakeEntity.getInfo()+", "+snakeEntity.getSnakeClass().getId()+");";
+
+        Connection connection = daoFactory.getConnection();
+        Statement statement = connection.createStatement();
         statement.addBatch(updateSnake);
-
-
         statement.executeBatch();
+        connection.close();
     }
 
     @Override
@@ -45,12 +42,14 @@ public class SnakeDAOImpl implements SnakeDAO {
         SnakeEntity out = null;
 
         try {
+            Connection connection = daoFactory.getConnection();
+            Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(query);
 
             if (rs.next()){
                 out = resultSetToSnakeEntity(rs);
             }
-
+            connection.close();
         } catch (SQLException e) {
             return null;
         }
@@ -68,6 +67,9 @@ public class SnakeDAOImpl implements SnakeDAO {
         Collection<SnakeEntity> out = new ArrayList<>();
 
         try {
+            Connection connection = daoFactory.getConnection();
+            Statement statement = connection.createStatement();
+
             ResultSet rs = statement.executeQuery(query);
 
             while(rs.next()){
@@ -80,7 +82,7 @@ public class SnakeDAOImpl implements SnakeDAO {
                     e.printStackTrace();
                 }
             }
-
+            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -98,7 +100,6 @@ public class SnakeDAOImpl implements SnakeDAO {
         byte[] info = rs.getBytes("info");
         int idSnakeClass = rs.getInt("idSnakeClass");
 
-        //TODO à vérifier aussi
         UserDAO userDAO = this.daoFactory.getUserDAO();
         SnakeClassDAO snakeClassDAO = this.daoFactory.getSnakeClassDAO();
         return new SnakeEntity(id, name, exp, info, userDAO.getUser(userId).get(), snakeClassDAO.getSnakeClassById(idSnakeClass).orElse(new SnakeClassEntity()));

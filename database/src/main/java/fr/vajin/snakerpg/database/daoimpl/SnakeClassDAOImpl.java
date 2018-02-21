@@ -11,15 +11,9 @@ public class SnakeClassDAOImpl implements SnakeClassDAO {
 
     private DAOFactory daoFactory;
 
-    private Statement statement;
-
     public SnakeClassDAOImpl(DAOFactory daoFactory){
         this.daoFactory = daoFactory;
-        try {
-            statement = this.daoFactory.getConnection().createStatement();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
 
     }
 
@@ -33,12 +27,15 @@ public class SnakeClassDAOImpl implements SnakeClassDAO {
         SnakeClassEntity out = null;
 
         try {
+            Connection connection = daoFactory.getConnection();
+            Statement statement = connection.createStatement();
+
             ResultSet rs = statement.executeQuery(query);
 
             if (rs.next()){
                 out = resultSetToSnakeClassEntity(rs);
             }
-
+            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
             out = null;
@@ -56,6 +53,8 @@ public class SnakeClassDAOImpl implements SnakeClassDAO {
 
 
         try {
+            Connection connection = daoFactory.getConnection();
+            Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(query);
 
             while (rs.next()){
@@ -70,7 +69,7 @@ public class SnakeClassDAOImpl implements SnakeClassDAO {
 
             }
 
-
+            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -1,6 +1,7 @@
 package fr.vajin.snakerpg.database;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 public interface DAOFactory {
 
@@ -22,5 +23,5 @@ public interface DAOFactory {
 
     SnakeDAO getSnakeDAO();
 
-    Connection getConnection();
+    Connection getConnection() throws SQLException;
 }
