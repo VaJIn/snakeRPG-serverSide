@@ -16,7 +16,7 @@ public class DAOFactoryImpl implements DAOFactory{
     }
 
     @Override
-    public GameModeDAO getGameModelDAO() {
+    public GameModeDAO getGameModeDAO() {
         return new GameModeDAOImpl();
     }
 

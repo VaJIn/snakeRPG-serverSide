@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface GameDAO {
-
+    
     Optional<GameEntity> getGame(int id);
 
     List<GameEntity> getGameByDate(Timestamp earliest, Timestamp latest, int sortBy);

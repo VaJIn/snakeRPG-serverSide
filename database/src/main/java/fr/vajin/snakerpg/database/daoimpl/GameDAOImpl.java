@@ -60,13 +60,28 @@ public class GameDAOImpl implements GameDAO {
         return Optional.ofNullable(out);
     }
 
+
+    //Si earliest ou latest est null, alors on ignore la condition
     @Override
     public List<GameEntity> getGameByDate(Timestamp earliest, Timestamp latest, int sortBy) {
+        String condition = "";
+        if (earliest != null) {
+            condition = "WHERE (startime > '" + earliest + "')";
+        }
+        if (latest != null) {
+            if (condition.equals("")) {
+                condition = "WHERE";
+            } else {
+                condition += " AND";
+            }
+            condition += " (startime < '" + latest + "')";
+        }
+
         String query = "SELECT g.id, g.startTime, g.endTime, g.idGameMode, gm.name, gm.minPlayer, gm.maxPlayer "
                 +"FROM Game g "
                 +"JOIN (SELECT * FROM GameMode) as gm "
                 +"ON g.idGameMode=gm.id "
-                +"WHERE (startTime>'"+earliest+"') AND (startTime<'"+latest+"') "
+                + condition
                 +sortBy(sortBy);
 
         ResultSet rs = null;
@@ -83,8 +98,7 @@ public class GameDAOImpl implements GameDAO {
                     GameModeEntity gm = new GameModeEntity(rs.getInt("idGameMode"), rs.getString("name"), rs.getInt("minPlayer"), rs.getInt("maxPlayer"));
                     g.setGameMode(gm);
                     games.add(g);
-                }
-                catch (SQLException e){
+                } catch (SQLException e){
                     //Means that a row of the sql table has incorrect value(s). Not returning null nor returning empty list so that the other
                     //potentially read rows are correctly retrieved.
                 }
@@ -138,8 +152,10 @@ public class GameDAOImpl implements GameDAO {
         int idGameMode = rs.getInt("idGameMode");
 
 
-        //TODO à vérifier
-        GameModeDAO gameModeDAO = new GameModeDAOImpl();
+        //Paulin 21/02 -> passage par la factory
+//        GameModeDAO gameModeDAO = new GameModeDAOImpl(); //Useless
+        DAOFactory factory = new DAOFactoryImpl();
+        GameModeDAO gameModeDAO = factory.getGameModeDAO();
 
         //If it's not present there is a problem with the database
         GameModeEntity gameModeEntity = gameModeDAO.getGameMode(idGameMode).get();
@@ -147,6 +163,7 @@ public class GameDAOImpl implements GameDAO {
         return new GameEntity(id, startTime, endTime, gameModeEntity);
     }
 
+    //TODO TEST POUR CETTE FONCTION
     private String sortBy(int sortBy){
         switch (sortBy){
             case DAOFactory.SORT_BY_EARLIEST_DATE:

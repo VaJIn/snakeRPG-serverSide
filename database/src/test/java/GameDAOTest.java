@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.Iterator;
 
 public class GameDAOTest {
 
@@ -28,10 +29,16 @@ public class GameDAOTest {
 
         Collection<GameEntity> games = gameDAO.getGameByDate(null, null, DAOFactory.SORT_BY_EARLIEST_DATE);
         Assertions.assertNotNull(games);
-        Assertions.assertEquals(0,games.size());
+        Assertions.assertEquals(3, games.size()); //3 games in test database
 
-        Assertions.assertNotNull(gameDAO.getGameByDate(new Timestamp(0),new Timestamp(0),0));
-
+        GameEntity act, pred;
+        Iterator<GameEntity> it = games.iterator();
+        act = it.next();
+        while (it.hasNext()) {
+            pred = act;
+            act = it.next();
+            Assertions.assertTrue(pred.getStartTime().compareTo(act.getStartTime()) <= 0);
+        }
     }
 
     @Test

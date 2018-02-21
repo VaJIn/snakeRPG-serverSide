@@ -25,7 +25,7 @@ public class GameModeDAOTest {
     @DisplayName("Test GameModeDAO getGameMode(String name)")
     void testGameModeByName(){
         Assertions.assertFalse(gameModeDAO.getGameMode("").isPresent());
-        Assertions.assertTrue(gameModeDAO.getGameMode("defaultGame").isPresent());
+        Assertions.assertTrue(gameModeDAO.getGameMode("Single Player").isPresent());
     }
 
 }
