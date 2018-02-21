@@ -132,7 +132,6 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
             case DAOFactory.SORT_BY_SCORE_DESC:
                 return "ORDER BY score DESC;";
         }
-
         return ";";
     }
 }

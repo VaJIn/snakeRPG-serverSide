@@ -1,8 +1,9 @@
 package fr.vajin.snakerpg.database.entities;
 
+import com.google.common.collect.ImmutableSet;
+
 import java.sql.Timestamp;
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
 
 public class GameEntity {
 
@@ -10,13 +11,15 @@ public class GameEntity {
     private Timestamp startTime;
     private Timestamp endTime;
     private GameModeEntity gameMode;
+    private Set<GameParticipationEntity> participationEntitySet;
+
 
     public GameEntity() {
-
         this.id = -1;
         this.startTime = new Timestamp(0);
         this.endTime = new Timestamp(0);
         this.gameMode = new GameModeEntity();
+        this.participationEntitySet = new HashSet<>();
 
     }
 
@@ -25,6 +28,7 @@ public class GameEntity {
         this.startTime = startTime;
         this.endTime = endTime;
         this.gameMode = gameMode;
+        this.participationEntitySet = new HashSet<>();
     }
 
     public int getId() {
@@ -57,6 +61,14 @@ public class GameEntity {
 
     public void setGameMode(GameModeEntity gameMode) {
         this.gameMode = gameMode;
+    }
+
+    public Set<GameParticipationEntity> getParticipationEntitySet() {
+        return ImmutableSet.copyOf(participationEntitySet);
+    }
+
+    public void setParticipationEntitySet(Set<GameParticipationEntity> participationEntitySet) {
+        this.participationEntitySet = new HashSet<>(participationEntitySet);
     }
 
     @Override
