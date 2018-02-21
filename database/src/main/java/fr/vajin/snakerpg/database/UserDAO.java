@@ -7,6 +7,8 @@ import java.util.Optional;
 
 public interface UserDAO {
 
+    void addUser(UserEntity userEntity);
+
     Optional<UserEntity> getUser(int id);
 
     Optional<UserEntity> getUser(String accountName, String hash);

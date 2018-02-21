@@ -43,6 +43,13 @@ public class GameDAOImpl implements GameDAO {
     }
 
     @Override
+    public void addGame(GameEntity gameEntity) {
+        String sql = "INSERT INTO Game " +
+                "VALUES (100, 'Zara', 'Ali', 18)";
+        stmt.executeUpdate(sql);
+    }
+
+    @Override
     public Optional<GameEntity> getGame(int id) {
         String query = "SELECT * " +
                 "FROM Game " +

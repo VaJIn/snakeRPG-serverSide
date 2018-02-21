@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface GameDAO {
+
+    void addGame(GameEntity gameEntity);
     
     Optional<GameEntity> getGame(int id);
 
