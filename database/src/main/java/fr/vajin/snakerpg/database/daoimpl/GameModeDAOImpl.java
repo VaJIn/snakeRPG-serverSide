@@ -1,34 +1,23 @@
 package fr.vajin.snakerpg.database.daoimpl;
 
+import fr.vajin.snakerpg.database.DAOFactory;
 import fr.vajin.snakerpg.database.GameModeDAO;
 import fr.vajin.snakerpg.database.entities.GameModeEntity;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.sql.*;
 import java.util.*;
 
 public class GameModeDAOImpl implements GameModeDAO {
 
-    private static String db_adr = "jdbc:mysql://localhost:3306/dbsnake";
+    private DAOFactory daoFactory;
     private Statement statement;
 
-    public GameModeDAOImpl(){
-        Connection con = null;
+    public GameModeDAOImpl(DAOFactory daoFactory){
+        this.daoFactory = daoFactory;
+
         try {
-            Properties connectionProp = new Properties();
-            connectionProp.loadFromXML(getClass().getResourceAsStream("/connection.xml"));
-            con = DriverManager.getConnection(db_adr,connectionProp);
-            this.statement = con.createStatement();
+            statement = this.daoFactory.getConnection().createStatement();
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (InvalidPropertiesFormatException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
             e.printStackTrace();
         }
     }

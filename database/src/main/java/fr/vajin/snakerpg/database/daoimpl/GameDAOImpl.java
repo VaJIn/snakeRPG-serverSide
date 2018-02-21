@@ -8,45 +8,46 @@ import fr.vajin.snakerpg.database.entities.GameEntity;
 import fr.vajin.snakerpg.database.entities.GameModeEntity;
 import fr.vajin.snakerpg.database.entities.GameParticipationEntity;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+
 import java.sql.*;
 import java.util.*;
 
 
 public class GameDAOImpl implements GameDAO {
 
-    private static String db_adr = "jdbc:mysql://localhost:3306/dbsnake";
-    private Statement statement;
-
     private DAOFactory daoFactory;
+    private Statement statement;
 
     public GameDAOImpl(DAOFactory daoFactory) {
         this.daoFactory = daoFactory;
-        Connection con = null;
         try {
-            Properties connectionProp = new Properties();
-            connectionProp.loadFromXML(getClass().getResourceAsStream("/connection.xml"));
-            con = DriverManager.getConnection(db_adr,connectionProp);
-            this.statement = con.createStatement();
+            statement = this.daoFactory.getConnection().createStatement();
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (InvalidPropertiesFormatException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+
     }
 
     @Override
-    public void addGame(GameEntity gameEntity) {
-        String sql = "INSERT INTO Game " +
-                "VALUES (100, 'Zara', 'Ali', 18)";
-        stmt.executeUpdate(sql);
+    public void addGame(GameEntity gameEntity) throws SQLException {
+        String updateGame = "INSERT INTO Game (startTime, endTime, idGameMode)" +
+                "VALUES ('"+gameEntity.getStartTime()+"', '"+gameEntity.getEndTime()+"', "+gameEntity.getGameMode().getId()+");";
+        statement.addBatch(updateGame);
+
+
+
+        for(GameParticipationEntity gp : gameEntity.getParticipationEntitySet()){
+
+            String updateGameParticipation = "INSERT INTO GameParticipation "+
+                    "VALUES ("+gp.getIdGame()+", "+gp.getIdSnake()+", "+gp.getScore()+", "+gp.getKillCount()+", "+gp.getDeathCount()+");";
+
+            statement.addBatch(updateGameParticipation);
+
+        }
+
+        statement.executeBatch();
+
+
     }
 
     @Override

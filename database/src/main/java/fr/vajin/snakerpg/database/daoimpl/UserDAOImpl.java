@@ -1,33 +1,37 @@
 package fr.vajin.snakerpg.database.daoimpl;
 
+import fr.vajin.snakerpg.database.DAOFactory;
 import fr.vajin.snakerpg.database.UserDAO;
 import fr.vajin.snakerpg.database.entities.UserEntity;
 
-import java.io.*;
 import java.sql.*;
 import java.util.*;
 
 public class UserDAOImpl implements UserDAO {
 
-    private static String db_adr = "jdbc:mysql://localhost:3306/dbsnake";
     private Statement statement;
+    private DAOFactory daoFactory;
 
-    public UserDAOImpl(){
-        Connection con = null;
+    public UserDAOImpl(DAOFactory daoFactory){
+        this.daoFactory = daoFactory;
         try {
-            Properties connectionProp = new Properties();
-            connectionProp.loadFromXML(getClass().getResourceAsStream("/connection.xml"));
-            con = DriverManager.getConnection(db_adr,connectionProp);
-            this.statement = con.createStatement();
+            statement = this.daoFactory.getConnection().createStatement();
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (InvalidPropertiesFormatException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+
+    }
+
+    @Override
+    public void addUser(UserEntity userEntity) throws SQLException {
+        String updateUser = "INSERT INTO User (alias, email, accountName, password) "+
+                "VALUES ("+userEntity.getAlias()+", "+userEntity.getEmail()+", "+userEntity.getAccountName()+", "+userEntity.getPassword()+");";
+
+        statement.addBatch(updateUser);
+
+        statement.executeBatch();
+
+
     }
 
     @Override

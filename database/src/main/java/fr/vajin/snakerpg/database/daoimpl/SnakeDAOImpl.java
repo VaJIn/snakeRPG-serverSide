@@ -1,39 +1,38 @@
 package fr.vajin.snakerpg.database.daoimpl;
 
+import fr.vajin.snakerpg.database.DAOFactory;
 import fr.vajin.snakerpg.database.SnakeClassDAO;
 import fr.vajin.snakerpg.database.SnakeDAO;
 import fr.vajin.snakerpg.database.UserDAO;
 import fr.vajin.snakerpg.database.entities.SnakeClassEntity;
 import fr.vajin.snakerpg.database.entities.SnakeEntity;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.sql.*;
 import java.util.*;
 
 public class SnakeDAOImpl implements SnakeDAO {
 
-    private static String db_adr = "jdbc:mysql://localhost:3306/dbsnake";
+    private DAOFactory daoFactory;
     private Statement statement;
 
-    public SnakeDAOImpl(){
-        Connection con = null;
+    public SnakeDAOImpl(DAOFactory daoFactory){
+        this.daoFactory = daoFactory;
         try {
-            Properties connectionProp = new Properties();
-            connectionProp.loadFromXML(getClass().getResourceAsStream("/connection.xml"));
-            con = DriverManager.getConnection(db_adr,connectionProp);
-            this.statement = con.createStatement();
+            statement = this.daoFactory.getConnection().createStatement();
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (InvalidPropertiesFormatException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+    }
+
+    @Override
+    public void addSnake(SnakeEntity snakeEntity) throws SQLException {
+        String updateSnake = "INSERT INTO Snake (userID, name, exp, info, idSnakeClass)" +
+                "VALUES ('"+snakeEntity.getUser().getId()+"', '"+snakeEntity.getName()+"', "+snakeEntity.getExpPoint()+"+" +
+                ", "+snakeEntity.getInfo()+", "+snakeEntity.getSnakeClass().getId()+");";
+        statement.addBatch(updateSnake);
+
+
+        statement.executeBatch();
     }
 
     @Override
@@ -100,8 +99,8 @@ public class SnakeDAOImpl implements SnakeDAO {
         int idSnakeClass = rs.getInt("idSnakeClass");
 
         //TODO à vérifier aussi
-        UserDAO userDAO = new UserDAOImpl();
-        SnakeClassDAO snakeClassDAO = new SnakeClassDAOImpl();
+        UserDAO userDAO = this.daoFactory.getUserDAO();
+        SnakeClassDAO snakeClassDAO = this.daoFactory.getSnakeClassDAO();
         return new SnakeEntity(id, name, exp, info, userDAO.getUser(userId).get(), snakeClassDAO.getSnakeClassById(idSnakeClass).orElse(new SnakeClassEntity()));
     }
 }

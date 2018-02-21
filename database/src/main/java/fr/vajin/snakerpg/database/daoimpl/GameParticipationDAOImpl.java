@@ -7,37 +7,25 @@ import fr.vajin.snakerpg.database.SnakeDAO;
 import fr.vajin.snakerpg.database.entities.GameEntity;
 import fr.vajin.snakerpg.database.entities.GameParticipationEntity;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.InvalidPropertiesFormatException;
 import java.util.List;
-import java.util.Properties;
+
 
 public class GameParticipationDAOImpl implements GameParticipationDAO {
 
-    private static String db_adr = "jdbc:mysql://localhost:3306/dbsnake";
+    private DAOFactory daoFactory;
+
     private Statement statement;
 
-    public GameParticipationDAOImpl(){
-        Connection con = null;
+    public GameParticipationDAOImpl(DAOFactory daoFactory){
+        this.daoFactory = daoFactory;
         try {
-            Properties connectionProp = new Properties();
-            connectionProp.loadFromXML(getClass().getResourceAsStream("/connection.xml"));
-            con = DriverManager.getConnection(db_adr,connectionProp);
-            this.statement = con.createStatement();
+            statement = this.daoFactory.getConnection().createStatement();
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (InvalidPropertiesFormatException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+
     }
 
     @Override
@@ -113,8 +101,8 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
 
 
         //TODO à vérifier aussi
-        GameModeDAO gameModeDAO = new GameModeDAOImpl();
-        SnakeDAO snakeDAO = new SnakeDAOImpl();
+        GameModeDAO gameModeDAO = this.daoFactory.getGameModeDAO();
+        SnakeDAO snakeDAO = this.daoFactory.getSnakeDAO();
         GameEntity g = new GameEntity(idGame, startTime, endTime, gameModeDAO.getGameMode(idGameMode).get());
 
         return new GameParticipationEntity(idGame, idSnake, score, killCount, deathCount, g, snakeDAO.getSnakeById(idSnake).get());

@@ -1,5 +1,7 @@
 package fr.vajin.snakerpg.database;
 
+import java.sql.Connection;
+
 public interface DAOFactory {
 
     int SORT_BY_EARLIEST_DATE = 0;
@@ -19,4 +21,6 @@ public interface DAOFactory {
     SnakeClassDAO getSnakeClassDAO();
 
     SnakeDAO getSnakeDAO();
+
+    Connection getConnection();
 }

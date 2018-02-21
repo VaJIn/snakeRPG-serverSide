@@ -1,5 +1,7 @@
 package fr.vajin.snakerpg.database.entities;
 
+import fr.vajin.snakerpg.database.SnakeClassDAO;
+
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -7,7 +9,6 @@ public class SnakeEntity {
 
     private int userId;
     private int id;
-    private int snakeClassId;
     private String name;
     private int expPoint;
     private byte[] info;
@@ -27,7 +28,6 @@ public class SnakeEntity {
     public SnakeEntity(int id, String name, int expPoint, byte[] info, UserEntity user, SnakeClassEntity snakeClass) {
         this.userId = user.getId();
         this.id = id;
-        this.snakeClassId = snakeClass.getId();
         this.name = name;
         this.expPoint = expPoint;
         this.info = info;
@@ -81,6 +81,14 @@ public class SnakeEntity {
 
     public void setUser(UserEntity user) {
         this.user = user;
+    }
+
+    public SnakeClassEntity getSnakeClass() {
+        return this.snakeClass;
+    }
+
+    public void setSnakeClass(SnakeClassEntity snakeClass){
+        this.snakeClass = snakeClass;
     }
 
     @Override
