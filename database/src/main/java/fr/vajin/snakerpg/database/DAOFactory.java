@@ -12,7 +12,7 @@ public interface DAOFactory {
 
     GameDAO getGameDAO();
 
-    GameModeDAO getGameModelDAO();
+    GameModeDAO getGameModeDAO();
 
     GameParticipationDAO getGameParticipationDAO();
 
