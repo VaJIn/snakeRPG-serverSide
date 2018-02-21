@@ -24,7 +24,7 @@ public class GameDAOImpl implements GameDAO {
 
     @Override
     public void addGame(GameEntity gameEntity) throws SQLException {
-        String updateGame = "INSERT INTO Game (startTime, endTime, idGameMode)" +
+        String updateGame = "INSERT INTO Game (startTime, endTime, idGameMode) " +
                 "VALUES ('"+gameEntity.getStartTime()+"', '"+gameEntity.getEndTime()+"', "+gameEntity.getGameMode().getId()+");";
 
         Connection connection = daoFactory.getConnection();
