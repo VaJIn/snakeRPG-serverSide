@@ -28,7 +28,7 @@ public class GameDAOImpl implements GameDAO {
         Connection con = null;
         try {
             Properties connectionProp = new Properties();
-            connectionProp.loadFromXML(new FileInputStream(new File("src/test/resources/connection.xml")));
+            connectionProp.loadFromXML(getClass().getResourceAsStream("/connection.xml"));
             con = DriverManager.getConnection(db_adr,connectionProp);
             this.statement = con.createStatement();
         } catch (SQLException e) {
