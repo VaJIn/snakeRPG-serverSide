@@ -3,10 +3,7 @@ package fr.vajin.snakerpg.database.daoimpl;
 import fr.vajin.snakerpg.database.UserDAO;
 import fr.vajin.snakerpg.database.entities.UserEntity;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.sql.*;
 import java.util.*;
 
@@ -19,7 +16,7 @@ public class UserDAOImpl implements UserDAO {
         Connection con = null;
         try {
             Properties connectionProp = new Properties();
-            connectionProp.loadFromXML(new FileInputStream(new File("src/test/resources/connection.xml")));
+            connectionProp.loadFromXML(getClass().getResourceAsStream("/connection.xml"));
             con = DriverManager.getConnection(db_adr,connectionProp);
             this.statement = con.createStatement();
         } catch (SQLException e) {
