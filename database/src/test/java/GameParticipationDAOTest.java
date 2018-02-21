@@ -1,7 +1,4 @@
-import fr.vajin.snakerpg.database.DAOFactory;
 import fr.vajin.snakerpg.database.GameParticipationDAO;
-import fr.vajin.snakerpg.database.daoimpl.DAOFactoryImpl;
-import fr.vajin.snakerpg.database.daoimpl.GameParticipationDAOImpl;
 import fr.vajin.snakerpg.database.entities.GameParticipationEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -12,8 +9,7 @@ import java.util.Collection;
 
 public class GameParticipationDAOTest {
 
-    DAOFactory daoFactory = new DAOFactoryImpl();
-    GameParticipationDAO gameParticipationDAO = new GameParticipationDAOImpl(daoFactory);
+    GameParticipationDAO gameParticipationDAO = DAOFactoryProvider.getDAOFactory().getGameParticipationDAO();
 
     @Test
     @DisplayName("Test GameParticipationDAO getGameResultsByUser")

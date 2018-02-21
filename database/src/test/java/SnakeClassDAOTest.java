@@ -1,15 +1,11 @@
-import fr.vajin.snakerpg.database.DAOFactory;
 import fr.vajin.snakerpg.database.SnakeClassDAO;
-import fr.vajin.snakerpg.database.daoimpl.DAOFactoryImpl;
-import fr.vajin.snakerpg.database.daoimpl.SnakeClassDAOImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class SnakeClassDAOTest {
 
-    DAOFactory daoFactory = new DAOFactoryImpl();
-    SnakeClassDAO snakeClassDAO = new SnakeClassDAOImpl(daoFactory);
+    SnakeClassDAO snakeClassDAO = DAOFactoryProvider.getDAOFactory().getSnakeClassDAO();
 
     @Test
     @DisplayName("Test SnakeClassDAO getSnakeClassById")

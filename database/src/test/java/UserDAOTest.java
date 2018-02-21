@@ -1,7 +1,4 @@
-import fr.vajin.snakerpg.database.DAOFactory;
 import fr.vajin.snakerpg.database.UserDAO;
-import fr.vajin.snakerpg.database.daoimpl.DAOFactoryImpl;
-import fr.vajin.snakerpg.database.daoimpl.UserDAOImpl;
 import fr.vajin.snakerpg.database.entities.UserEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -12,8 +9,7 @@ import java.util.Optional;
 
 public class UserDAOTest {
 
-    DAOFactory factory = new DAOFactoryImpl();
-    UserDAO userDAO = factory.getUserDAO();
+    UserDAO userDAO = DAOFactoryProvider.getDAOFactory().getUserDAO();
 
     @Test
     @DisplayName("Test UserDAO getUser(int id)")

@@ -1,19 +1,18 @@
 import fr.vajin.snakerpg.database.DAOFactory;
 import fr.vajin.snakerpg.database.GameDAO;
-import fr.vajin.snakerpg.database.daoimpl.DAOFactoryImpl;
-import fr.vajin.snakerpg.database.daoimpl.GameDAOImpl;
 import fr.vajin.snakerpg.database.entities.GameEntity;
 import fr.vajin.snakerpg.database.entities.GameModeEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Optional;
 
 public class GameDAOTest {
 
-    DAOFactory factory = new DAOFactoryImpl();
-    GameDAO gameDAO = new GameDAOImpl(factory);
+    GameDAO gameDAO = DAOFactoryProvider.getDAOFactory().getGameDAO();
 
     @Test
     @DisplayName("Test GameDAO getGame(int id)")
@@ -66,7 +65,7 @@ public class GameDAOTest {
         Assertions.assertNotNull(games);
         Assertions.assertTrue(games.isEmpty());
 
-        GameModeEntity singlePlayer = factory.getGameModeDAO().getGameMode(1).get();
+        GameModeEntity singlePlayer = DAOFactoryProvider.getDAOFactory().getGameModeDAO().getGameMode(1).get();
 
         games = gameDAO.getGameByGameMode(singlePlayer, DAOFactory.SORT_BY_EARLIEST_DATE);
         Assertions.assertEquals(1, games.size());
