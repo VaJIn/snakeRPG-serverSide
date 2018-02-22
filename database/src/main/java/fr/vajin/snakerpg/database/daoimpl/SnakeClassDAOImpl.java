@@ -1,5 +1,6 @@
 package fr.vajin.snakerpg.database.daoimpl;
 
+import fr.vajin.snakerpg.database.ConnectionPool;
 import fr.vajin.snakerpg.database.DAOFactory;
 import fr.vajin.snakerpg.database.SnakeClassDAO;
 import fr.vajin.snakerpg.database.entities.SnakeClassEntity;
@@ -27,7 +28,7 @@ public class SnakeClassDAOImpl implements SnakeClassDAO {
         SnakeClassEntity out = null;
 
         try {
-            Connection connection = daoFactory.getConnection();
+            Connection connection = ConnectionPool.getConnection();
             Statement statement = connection.createStatement();
 
             ResultSet rs = statement.executeQuery(query);
@@ -53,7 +54,7 @@ public class SnakeClassDAOImpl implements SnakeClassDAO {
 
 
         try {
-            Connection connection = daoFactory.getConnection();
+            Connection connection = ConnectionPool.getConnection();
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(query);
 

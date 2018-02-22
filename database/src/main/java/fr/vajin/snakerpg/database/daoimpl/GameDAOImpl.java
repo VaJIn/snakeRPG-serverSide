@@ -1,9 +1,6 @@
 package fr.vajin.snakerpg.database.daoimpl;
 
-import fr.vajin.snakerpg.database.DAOFactory;
-import fr.vajin.snakerpg.database.GameDAO;
-import fr.vajin.snakerpg.database.GameModeDAO;
-import fr.vajin.snakerpg.database.GameParticipationDAO;
+import fr.vajin.snakerpg.database.*;
 import fr.vajin.snakerpg.database.entities.GameEntity;
 import fr.vajin.snakerpg.database.entities.GameModeEntity;
 import fr.vajin.snakerpg.database.entities.GameParticipationEntity;
@@ -27,7 +24,7 @@ public class GameDAOImpl implements GameDAO {
         String updateGame = "INSERT INTO Game (startTime, endTime, idGameMode) " +
                 "VALUES ('"+gameEntity.getStartTime()+"', '"+gameEntity.getEndTime()+"', "+gameEntity.getGameMode().getId()+");";
 
-        Connection connection = daoFactory.getConnection();
+        Connection connection = ConnectionPool.getConnection();
         Statement statement = connection.createStatement();
         statement.addBatch(updateGame);
 
@@ -59,7 +56,7 @@ public class GameDAOImpl implements GameDAO {
         GameEntity out = null;
 
         try {
-            Connection connection = daoFactory.getConnection();
+            Connection connection = ConnectionPool.getConnection();
             Statement statement = connection.createStatement();
 
             ResultSet rs = statement.executeQuery(query);
@@ -116,7 +113,7 @@ public class GameDAOImpl implements GameDAO {
         ResultSet rs = null;
         List<GameEntity> games= new ArrayList<GameEntity>();
         try {
-            Connection connection = daoFactory.getConnection();
+            Connection connection = ConnectionPool.getConnection();
             Statement statement = connection.createStatement();
 
             rs = statement.executeQuery(query);
@@ -154,7 +151,7 @@ public class GameDAOImpl implements GameDAO {
         ResultSet rs = null;
         List<GameEntity> games= new ArrayList<GameEntity>();
         try {
-            Connection connection = daoFactory.getConnection();
+            Connection connection = ConnectionPool.getConnection();
             Statement statement = connection.createStatement();
 
             rs = statement.executeQuery(query);

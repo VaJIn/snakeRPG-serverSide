@@ -1,5 +1,6 @@
 package fr.vajin.snakerpg.database.daoimpl;
 
+import fr.vajin.snakerpg.database.ConnectionPool;
 import fr.vajin.snakerpg.database.DAOFactory;
 import fr.vajin.snakerpg.database.GameModeDAO;
 import fr.vajin.snakerpg.database.entities.GameModeEntity;
@@ -26,7 +27,7 @@ public class GameModeDAOImpl implements GameModeDAO {
 
 
         try {
-            Connection connection = daoFactory.getConnection();
+            Connection connection = ConnectionPool.getConnection();
             Statement statement = connection.createStatement();
 
             ResultSet rs = statement.executeQuery(query);
@@ -61,7 +62,7 @@ public class GameModeDAOImpl implements GameModeDAO {
         GameModeEntity out = null;
 
         try {
-            Connection connection = daoFactory.getConnection();
+            Connection connection = ConnectionPool.getConnection();
             Statement statement = connection.createStatement();
 
             ResultSet rs = statement.executeQuery(query);
@@ -89,7 +90,7 @@ public class GameModeDAOImpl implements GameModeDAO {
         GameModeEntity out = null;
 
         try {
-            Connection connection = daoFactory.getConnection();
+            Connection connection = ConnectionPool.getConnection();
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(query);
 
