@@ -1,9 +1,6 @@
 package fr.vajin.snakerpg.database.daoimpl;
 
-import fr.vajin.snakerpg.database.DAOFactory;
-import fr.vajin.snakerpg.database.GameModeDAO;
-import fr.vajin.snakerpg.database.GameParticipationDAO;
-import fr.vajin.snakerpg.database.SnakeDAO;
+import fr.vajin.snakerpg.database.*;
 import fr.vajin.snakerpg.database.entities.GameEntity;
 import fr.vajin.snakerpg.database.entities.GameParticipationEntity;
 
@@ -64,7 +61,7 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
     private List<GameParticipationEntity> gameParticipationQuery(String query){
         List<GameParticipationEntity> gameResults = new ArrayList<GameParticipationEntity>();
         try {
-            Connection connection = daoFactory.getConnection();
+            Connection connection = ConnectionPool.getConnection();
             Statement statement = connection.createStatement();
 
             ResultSet rs = statement.executeQuery(query);

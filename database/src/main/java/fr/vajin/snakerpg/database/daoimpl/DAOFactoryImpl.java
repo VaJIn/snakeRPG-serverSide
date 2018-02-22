@@ -11,34 +11,6 @@ import java.util.Properties;
 
 public class DAOFactoryImpl implements DAOFactory{
 
-    private BoneCP connectionPool;
-
-
-    public DAOFactoryImpl(){
-
-        Properties connectionProp = new Properties();
-        try {
-            connectionProp.loadFromXML(getClass().getResourceAsStream("/connection.xml"));
-            BoneCPConfig config = new BoneCPConfig();
-
-            config.setJdbcUrl(connectionProp.getProperty("url"));
-            config.setUsername(connectionProp.getProperty("user"));
-            config.setPassword(connectionProp.getProperty("password"));
-
-            config.setMinConnectionsPerPartition(5);
-            config.setMaxConnectionsPerPartition(10);
-            config.setPartitionCount(2);
-
-            connectionPool = new BoneCP(config);
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-    }
 
     @Override
     public UserDAO getUserDAO() {
@@ -70,7 +42,4 @@ public class DAOFactoryImpl implements DAOFactory{
         return new SnakeDAOImpl(this);
     }
 
-    public Connection getConnection() throws SQLException {
-        return this.connectionPool.getConnection();
-    }
 }

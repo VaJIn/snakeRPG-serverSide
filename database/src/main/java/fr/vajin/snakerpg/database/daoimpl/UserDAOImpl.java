@@ -1,5 +1,6 @@
 package fr.vajin.snakerpg.database.daoimpl;
 
+import fr.vajin.snakerpg.database.ConnectionPool;
 import fr.vajin.snakerpg.database.DAOFactory;
 import fr.vajin.snakerpg.database.UserDAO;
 import fr.vajin.snakerpg.database.entities.UserEntity;
@@ -22,7 +23,7 @@ public class UserDAOImpl implements UserDAO {
         String updateUser = "INSERT INTO User (alias, email, accountName, password) "+
                 "VALUES ("+userEntity.getAlias()+", "+userEntity.getEmail()+", "+userEntity.getAccountName()+", "+userEntity.getPassword()+");";
 
-        Connection connection = daoFactory.getConnection();
+        Connection connection = ConnectionPool.getConnection();
         Statement statement = connection.createStatement();
         statement.addBatch(updateUser);
         statement.executeBatch();
@@ -41,7 +42,7 @@ public class UserDAOImpl implements UserDAO {
         UserEntity out = null;
 
         try {
-            Connection connection = daoFactory.getConnection();
+            Connection connection = ConnectionPool.getConnection();
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(query);
             if (rs.next()) {
@@ -66,7 +67,7 @@ public class UserDAOImpl implements UserDAO {
         UserEntity out = null;
 
         try{
-            Connection connection = daoFactory.getConnection();
+            Connection connection = ConnectionPool.getConnection();
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(query);
             if (rs.next()){
@@ -91,7 +92,7 @@ public class UserDAOImpl implements UserDAO {
         Collection<UserEntity> out = new ArrayList<>();
 
         try {
-            Connection connection = daoFactory.getConnection();
+            Connection connection = ConnectionPool.getConnection();
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(query);
 
@@ -128,7 +129,7 @@ public class UserDAOImpl implements UserDAO {
         UserEntity out = null;
 
         try {
-            Connection connection = daoFactory.getConnection();
+            Connection connection = ConnectionPool.getConnection();
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(query);
             if (rs.next()){

@@ -1,9 +1,6 @@
 package fr.vajin.snakerpg.database.daoimpl;
 
-import fr.vajin.snakerpg.database.DAOFactory;
-import fr.vajin.snakerpg.database.SnakeClassDAO;
-import fr.vajin.snakerpg.database.SnakeDAO;
-import fr.vajin.snakerpg.database.UserDAO;
+import fr.vajin.snakerpg.database.*;
 import fr.vajin.snakerpg.database.entities.SnakeClassEntity;
 import fr.vajin.snakerpg.database.entities.SnakeEntity;
 
@@ -25,7 +22,7 @@ public class SnakeDAOImpl implements SnakeDAO {
                 "VALUES ('"+snakeEntity.getUser().getId()+"', '"+snakeEntity.getName()+"', "+snakeEntity.getExpPoint()+"+" +
                 ", "+snakeEntity.getInfo()+", "+snakeEntity.getSnakeClass().getId()+");";
 
-        Connection connection = daoFactory.getConnection();
+        Connection connection = ConnectionPool.getConnection();
         Statement statement = connection.createStatement();
         statement.addBatch(updateSnake);
         statement.executeBatch();
@@ -42,7 +39,7 @@ public class SnakeDAOImpl implements SnakeDAO {
         SnakeEntity out = null;
 
         try {
-            Connection connection = daoFactory.getConnection();
+            Connection connection = ConnectionPool.getConnection();
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(query);
 
@@ -67,7 +64,7 @@ public class SnakeDAOImpl implements SnakeDAO {
         Collection<SnakeEntity> out = new ArrayList<>();
 
         try {
-            Connection connection = daoFactory.getConnection();
+            Connection connection = ConnectionPool.getConnection();
             Statement statement = connection.createStatement();
 
             ResultSet rs = statement.executeQuery(query);
