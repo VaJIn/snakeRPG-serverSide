@@ -19,7 +19,7 @@ public class SnakeDAOImpl implements SnakeDAO {
     @Override
     public void addSnake(SnakeEntity snakeEntity) throws SQLException {
         String updateSnake = "INSERT INTO Snake (userID, name, exp, info, idSnakeClass) " +
-                "VALUES ('"+snakeEntity.getUser().getId()+"', '"+snakeEntity.getName()+"', "+snakeEntity.getExpPoint()+"+" +
+                "VALUES ("+snakeEntity.getUser().getId()+", '"+snakeEntity.getName()+"', "+snakeEntity.getExpPoint()+
                 ", "+snakeEntity.getInfo()+", "+snakeEntity.getSnakeClass().getId()+");";
 
         Connection connection = ConnectionPool.getConnection();

@@ -15,7 +15,6 @@ public class GameDAOImpl implements GameDAO {
 
     public GameDAOImpl(DAOFactory daoFactory) {
         this.daoFactory = daoFactory;
-
     }
 
     @Override
@@ -24,15 +23,21 @@ public class GameDAOImpl implements GameDAO {
                 "VALUES ('"+gameEntity.getStartTime()+"', '"+gameEntity.getEndTime()+"', "+gameEntity.getGameMode().getId()+");";
 
         Connection connection = ConnectionPool.getConnection();
-        Statement statement = connection.createStatement();
+        PreparedStatement statement = connection.prepareStatement(updateGame,Statement.RETURN_GENERATED_KEYS);
         statement.addBatch(updateGame);
 
+        ResultSet keys = statement.getGeneratedKeys();
+
+        int idGame = -1;
+        if(keys.next()){
+            idGame = keys.getInt(0);
+        }
 
 
         for(GameParticipationEntity gp : gameEntity.getParticipationEntitySet()){
 
             String updateGameParticipation = "INSERT INTO GameParticipation "+
-                    "VALUES ("+gp.getIdGame()+", "+gp.getIdSnake()+", "+gp.getScore()+", "+gp.getKillCount()+", "+gp.getDeathCount()+");";
+                    "VALUES ("+idGame+", "+gp.getIdSnake()+", "+gp.getScore()+", "+gp.getKillCount()+", "+gp.getDeathCount()+");";
 
             statement.addBatch(updateGameParticipation);
 

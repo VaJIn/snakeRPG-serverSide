@@ -4,6 +4,8 @@ import fr.vajin.snakerpg.database.entities.UserEntity;
 import org.apache.commons.validator.routines.EmailValidator;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegistrationFormLogic {
 
@@ -29,9 +31,54 @@ public class RegistrationFormLogic {
     public final static String NULL_EMAIL_ERROR_MSG = "Please enter your email adress";
     public final static String INVALID_EMAIL_ERROR_MSG = "Please enter a valid email address.";
 
+    private Map<String, String> errors;
+
     public UserEntity registerUser(HttpServletRequest request) {
 
         UserEntity userEntity = new UserEntity();
+
+
+        String accountName = request.getParameter(CHAMP_ACCOUNT_NAME);
+
+        String email = request.getParameter(CHAMP_EMAIL);
+
+        String password = request.getParameter(CHAMP_PASS);
+        String confirmation = request.getParameter(CHAMP_CONF);
+
+        String alias = request.getParameter(CHAMP_ALIAS);
+
+        this.errors = new HashMap<>();
+
+        try {
+            accountNameValidation(accountName);
+        } catch (Exception e) {
+            this.errors.put(CHAMP_ACCOUNT_NAME, e.getMessage());
+        }
+
+        try {
+            passwordValidation(password,confirmation);
+        } catch (Exception e) {
+            this.errors.put(CHAMP_PASS, e.getMessage());
+        }
+
+        try {
+            emailValidation(email);
+        } catch (Exception e) {
+            this.errors.put(CHAMP_EMAIL, e.getMessage());
+        }
+
+        try {
+            aliasValidation(alias);
+        } catch (Exception e) {
+            this.errors.put(CHAMP_ALIAS, e.getMessage());
+        }
+
+        userEntity.setAlias(alias);
+        userEntity.setAccountName(accountName);
+        userEntity.setEmail(email);
+        userEntity.setPassword(password);
+
+
 
         return userEntity;
     }
@@ -81,4 +128,6 @@ public class RegistrationFormLogic {
             throw new Exception(ERROR_PASSWORD_TOO_SHORT);
         }
     }
+
+    public Map<String,String> getErrors(){ return this.errors; }
 }

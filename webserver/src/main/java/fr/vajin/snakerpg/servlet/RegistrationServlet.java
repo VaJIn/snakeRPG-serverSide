@@ -1,5 +1,7 @@
 package fr.vajin.snakerpg.servlet;
 
+import fr.vajin.snakerpg.database.DAOFactoryProvider;
+import fr.vajin.snakerpg.database.entities.UserEntity;
 import fr.vajin.snakerpg.form.RegistrationFormLogic;
 
 import javax.servlet.ServletException;
@@ -7,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +31,31 @@ public class RegistrationServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+        //TODO vérification via RegistrationFromLogic + ajout user dans bdd
+
+        RegistrationFormLogic formLogic = new RegistrationFormLogic();
+        UserEntity userEntity = formLogic.registerUser(request);
+
+        if(userEntity!=null){
+            if(formLogic.getErrors().isEmpty()){
+                response.getWriter().println("Votre compte a bien été créé.");
+                try {
+                    DAOFactoryProvider.getDAOFactory().getUserDAO().addUser(userEntity);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            else{
+                for(Map.Entry<String, String> error : formLogic.getErrors().entrySet()){
+                    response.getWriter().println(error.getKey()+" : "+error.getValue());
+                }
+            }
+        }
+        else{
+            response.getWriter().println("Une erreur est survenue.");
+        }
+
+        this.getServletContext().getRequestDispatcher(VIEW).forward(request,response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
