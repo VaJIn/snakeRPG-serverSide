@@ -5,8 +5,13 @@ import fr.vajin.snakerpg.database.DAOFactory;
 import fr.vajin.snakerpg.database.UserDAO;
 import fr.vajin.snakerpg.database.entities.UserEntity;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
 
 public class UserDAOImpl implements UserDAO {
 
@@ -21,7 +26,9 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public void addUser(UserEntity userEntity) throws SQLException {
         String updateUser = "INSERT INTO User (alias, email, accountName, password) "+
-                "VALUES ("+userEntity.getAlias()+", "+userEntity.getEmail()+", "+userEntity.getAccountName()+", "+userEntity.getPassword()+");";
+                "VALUES ('" + userEntity.getAlias() + "', '" + userEntity.getEmail() + "', '" + userEntity.getAccountName() + "', '" + userEntity.getPassword() + "');";
+
+        System.out.println(updateUser);
 
         Connection connection = ConnectionPool.getConnection();
         Statement statement = connection.createStatement();

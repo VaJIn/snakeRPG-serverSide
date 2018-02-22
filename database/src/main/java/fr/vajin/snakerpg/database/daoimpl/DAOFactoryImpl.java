@@ -1,13 +1,6 @@
 package fr.vajin.snakerpg.database.daoimpl;
 
-import com.jolbox.bonecp.BoneCP;
-import com.jolbox.bonecp.BoneCPConfig;
 import fr.vajin.snakerpg.database.*;
-
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Properties;
 
 public class DAOFactoryImpl implements DAOFactory{
 

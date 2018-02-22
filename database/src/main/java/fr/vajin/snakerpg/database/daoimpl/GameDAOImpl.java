@@ -5,7 +5,6 @@ import fr.vajin.snakerpg.database.entities.GameEntity;
 import fr.vajin.snakerpg.database.entities.GameModeEntity;
 import fr.vajin.snakerpg.database.entities.GameParticipationEntity;
 
-
 import java.sql.*;
 import java.util.*;
 
@@ -63,9 +62,7 @@ public class GameDAOImpl implements GameDAO {
             if(rs.next()){
                 out = resultSetToGameEntity(rs);
             }
-
             connection.close();
-
         } catch (SQLException e) {
             e.printStackTrace();
             out = null;
