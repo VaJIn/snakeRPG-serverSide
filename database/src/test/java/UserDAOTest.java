@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -53,5 +54,34 @@ public class UserDAOTest {
         Assertions.assertFalse(userDAO.getUserByAccountName("").isPresent());
 
         Assertions.assertTrue(userDAO.getUserByAccountName("user2").isPresent());
+    }
+
+    @Test
+    @DisplayName("Test UserDAO addUser")
+    void testInsertUser() {
+        String validAccountName = "testInsertUser1";
+        String email = "testInsertUser1@domain.fr";
+        String alias = "aliasTestUser";
+        String password = "123456";
+
+        UserEntity entity = new UserEntity();
+        entity.setAccountName(validAccountName);
+        entity.setEmail(email);
+        entity.setAlias(alias);
+        entity.setPassword(password);
+
+        Assertions.assertAll(() -> userDAO.addUser(entity));
+
+        Assertions.assertThrows(SQLException.class, () -> userDAO.addUser(entity));
+
+        Optional<UserEntity> retrievedOpt = userDAO.getUserByAccountName(validAccountName);
+
+        Assertions.assertTrue(retrievedOpt.isPresent());
+        UserEntity retrievedEntity = retrievedOpt.get();
+
+        Assertions.assertEquals(validAccountName, retrievedEntity.getAccountName());
+        Assertions.assertEquals(email, retrievedEntity.getEmail());
+        Assertions.assertEquals(password, retrievedEntity.getPassword());
+        Assertions.assertEquals(alias, retrievedEntity.getAlias());
     }
 }
