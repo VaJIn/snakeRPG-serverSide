@@ -5,10 +5,9 @@ import fr.vajin.snakerpg.database.daoimpl.DAOFactoryImpl;
 
 public class FactoryProvider {
 
-    private static DAOFactory factory = new DAOFactoryImpl();
+    private static DAOFactory daoFactory = new DAOFactoryImpl();
 
     public static DAOFactory getDAOFactory() {
-        return factory;
+        return daoFactory;
     }
-
 }

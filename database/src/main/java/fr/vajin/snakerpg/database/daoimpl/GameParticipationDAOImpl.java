@@ -5,8 +5,7 @@ import fr.vajin.snakerpg.database.entities.GameEntity;
 import fr.vajin.snakerpg.database.entities.GameParticipationEntity;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 public class GameParticipationDAOImpl implements GameParticipationDAO {
@@ -20,6 +19,7 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
 
     }
 
+
     @Override
     public List<GameParticipationEntity> getGameResultsByUser(int userId, int sortBy, Timestamp earliest, Timestamp latest) {
         String query = "SELECT gp.idGame, gp.idSnake, gp.score, gp.killCount, gp.deathCount, g.id, g.startTime, g.endTime, g.idGameMode "
@@ -30,11 +30,16 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
                 + sortBy(sortBy);
 
 
-        return gameParticipationQuery(query);
+        return gameParticipationQuery(query, true);
     }
 
     @Override
     public List<GameParticipationEntity> getGameResultsByGame(int gameId, int sortBy) {
+        return getGameResultsByGame(gameId, sortBy, true);
+    }
+
+    @Override
+    public List<GameParticipationEntity> getGameResultsByGame(int gameId, int sortBy, boolean retrieveGame) {
         String query = "SELECT gp.idGame, gp.idSnake, gp.score, gp.killCount, gp.deathCount, g.id, g.startTime, g.endTime, g.idGameMode "
                 +"FROM GameParticipation gp "
                 +"JOIN (SELECT id, startTime, endTime, idGameMode FROM Game WHERE id="+gameId+") as g "
@@ -42,7 +47,7 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
                 +sortBy(sortBy);
 
 
-        return gameParticipationQuery(query);
+        return gameParticipationQuery(query, retrieveGame);
     }
 
     @Override
@@ -55,10 +60,10 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
                 +sortBy(sortBy);
 
 
-        return gameParticipationQuery(query);
+        return gameParticipationQuery(query, true);
     }
 
-    private List<GameParticipationEntity> gameParticipationQuery(String query){
+    private List<GameParticipationEntity> gameParticipationQuery(String query, boolean retrieveGameEntity) {
         List<GameParticipationEntity> gameResults = new ArrayList<GameParticipationEntity>();
         try {
             Connection connection = ConnectionPool.getConnection();
@@ -77,10 +82,26 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
                 }
 
             }
-
             connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+
+        if (retrieveGameEntity) {
+            Map<Integer, GameEntity> gameEntityMap = new HashMap<>();
+            for (GameParticipationEntity gp : gameResults) {
+                GameEntity gameEntity = gameEntityMap.get(gp.getIdGame());
+                if (gameEntity == null) {
+                    Optional<GameEntity> optional = daoFactory.getGameDAO().getGame(gp.getIdGame(), false);
+                    if (optional.isPresent()) {
+                        gameEntity = optional.get();
+                        gp.setGame(gameEntity);
+                        gameEntityMap.put(gameEntity.getId(), gameEntity);
+                    } else {
+                        gp.setGame(new GameEntity());
+                    }
+                }
+            }
         }
         return gameResults;
     }

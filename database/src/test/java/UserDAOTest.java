@@ -1,6 +1,7 @@
 import fr.vajin.snakerpg.database.UserDAO;
 import fr.vajin.snakerpg.database.entities.UserEntity;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -57,6 +58,7 @@ public class UserDAOTest {
     }
 
     @Test
+    @Disabled
     @DisplayName("Test UserDAO addUser")
     void testInsertUser() {
         String validAccountName = "testInsertUser1";

@@ -1,7 +1,5 @@
 package fr.vajin.snakerpg.database.entities;
 
-import fr.vajin.snakerpg.database.SnakeClassDAO;
-
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -9,6 +7,7 @@ public class SnakeEntity {
 
     private int userId;
     private int id;
+    private int snakeClassId;
     private String name;
     private int expPoint;
     private byte[] info;
@@ -80,7 +79,12 @@ public class SnakeEntity {
     }
 
     public void setUser(UserEntity user) {
-        this.user = user;
+
+        if (this.user != user) {
+            this.user = user;
+            this.userId = user.getId();
+            user.addSnake(this);
+        }
     }
 
     public SnakeClassEntity getSnakeClass() {
@@ -89,6 +93,15 @@ public class SnakeEntity {
 
     public void setSnakeClass(SnakeClassEntity snakeClass){
         this.snakeClass = snakeClass;
+        this.setSnakeClassId(snakeClass.getId());
+    }
+
+    public int getSnakeClassId() {
+        return snakeClassId;
+    }
+
+    public void setSnakeClassId(int snakeClassId) {
+        this.snakeClassId = snakeClassId;
     }
 
     @Override
@@ -102,6 +115,19 @@ public class SnakeEntity {
                 Objects.equals(name, that.name) &&
                 Arrays.equals(info, that.info) &&
                 Objects.equals(user, that.user);
+    }
+
+    @Override
+    public String toString() {
+        return "SnakeEntity{" +
+                "userId=" + userId +
+                ", id=" + id +
+                ", snakeClassId=" + snakeClassId +
+                ", name='" + name + '\'' +
+                ", expPoint=" + expPoint +
+                ", info=" + Arrays.toString(info) +
+                ", snakeClass=" + snakeClass +
+                '}';
     }
 
     @Override
