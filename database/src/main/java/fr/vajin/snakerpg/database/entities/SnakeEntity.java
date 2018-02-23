@@ -118,6 +118,19 @@ public class SnakeEntity {
     }
 
     @Override
+    public String toString() {
+        return "SnakeEntity{" +
+                "userId=" + userId +
+                ", id=" + id +
+                ", snakeClassId=" + snakeClassId +
+                ", name='" + name + '\'' +
+                ", expPoint=" + expPoint +
+                ", info=" + Arrays.toString(info) +
+                ", snakeClass=" + snakeClass +
+                '}';
+    }
+
+    @Override
     public int hashCode() {
 
         int result = Objects.hash(userId, id, name, expPoint, user);
