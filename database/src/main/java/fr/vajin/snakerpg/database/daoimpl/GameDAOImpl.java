@@ -15,9 +15,9 @@ public class GameDAOImpl implements GameDAO {
 
     public GameDAOImpl(DAOFactory daoFactory) {
         this.daoFactory = daoFactory;
-
     }
 
+<<<<<<< HEAD
     List<GameEntity> getGameByCondition(String condition, int sortBy, boolean retrieveGameParticipation) {
 
         StringBuilder queryBuilder = new StringBuilder();
@@ -26,6 +26,23 @@ public class GameDAOImpl implements GameDAO {
             queryBuilder.append("WHERE ").append(condition);
         }
         queryBuilder.append(" ").append(sortBy(sortBy)).append(";");
+=======
+    @Override
+    public void addGame(GameEntity gameEntity) throws SQLException {
+        String updateGame = "INSERT INTO Game (startTime, endTime, idGameMode) " +
+                "VALUES ('"+gameEntity.getStartTime()+"', '"+gameEntity.getEndTime()+"', "+gameEntity.getGameMode().getId()+");";
+
+        Connection connection = ConnectionPool.getConnection();
+        PreparedStatement statement = connection.prepareStatement(updateGame,Statement.RETURN_GENERATED_KEYS);
+        statement.addBatch(updateGame);
+
+        ResultSet keys = statement.getGeneratedKeys();
+
+        int idGame = -1;
+        if(keys.next()){
+            idGame = keys.getInt(0);
+        }
+>>>>>>> master
 
         String query = queryBuilder.toString();
 
@@ -35,6 +52,7 @@ public class GameDAOImpl implements GameDAO {
             Connection connection = ConnectionPool.getConnection();
             Statement statement = connection.createStatement();
 
+<<<<<<< HEAD
             rs = statement.executeQuery(query);
             while (rs.next()) {
                 try {
@@ -43,6 +61,10 @@ public class GameDAOImpl implements GameDAO {
                     g.setStartTime(rs.getTimestamp("startTime"));
                     g.setEndTime(rs.getTimestamp("endTime"));
                     int gamemodeId = rs.getInt("idGameMode");
+=======
+            String updateGameParticipation = "INSERT INTO GameParticipation "+
+                    "VALUES ("+idGame+", "+gp.getIdSnake()+", "+gp.getScore()+", "+gp.getKillCount()+", "+gp.getDeathCount()+");";
+>>>>>>> master
 
                     Optional<GameModeEntity> gameModeEntityOptional = daoFactory.getGameModeDAO().getGameMode(gamemodeId);
                     if (gameModeEntityOptional.isPresent()) {

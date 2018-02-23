@@ -15,7 +15,7 @@
           action="<c:url value="/register/"/>" novalidate>
         <div class="form-group">
             <label for="<c:out value="${ids['email']}"/>">Email</label>
-            <input type="email" id="<c:out value="${ids['email']}"/>" class="form-control" required/>
+            <input type="email" id="<c:out value="${ids['email']}"/>" name="<c:out value="${ids['email']}"/>" class="form-control" required/>
             <small id="<c:out value="${ids['email']}.help"/>" class="form-text text-muted">We'll never share your email
                 with anyone else.
             </small>
@@ -25,7 +25,7 @@
         </div>
         <div class="form-group">
             <label for="<c:out value="${ids['accountName']}"/>">Account Name</label>
-            <input type="text" id="<c:out value="${ids['accountName']}"/>" class="form-control"
+            <input type="text" id="<c:out value="${ids['accountName']}"/>" name="<c:out value="${ids['accountName']}"/>" class="form-control"
                    placeholder="Account Name (6-30 characters)" required minlength="6" maxlength="30"/>
             <small id="<c:out value="${ids['accountName']}.help"/>" class="form-text text-muted">This is the name
                 you'll use to log in with. It will not be displayed to the other players
@@ -36,7 +36,7 @@
         </div>
         <div class="form-group">
             <label for="<c:out value="${ids['alias']}"/>">Alias</label>
-            <input type="text" id="<c:out value="${ids['alias']}"/>" class="form-control"
+            <input type="text" id="<c:out value="${ids['alias']}"/>" name="<c:out value="${ids['alias']}"/>" class="form-control"
                    placeholder="Your alias (6-30 characters)" required minlength="6" maxlength="30"/>
             <small id="<c:out value="${ids['alias']}.help"/>" class="form-text text-muted">This is the name you'll be
                 displaying to the world. Don't worry, you can change it later
@@ -47,7 +47,7 @@
         </div>
         <div class="form-group">
             <label for="<c:out value="${ids['password']}"/>">Password</label>
-            <input type="password" id="<c:out value="${ids['password']}"/>" class="form-control" required
+            <input type="password" id="<c:out value="${ids['password']}"/>" name="<c:out value="${ids['password']}"/>" class="form-control" required
                    minlength="6"/>
             <div class="invalid-feedback">
                 Please enter a valid password (min 6 characters).
@@ -55,7 +55,7 @@
         </div>
         <div class="form-group">
             <label for="<c:out value="${ids['confirmation']}"/>">Check Password</label>
-            <input type="password" id="<c:out value="${ids['confirmation']}"/>" class="form-control" required
+            <input type="password" id="<c:out value="${ids['confirmation']}"/>" name="<c:out value="${ids['confirmation']}"/>" class="form-control" required
                    minlength="6"/>
             <div class="invalid-feedback">
                 Password do not match.

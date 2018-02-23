@@ -68,8 +68,6 @@ public class UserDAOImpl implements UserDAO {
         String updateUser = "INSERT INTO User (alias, email, accountName, password) " +
                 "VALUES ('" + userEntity.getAlias() + "', '" + userEntity.getEmail() + "', '" + userEntity.getAccountName() + "', '" + userEntity.getPassword() + "');";
 
-        System.out.println(updateUser);
-
         Connection connection = ConnectionPool.getConnection();
         Statement statement = connection.createStatement();
         statement.addBatch(updateUser);
