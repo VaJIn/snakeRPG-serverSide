@@ -3,7 +3,9 @@ package fr.vajin.snakerpg.database.entities;
 import com.google.common.collect.ImmutableSet;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 public class GameEntity {
 
@@ -69,6 +71,16 @@ public class GameEntity {
 
     public void setParticipationEntitySet(Set<GameParticipationEntity> participationEntitySet) {
         this.participationEntitySet = new HashSet<>(participationEntitySet);
+        for (GameParticipationEntity gameParticipationEntity : this.participationEntitySet) {
+            gameParticipationEntity.setGame(this);
+        }
+    }
+
+    protected void addGameParticipation(GameParticipationEntity gameParticipationEntity) {
+        if (!this.participationEntitySet.contains(gameParticipationEntity)) {
+            this.participationEntitySet.add(gameParticipationEntity);
+            gameParticipationEntity.setGame(this);
+        }
     }
 
     @Override

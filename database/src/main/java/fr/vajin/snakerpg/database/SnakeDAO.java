@@ -12,6 +12,9 @@ public interface SnakeDAO {
 
     Optional<SnakeEntity> getSnakeById(int id);
 
+    Optional<SnakeEntity> getSnakeById(int id, boolean retrieveUserEntity);
+
     Collection<SnakeEntity> getSnakeByUser(int userId);
 
+    Collection<SnakeEntity> getSnakeByUser(int userId, boolean retrieveUserEntity);
 }

@@ -4,7 +4,6 @@ import fr.vajin.snakerpg.database.*;
 
 public class DAOFactoryImpl implements DAOFactory{
 
-
     @Override
     public UserDAO getUserDAO() {
         return new UserDAOImpl(this);
