@@ -3,6 +3,7 @@ package fr.vajin.snakerpg.database.entities;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class UserEntity {
 
@@ -11,7 +12,7 @@ public class UserEntity {
     private String accountName;
     private String alias;
     private String password;
-    private Collection<SnakeEntity> snakes;
+    private Set<SnakeEntity> snakes;
 
     public UserEntity() {
         id = -1;
@@ -19,7 +20,7 @@ public class UserEntity {
         accountName = "";
         alias = "";
         password = "";
-        snakes = new HashSet<>();
+        snakes = null;
     }
 
     public UserEntity(int id, String alias, String email, String accountName, String password) {
@@ -71,12 +72,24 @@ public class UserEntity {
         this.password = password;
     }
 
-    public Collection<SnakeEntity> getSnakes() {
+    public Set<SnakeEntity> getSnakes() {
         return snakes;
     }
 
     public void setSnakes(Collection<SnakeEntity> snakes) {
-        this.snakes = snakes;
+        this.snakes = new HashSet<>(snakes);
+        for (SnakeEntity snake : this.snakes) {
+            if (snake.getUser() != this) {
+                snake.setUser(this);
+            }
+        }
+    }
+
+    public void addSnake(SnakeEntity snakeEntity) {
+        if (snakeEntity.getUser() != this) {
+            snakeEntity.setUser(this);
+        }
+        this.snakes.add(snakeEntity);
     }
 
     @Override

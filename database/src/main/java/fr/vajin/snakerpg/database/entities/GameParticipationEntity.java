@@ -77,7 +77,11 @@ public class GameParticipationEntity {
     }
 
     public void setGame(GameEntity game) {
-        this.game = game;
+        if (this.game != game) {
+            this.game = game;
+            this.idGame = game.getId();
+            game.addGameParticipation(this);
+        }
     }
 
     public SnakeEntity getSnake() {
