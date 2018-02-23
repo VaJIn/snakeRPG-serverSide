@@ -38,12 +38,13 @@ public class RegistrationServlet extends HttpServlet {
 
         if(userEntity!=null){
             if(formLogic.getErrors().isEmpty()){
-                response.getWriter().println("Votre compte a bien été créé.");
                 try {
                     DAOFactoryProvider.getDAOFactory().getUserDAO().addUser(userEntity);
+                    response.getWriter().println("Votre compte a bien été créé.");
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    e.printStackTrace(response.getWriter());
                 }
+//                this.getServletContext().getRequestDispatcher("/home").forward(request,response);
             }
             else{
                 for(Map.Entry<String, String> error : formLogic.getErrors().entrySet()){
@@ -54,8 +55,6 @@ public class RegistrationServlet extends HttpServlet {
         else{
             response.getWriter().println("Une erreur est survenue.");
         }
-
-        this.getServletContext().getRequestDispatcher(VIEW).forward(request,response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
