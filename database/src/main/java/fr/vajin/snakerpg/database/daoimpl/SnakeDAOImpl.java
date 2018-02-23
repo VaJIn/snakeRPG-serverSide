@@ -1,10 +1,15 @@
 package fr.vajin.snakerpg.database.daoimpl;
 
-import fr.vajin.snakerpg.database.*;
-import fr.vajin.snakerpg.database.entities.SnakeClassEntity;
+import fr.vajin.snakerpg.database.ConnectionPool;
+import fr.vajin.snakerpg.database.DAOFactory;
+import fr.vajin.snakerpg.database.SnakeDAO;
 import fr.vajin.snakerpg.database.entities.SnakeEntity;
+import fr.vajin.snakerpg.database.entities.UserEntity;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.*;
 
 public class SnakeDAOImpl implements SnakeDAO {
@@ -13,7 +18,6 @@ public class SnakeDAOImpl implements SnakeDAO {
 
     public SnakeDAOImpl(DAOFactory daoFactory){
         this.daoFactory = daoFactory;
-
     }
 
     @Override
@@ -29,39 +33,12 @@ public class SnakeDAOImpl implements SnakeDAO {
         connection.close();
     }
 
-    @Override
-    public Optional<SnakeEntity> getSnakeById(int id) {
+    private Collection<SnakeEntity> getSnakeByCondition(String condition, boolean retrieveUserEntity) {
         String query = "SELECT *" +
-                "FROM Snake " +
-                "WHERE id="+id;
+                " FROM Snake " +
+                " WHERE " + condition + ";";
 
-        query+=";";
-        SnakeEntity out = null;
-
-        try {
-            Connection connection = ConnectionPool.getConnection();
-            Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery(query);
-
-            if (rs.next()){
-                out = resultSetToSnakeEntity(rs);
-            }
-            connection.close();
-        } catch (SQLException e) {
-            return null;
-        }
-
-        return Optional.ofNullable(out);
-    }
-
-    @Override
-    public Collection<SnakeEntity> getSnakeByUser(int userId) {
-        String query = "SELECT * " +
-                "FROM Snake " +
-                "WHERE userId= "+userId;
-
-        query+=";";
-        Collection<SnakeEntity> out = new ArrayList<>();
+        Collection<SnakeEntity> out = new HashSet<>();
 
         try {
             Connection connection = ConnectionPool.getConnection();
@@ -85,7 +62,56 @@ public class SnakeDAOImpl implements SnakeDAO {
             return null;
         }
 
+        if (retrieveUserEntity) {
+            Map<Integer, UserEntity> userEntityCache = new HashMap<>();
+
+            for (SnakeEntity snakeEntity : out) {
+                UserEntity user = userEntityCache.get(snakeEntity.getUserId());
+                if (user == null) {
+                    Optional<UserEntity> opt = daoFactory.getUserDAO().getUser(snakeEntity.getUserId(), false);
+                    if (opt.isPresent()) {
+                        user = opt.get();
+                        userEntityCache.put(user.getId(), user);
+                    }
+                }
+                snakeEntity.setUser(user);
+            }
+        }
+
         return out;
+    }
+
+    @Override
+    public Optional<SnakeEntity> getSnakeById(int id, boolean retrieveUserEntity) {
+        String condition = " id = " + id;
+
+        Collection<SnakeEntity> results = getSnakeByCondition(condition, retrieveUserEntity);
+
+        if (results != null) {
+            Iterator<SnakeEntity> it = results.iterator();
+            if (it.hasNext()) {
+                return Optional.of(it.next());
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<SnakeEntity> getSnakeById(int id) {
+        return getSnakeById(id, true);
+    }
+
+    @Override
+    public Collection<SnakeEntity> getSnakeByUser(int userId, boolean retrieveUserEntity) {
+        String condition = "userId= " + userId;
+
+        return getSnakeByCondition(condition, retrieveUserEntity);
+    }
+
+
+    @Override
+    public Collection<SnakeEntity> getSnakeByUser(int userId) {
+        return getSnakeByUser(userId, true);
     }
 
     private SnakeEntity resultSetToSnakeEntity(ResultSet rs) throws SQLException{
@@ -97,8 +123,14 @@ public class SnakeDAOImpl implements SnakeDAO {
         byte[] info = rs.getBytes("info");
         int idSnakeClass = rs.getInt("idSnakeClass");
 
-        UserDAO userDAO = this.daoFactory.getUserDAO();
-        SnakeClassDAO snakeClassDAO = this.daoFactory.getSnakeClassDAO();
-        return new SnakeEntity(id, name, exp, info, userDAO.getUser(userId).get(), snakeClassDAO.getSnakeClassById(idSnakeClass).orElse(new SnakeClassEntity()));
+        SnakeEntity entity = new SnakeEntity();
+        entity.setId(id);
+        entity.setUserId(userId);
+        entity.setName(name);
+        entity.setExpPoint(exp);
+        entity.setInfo(info);
+        entity.setSnakeClassId(idSnakeClass);
+
+        return entity;
     }
 }

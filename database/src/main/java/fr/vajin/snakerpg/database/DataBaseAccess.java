@@ -21,7 +21,7 @@ public interface DataBaseAccess {
     UserEntity getUser(int id);
 
     /**
-     * Return all user matching the given Pseudo.
+     * Return all user matching the given alias.
      *
      * @param alias
      * @return a collection of all users matching the given pseudo

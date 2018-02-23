@@ -80,7 +80,9 @@ public class GameParticipationEntity {
         if (this.game != game) {
             this.game = game;
             this.idGame = game.getId();
-            game.addGameParticipation(this);
+            if (!game.getParticipationEntitySet().contains(this)) {
+                game.addGameParticipation(this);
+            }
         }
     }
 
