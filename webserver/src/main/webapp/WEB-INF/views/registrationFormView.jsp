@@ -11,55 +11,115 @@
 
 
 <div class=" border bg-light">
-    <form id="<c:out value="${id['formName']}"/>" class="needs-validation p-2" method="post"
+    <form id="<c:out value="${id['formName']}"/>"
+          <c:choose>
+                <c:when test="${oldValues==null}">
+                       class="needs-validation"
+                </c:when>
+          </c:choose>
+          method="post"
           action="<c:url value="/register/"/>" novalidate>
         <div class="form-group">
             <label for="<c:out value="${id['email']}"/>">Email</label>
-            <input type="email" id="<c:out value="${id['email']}"/>" name="<c:out value="${id['email']}"/>" class="form-control" required value="<c:out value="${oldValues['email']}" default=""/>"/>
+            <input type="email" id="[<c:out value="${id['form']}"/>]<c:out value="${id['email']}"/>" name="<c:out value="${id['email']}"/>"
+                   <c:choose>
+                       <c:when test="${oldValues['email']==null}">
+                           class="form-control"
+                       </c:when>
+                       <c:when test="${error['email']==null}">
+                           class="form-control is-valid"
+                       </c:when>
+                       <c:otherwise>
+                           class="form-control is-invalid"
+                       </c:otherwise>
+                   </c:choose>
+                   required value="<c:out value="${oldValues['email']}" default=""/>"/>
+            <span class="invalid-feedback"><c:out value="${error['email']}" default="Please enter a valid email address."/></span>
             <small id="<c:out value="${id['email']}.help"/>" class="form-text text-muted">We'll never share your email
                 with anyone else.
             </small>
-            <div class="invalid-feedback">
-                Please enter a valid email.
-            </div>
         </div>
         <div class="form-group">
             <label for="<c:out value="${id['accountName']}"/>">Account Name</label>
-            <input type="text" id="<c:out value="${id['accountName']}"/>" name="<c:out value="${id['accountName']}"/>" class="form-control"
+            <input type="text" id="[<c:out value="${id['form']}"/>]<c:out value="${id['accountName']}"/>" name="<c:out value="${id['accountName']}"/>"
+                    <c:choose>
+                        <c:when test="${oldValues['accountName']==null}">
+                            class="form-control"
+                        </c:when>
+                        <c:when test="${error['accountName']==null}">
+                            class="form-control is-valid"
+                        </c:when>
+                        <c:otherwise>
+                            class="form-control is-invalid"
+                        </c:otherwise>
+                    </c:choose>
+                    required value="<c:out value="${oldValues['accountName']}" default=""/>"
                    placeholder="Account Name (6-30 characters)" required minlength="6" maxlength="30"/>
+            <span class="invalid-feedback"><c:out value="${error['accountName']}"/></span>
+
             <small id="<c:out value="${id['accountName']}.help"/>" class="form-text text-muted">This is the name
                 you'll use to log in with. It will not be displayed to the other players
             </small>
-            <div class="invalid-feedback">
-                Please enter a valid account name (6-30 characters).
-            </div>
+
         </div>
         <div class="form-group">
             <label for="<c:out value="${id['alias']}"/>">Alias</label>
-            <input type="text" id="<c:out value="${id['alias']}"/>" name="<c:out value="${id['alias']}"/>" class="form-control"
+            <input type="text" id="[<c:out value="${id['form']}"/>]<c:out value="${id['alias']}"/>" name="<c:out value="${id['alias']}"/>"
+                    <c:choose>
+                        <c:when test="${oldValues['alias']==null}">
+                            class="form-control"
+                        </c:when>
+                        <c:when test="${error['alias']==null}">
+                            class="form-control is-valid"
+                        </c:when>
+                        <c:otherwise>
+                            class="form-control is-invalid"
+                        </c:otherwise>
+                    </c:choose>
+                   required value="<c:out value="${oldValues['alias']}" default=""/>"
                    placeholder="Your alias (6-30 characters)" required minlength="6" maxlength="30"/>
+            <span class="invalid-feedback"><c:out value="${error['alias']}"/></span>
             <small id="<c:out value="${id['alias']}.help"/>" class="form-text text-muted">This is the name you'll be
                 displaying to the world. Don't worry, you can change it later
             </small>
-            <div class="invalid-feedback">
-                Please enter a valid alias (6-30 characters).
-            </div>
+
         </div>
         <div class="form-group">
             <label for="<c:out value="${id['password']}"/>">Password</label>
-            <input type="password" id="<c:out value="${id['password']}"/>" name="<c:out value="${id['password']}"/>" class="form-control" required
+            <input type="password" id="[<c:out value="${id['form']}"/>]<c:out value="${id['password']}"/>" name="<c:out value="${id['password']}"/>"
+                    <c:choose>
+                        <c:when test="${oldValues['password']==null}">
+                            class="form-control"
+                        </c:when>
+                        <c:when test="${error['password']==null}">
+                            class="form-control is-valid"
+                        </c:when>
+                        <c:otherwise>
+                            class="form-control is-invalid"
+                        </c:otherwise>
+                    </c:choose>
+                   required
                    minlength="6"/>
-            <div class="invalid-feedback">
-                Please enter a valid password (min 6 characters).
-            </div>
+            <span class="invalid-feedback"><c:out value="${error['password']}"/></span>
         </div>
         <div class="form-group">
             <label for="<c:out value="${id['confirmation']}"/>">Check Password</label>
-            <input type="password" id="<c:out value="${id['confirmation']}"/>" name="<c:out value="${id['confirmation']}"/>" class="form-control" required
+            <input type="password" id="[<c:out value="${id['form']}"/>]<c:out value="${id['confirmation']}"/>"
+                   name="<c:out value="${id['confirmation']}"/>"
+                    <c:choose>
+                        <c:when test="${oldValues['confirmation']==null}">
+                            class="form-control"
+                        </c:when>
+                        <c:when test="${error['confirmation']==null}">
+                            class="form-control is-valid"
+                        </c:when>
+                        <c:otherwise>
+                            class="form-control is-invalid"
+                        </c:otherwise>
+                    </c:choose>
+                   required
                    minlength="6"/>
-            <div class="invalid-feedback">
-                Password do not match.
-            </div>
+            <span class="invalid-feedback"><c:out value="${error['confirmation']}"/></span>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
         <button type="reset" class="btn btn-secondary">Reset</button>

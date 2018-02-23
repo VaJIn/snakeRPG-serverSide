@@ -39,7 +39,7 @@
                         <a class="nav-link" href="<c:url value="/login/"/>">Log in</a>
                     </c:when>
                     <c:otherwise>
-                        <a class="nav-link" href="<c:url value="/logout" />"> Log out (<c:out
+                        <a class="nav-link" href="<c:url value="/logout/" />"> Log out (<c:out
                                 value="${user.accountName}" default="$user.accountName"/> ) </a>
                     </c:otherwise>
                 </c:choose>

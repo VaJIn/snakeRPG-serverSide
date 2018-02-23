@@ -37,18 +37,7 @@ public class LoginServlet extends HttpServlet {
         LoginFormLogic formLogic = new LoginFormLogic();
 
         Optional<UserEntity> userEntity = formLogic.logInUser(request);
-        if (userEntity.isPresent())
-            response.getWriter().write(userEntity.get().toString());
-        else {
-            response.getWriter().println("Null user");
-            if (formLogic.getErrors().isEmpty()) {
-                response.getWriter().println("No error");
-            } else {
-                for (Map.Entry<String, String> error : formLogic.getErrors().entrySet()) {
-                    response.getWriter().println(error.getKey() + " > " + error.getValue());
-                }
-            }
-        }
+
         if (userEntity.isPresent()) {
             HttpSession session = request.getSession();
 
@@ -56,9 +45,11 @@ public class LoginServlet extends HttpServlet {
 
             response.sendRedirect("/home");
         } else {
-            if (formLogic.getErrors().isEmpty())
+            if (formLogic.getErrors().isEmpty()) {
                 formLogic.getErrors().put("login", "Wrong account name or password");
+            }
 
+            request.setAttribute("oldValues", formLogic.getValues());
             request.setAttribute("error", formLogic.getErrors());
             request.setAttribute("id", idsMap);
             this.getServletContext().getRequestDispatcher(VIEW).forward(request, response);

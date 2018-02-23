@@ -40,16 +40,17 @@ public class RegistrationServlet extends HttpServlet {
             if(formLogic.getErrors().isEmpty()){
                 try {
                     FactoryProvider.getDAOFactory().getUserDAO().addUser(userEntity);
-                    response.getWriter().println("Votre compte a bien été créé.");
+                    this.getServletContext().getRequestDispatcher("/WEB-INF/registrationConfirmation.jsp").forward(request,response);
                 } catch (SQLException e) {
                     e.printStackTrace(response.getWriter());
                 }
-//                this.getServletContext().getRequestDispatcher("/home").forward(request,response);
             }
             else{
-                for(Map.Entry<String, String> error : formLogic.getErrors().entrySet()){
-                    response.getWriter().println(error.getKey()+" : "+error.getValue());
-                }
+                request.setAttribute("id",idsMap);
+                request.setAttribute("error", formLogic.getErrors());
+                request.setAttribute("oldValues", formLogic.getValues());
+
+                this.getServletContext().getRequestDispatcher(VIEW).forward(request,response);
             }
         }
         else{
