@@ -78,8 +78,6 @@ public class RegistrationFormLogic {
         userEntity.setEmail(email);
         userEntity.setPassword(password);
 
-
-
         return userEntity;
     }
 
@@ -111,6 +109,7 @@ public class RegistrationFormLogic {
         if (accountName.length() < MIN_LENGTH_ACCOUNT_NAME || accountName.length() > MAX_LENGTH_ACCOUNT_NAME) {
             throw new Exception("Account name must have between " + MIN_LENGTH_ACCOUNT_NAME + " and " + MAX_LENGTH_ACCOUNT_NAME + " characters.");
         }
+        
     }
 
     public static final String ERROR_NULL_PASSWORD = "Please enter and confirm your password";

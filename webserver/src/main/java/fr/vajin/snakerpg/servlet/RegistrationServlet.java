@@ -1,6 +1,6 @@
 package fr.vajin.snakerpg.servlet;
 
-import fr.vajin.snakerpg.database.DAOFactoryProvider;
+import fr.vajin.snakerpg.FactoryProvider;
 import fr.vajin.snakerpg.database.entities.UserEntity;
 import fr.vajin.snakerpg.form.RegistrationFormLogic;
 
@@ -39,7 +39,7 @@ public class RegistrationServlet extends HttpServlet {
         if(userEntity!=null){
             if(formLogic.getErrors().isEmpty()){
                 try {
-                    DAOFactoryProvider.getDAOFactory().getUserDAO().addUser(userEntity);
+                    FactoryProvider.getDAOFactory().getUserDAO().addUser(userEntity);
                     response.getWriter().println("Votre compte a bien été créé.");
                 } catch (SQLException e) {
                     e.printStackTrace(response.getWriter());
@@ -59,7 +59,7 @@ public class RegistrationServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        request.setAttribute("ids", idsMap);
+        request.setAttribute("id", idsMap);
 
         this.getServletContext().getRequestDispatcher(VIEW).forward(request, response);
 

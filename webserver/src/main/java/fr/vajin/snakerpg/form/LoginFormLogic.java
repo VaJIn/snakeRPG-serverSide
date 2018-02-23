@@ -1,11 +1,12 @@
 package fr.vajin.snakerpg.form;
 
-import fr.vajin.snakerpg.database.DataBaseAccess;
+import fr.vajin.snakerpg.FactoryProvider;
 import fr.vajin.snakerpg.database.entities.UserEntity;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class LoginFormLogic {
 
@@ -15,10 +16,7 @@ public class LoginFormLogic {
     public static String ERROR_NO_ACCOUNT_NAME = "Please enter your account name to log in";
     public static String ERROR_NO_PASSWORD = "Please enter your password to log in";
     Map<String, String> errors;
-    private DataBaseAccess dataBaseAccess;
-
-    public LoginFormLogic(DataBaseAccess dataBaseAccess) {
-        this.dataBaseAccess = dataBaseAccess;
+    public LoginFormLogic() {
         this.errors = new HashMap<>();
     }
 
@@ -34,7 +32,7 @@ public class LoginFormLogic {
         }
     }
 
-    public UserEntity logInUser(HttpServletRequest request) {
+    public Optional<UserEntity> logInUser(HttpServletRequest request) {
         this.errors = new HashMap<>();
 
         String accountName = request.getParameter(CHAMP_ACCOUNT_NAME);
@@ -52,7 +50,7 @@ public class LoginFormLogic {
             this.errors.put(CHAMP_PASSWORD, e.getMessage());
         }
 
-        return dataBaseAccess.getUser(accountName, password);
+        return FactoryProvider.getDAOFactory().getUserDAO().getUser(accountName, password);
     }
 
     public Map<String, String> getErrors() {

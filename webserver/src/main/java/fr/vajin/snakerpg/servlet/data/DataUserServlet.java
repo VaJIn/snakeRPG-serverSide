@@ -1,6 +1,6 @@
 package fr.vajin.snakerpg.servlet.data;
 
-import fr.vajin.snakerpg.DAO;
+import fr.vajin.snakerpg.FactoryProvider;
 import fr.vajin.snakerpg.database.entities.SnakeEntity;
 import fr.vajin.snakerpg.database.entities.UserEntity;
 import org.json.simple.JSONArray;
@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 public class DataUserServlet extends HttpServlet {
 
@@ -27,18 +28,18 @@ public class DataUserServlet extends HttpServlet {
             return;
         }
 
-        UserEntity user = DAO.getInstance().getAccessor().getUser(id);
+        Optional<UserEntity> user = FactoryProvider.getDAOFactory().getUserDAO().getUser(id);
 
-        if (user == null) {
+        if (!user.isPresent()) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
 
         JSONObject object = new JSONObject();
 
-        object.put("id", user.getId());
-        object.put("alias", user.getAlias());
+        object.put("id", user.get().getId());
+        object.put("alias", user.get().getAlias());
         JSONArray snakesJSON = new JSONArray();
-        for (SnakeEntity entity : user.getSnakes()) {
+        for (SnakeEntity entity : user.get().getSnakes()) {
             JSONObject snake = new JSONObject();
             snake.put("id", entity.getId());
             snake.put("name", entity.getName());

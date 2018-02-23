@@ -1,8 +1,9 @@
-package fr.vajin.snakerpg.database;
+package fr.vajin.snakerpg;
 
+import fr.vajin.snakerpg.database.DAOFactory;
 import fr.vajin.snakerpg.database.daoimpl.DAOFactoryImpl;
 
-public class DAOFactoryProvider {
+public class FactoryProvider {
 
     private static DAOFactory factory = new DAOFactoryImpl();
 
