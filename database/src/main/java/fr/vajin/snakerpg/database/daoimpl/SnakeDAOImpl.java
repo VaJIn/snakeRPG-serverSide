@@ -1,8 +1,13 @@
 package fr.vajin.snakerpg.database.daoimpl;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import fr.vajin.snakerpg.database.ConnectionPool;
 import fr.vajin.snakerpg.database.DAOFactory;
+import fr.vajin.snakerpg.database.SnakeClassDAO;
 import fr.vajin.snakerpg.database.SnakeDAO;
+import fr.vajin.snakerpg.database.entities.SnakeClassEntity;
 import fr.vajin.snakerpg.database.entities.SnakeEntity;
 import fr.vajin.snakerpg.database.entities.UserEntity;
 
@@ -11,6 +16,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 public class SnakeDAOImpl implements SnakeDAO {
 
@@ -77,6 +83,23 @@ public class SnakeDAOImpl implements SnakeDAO {
                     }
                 }
                 snakeEntity.setUser(user);
+            }
+        }
+
+        SnakeClassDAO snakeClassDAO = daoFactory.getSnakeClassDAO();
+        //Retrieve SnakeClass
+        LoadingCache<Integer, SnakeClassEntity> cache = CacheBuilder.newBuilder().build(new CacheLoader<Integer, SnakeClassEntity>() {
+            @Override
+            public SnakeClassEntity load(Integer key) throws Exception {
+                Optional<SnakeClassEntity> optional = snakeClassDAO.getSnakeClassById(key);
+                return optional.orElse(new SnakeClassEntity());
+            }
+        });
+        for (SnakeEntity snakeEntity : out) {
+            try {
+                snakeEntity.setSnakeClass(cache.get(snakeEntity.getSnakeClassId()));
+            } catch (ExecutionException e) {
+                //TODO log
             }
         }
 
