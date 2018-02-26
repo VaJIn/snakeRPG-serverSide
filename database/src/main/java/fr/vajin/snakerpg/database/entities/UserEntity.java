@@ -1,5 +1,7 @@
 package fr.vajin.snakerpg.database.entities;
 
+import com.google.common.collect.ImmutableSet;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
@@ -73,7 +75,7 @@ public class UserEntity {
     }
 
     public Set<SnakeEntity> getSnakes() {
-        return snakes;
+        return ImmutableSet.copyOf(snakes);
     }
 
     public void setSnakes(Collection<SnakeEntity> snakes) {
