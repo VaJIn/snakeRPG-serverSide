@@ -8,57 +8,65 @@
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
+<jsp:useBean id="gameEntity" type="fr.vajin.snakerpg.database.entities.GameEntity" scope="request"/>
 
 <div class="row">
     <!-- List group -->
-    <div class="col-4 list-group" id="myList" role="tablist">
-        <a class="list-group-item list-group-item-action active" data-toggle="list" href="#game${game.id}-sb"
+    <div class="col-4 list-group" id="game${gameEntity.id}" role="tablist">
+        <a class="list-group-item list-group-item-action active" data-toggle="list" href="#game${gameEntity.id}-sb"
            role="tab">Scoreboard</a>
-        <a class="list-group-item list-group-item-action" data-toggle="list" href="#game${game.id}-info"
+        <a class="list-group-item list-group-item-action" data-toggle="list" href="#game${gameEntity.id}-info"
            role="tab">Info</a>
     </div>
 
     <!-- Tab panes -->
     <div class="col-8 tab-content">
-        <div class="tab-pane active" id="game${game.id}-sb" role="tabpanel">
+        <div class="tab-pane active" id="game${gameEntity.id}-sb" role="tabpanel">
             <table class="table table-bordered">
-                <thead class="thead-light">
-                <th scope="col" style="max-width: 99%; font-size: 120%">Player</th>
-                <th scope="col" style="font-size: 120%">Score</th>
-                <th scope="col" style="font-size: 120%">Kill</th>
-                <th scope="col" style="font-size: 120%">Death</th>
-                </thead>
-                <c:forEach var="i" begin="1" end="5" step="1">
+                <tr class="thead-light">
+                    <th scope="col" style="max-width: 99%; font-size: 120%">Player</th>
+                    <th scope="col" style="font-size: 120%">Score</th>
+                    <th scope="col" style="font-size: 120%">Kill</th>
+                    <th scope="col" style="font-size: 120%">Death</th>
+                </tr>
+                <c:forEach var="gp" items="${gameEntity.participationEntitySet}">
                     <tr>
                         <td class="border p-1">
-                            <a href="<c:url value="/player/${i}" />">Dummy_${i}</a>
+                            <a href="<c:url value="/player/${gp.snake.userId}" />">
+                                <c:out value="${gp.snake.user.alias}" default="undefined_alias"/>
+                            </a>
+                            (<c:out value="${gp.snake.name}"/>)
                         </td>
                         <td class="border text-right p-1">
-                            6969
+                            <c:out value="${gp.score}" default="-1"/>
                         </td>
                         <td class="border text-right p-1">
-                            5
+                            <c:out value="${gp.killCount}" default="-1"/>
                         </td>
                         <td class="border text-right p-1">
-                            3
+                            <c:out value="${gp.deathCount}" default="-1"/>
                         </td>
                     </tr>
                 </c:forEach>
             </table>
         </div>
-        <div class="tab-pane" id="game${game.id}-info" role="tabpanel">
+        <div class="tab-pane" id="game${gameEntity.id}-info" role="tabpanel">
             <table class="table table-bordered">
                 <tr>
                     <th scope="row">Gamemode</th>
-                    <td>${game.gameMode}</td>
+                    <td>${gameEntity.gameMode.name}</td>
                 </tr>
                 <tr>
                     <th scope="row">Start time</th>
-                    <td>${game.startTime}</td>
+                    <td>${gameEntity.startTime}</td>
                 </tr>
                 <tr>
                     <th scope="row">End time</th>
-                    <td>${game.endTime}</td>
+                    <td>${gameEntity.endTime}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Game size</th>
+                    <td>${gameEntity.participationEntitySet.size()} players</td>
                 </tr>
             </table>
         </div>
