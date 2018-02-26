@@ -47,6 +47,7 @@ public class DataUserServlet extends HttpServlet {
 
     }
 
+
     public String getUserJSON(){
         return this.userJSON;
     }

@@ -52,6 +52,10 @@
         <servlet-name>DataGameServlet</servlet-name>
         <servlet-class>fr.vajin.snakerpg.servlet.data.DataGameServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DataGameParticipationServlet</servlet-name>
+        <servlet-class>fr.vajin.snakerpg.servlet.data.DataGameParticipationServlet</servlet-class>
+    </servlet>
 
 
     <servlet-mapping>
@@ -89,5 +93,9 @@
     <servlet-mapping>
         <servlet-name>DataGameServlet</servlet-name>
         <url-pattern>/data/game</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DataGameParticipationServlet</servlet-name>
+        <url-pattern>/data/gameparticipation</url-pattern>
     </servlet-mapping>
 </web-app>
