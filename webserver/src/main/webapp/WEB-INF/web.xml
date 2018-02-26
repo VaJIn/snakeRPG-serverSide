@@ -4,6 +4,10 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
 
+    <listener>
+        <listener-class>fr.vajin.snakerpg.ShutDownContextListener</listener-class>
+    </listener>
+
     <servlet>
         <servlet-name>MainPageServlet</servlet-name>
         <servlet-class>fr.vajin.snakerpg.servlet.MainPageServlet</servlet-class>
