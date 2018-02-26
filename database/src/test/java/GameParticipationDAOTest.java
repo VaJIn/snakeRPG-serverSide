@@ -38,10 +38,12 @@ public class GameParticipationDAOTest {
         /*Check is ordered by score desc, and that every GameParticipation has the same GameEntity object*/
         Iterator<GameParticipationEntity> it = results.iterator();
         GameParticipationEntity other = it.next();
+        GameParticipationEntity current = other;
         GameEntity game = other.getGame();
         Assertions.assertNotNull(game);
         while (it.hasNext()) {
-            GameParticipationEntity current = it.next();
+            Assertions.assertEquals(2, current.getIdGame());
+            current = it.next();
             Assertions.assertTrue(other.getScore() >= current.getScore());
             other = current;
         }

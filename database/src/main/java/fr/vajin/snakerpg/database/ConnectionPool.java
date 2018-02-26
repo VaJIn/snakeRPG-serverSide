@@ -12,6 +12,7 @@ public class ConnectionPool {
 
     private static ConnectionPool ourInstance = new ConnectionPool();
     private BoneCP connectionPool;
+    private boolean opened;
 
     public static ConnectionPool getInstance() {
         return ourInstance;
@@ -34,6 +35,8 @@ public class ConnectionPool {
 
             connectionPool = new BoneCP(config);
 
+            opened = true;
+
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -41,5 +44,10 @@ public class ConnectionPool {
             e.printStackTrace();
         }
 
+    }
+
+    public void dispose() {
+        connectionPool.shutdown();
+        opened = false;
     }
 }

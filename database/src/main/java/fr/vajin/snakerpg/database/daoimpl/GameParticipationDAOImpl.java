@@ -1,9 +1,11 @@
 package fr.vajin.snakerpg.database.daoimpl;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import fr.vajin.snakerpg.database.ConnectionPool;
 import fr.vajin.snakerpg.database.DAOFactory;
 import fr.vajin.snakerpg.database.GameParticipationDAO;
-import fr.vajin.snakerpg.database.SnakeDAO;
 import fr.vajin.snakerpg.database.entities.GameEntity;
 import fr.vajin.snakerpg.database.entities.GameParticipationEntity;
 import fr.vajin.snakerpg.database.entities.SnakeEntity;
@@ -12,6 +14,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 
 public class GameParticipationDAOImpl implements GameParticipationDAO {
@@ -19,10 +22,8 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
     private DAOFactory daoFactory;
 
 
-    public GameParticipationDAOImpl(DAOFactory daoFactory){
+    public GameParticipationDAOImpl(DAOFactory daoFactory) {
         this.daoFactory = daoFactory;
-
-
     }
 
 
@@ -30,9 +31,9 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
     public List<GameParticipationEntity> getGameResultsByUser(int userId, int sortBy, Timestamp earliest, Timestamp latest) {
         String query = "SELECT gp.idGame idGame, gp.idSnake, gp.score, gp.killCount, gp.deathCount, g.id, g.startTime, g.endTime, g.idGameMode "
                 + "FROM GameParticipation gp "
-                + "JOIN (SELECT * FROM Game WHERE (startTime >'"+earliest+"') AND (startTime <'"+latest+"')) as g "
+                + "JOIN (SELECT * FROM Game WHERE (startTime >'" + earliest + "') AND (startTime <'" + latest + "')) as g "
                 + "ON gp.idGame  = g.id "
-                + "WHERE gp.idSnake in (SELECT id from Snake where userID="+userId+") "
+                + "WHERE gp.idSnake in (SELECT id from Snake where userID=" + userId + ") "
                 + sortBy(sortBy);
 
 
@@ -63,7 +64,7 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
                 + "FROM GameParticipation gp "
                 + "JOIN Game g ON gp.idGame  = g.id \n"
                 + "WHERE idSnake=" + snakeId + " "
-                +sortBy(sortBy);
+                + sortBy(sortBy);
 
         return gameParticipationQuery(query, true, true);
     }
@@ -79,8 +80,7 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
 
                 try {
                     gameResults.add(resultSetToGameParticipationEntity(rs));
-                }
-                catch(SQLException e){
+                } catch (SQLException e) {
                     //Means that a row of the sql table has incorrect value(s). Not returning null nor returning empty list so that the other
                     //potentially read rows are correctly retrieved.
                     e.printStackTrace();
@@ -93,17 +93,29 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
         }
 
         if (retrieveGameEntity || retrieveSnake) {
+            LoadingCache<Integer, Optional<GameEntity>> gameCache = CacheBuilder.newBuilder().build(new CacheLoader<Integer, Optional<GameEntity>>() {
+                @Override
+                public Optional<GameEntity> load(Integer key) throws Exception {
+                    return daoFactory.getGameDAO().getGame(key, false);
+                }
+            });
+            LoadingCache<Integer, Optional<SnakeEntity>> snakeCache = CacheBuilder.newBuilder().build(new CacheLoader<Integer, Optional<SnakeEntity>>() {
+                @Override
+                public Optional<SnakeEntity> load(Integer key) throws Exception {
+                    return daoFactory.getSnakeDAO().getSnakeById(key);
+                }
+            });
             for (GameParticipationEntity gp : gameResults) {
                 if (retrieveGameEntity) {
-                    Optional<GameEntity> optional = daoFactory.getGameDAO().getGame(gp.getIdGame(), false);
-                    if (optional.isPresent()) {
-                        gp.setGame(optional.get());
+                    try {
+                        gameCache.get(gp.getIdGame()).ifPresent(gameEntity -> gp.setGame(gameEntity));
+                    } catch (ExecutionException e) {
                     }
                 }
                 if (retrieveSnake) {
-                    Optional<SnakeEntity> optional = daoFactory.getSnakeDAO().getSnakeById(gp.getIdSnake());
-                    if (optional.isPresent()) {
-                        gp.setSnake(optional.get());
+                    try {
+                        snakeCache.get(gp.getIdSnake()).ifPresent(snakeEntity -> gp.setSnake(snakeEntity));
+                    } catch (ExecutionException e) {
                     }
                 }
             }
@@ -120,16 +132,19 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
         int killCount = rs.getInt("killCount");
         int deathCount = rs.getInt("deathCount");
 
+        GameParticipationEntity entity = new GameParticipationEntity();
 
-        //TODO à vérifier aussi
-        SnakeDAO snakeDAO = this.daoFactory.getSnakeDAO();
+        entity.setIdGame(idGame);
+        entity.setIdSnake(idSnake);
+        entity.setDeathCount(deathCount);
+        entity.setKillCount(killCount);
+        entity.setScore(score);
 
-        return new GameParticipationEntity(idGame, idSnake, score, killCount, deathCount, new GameEntity(), snakeDAO.getSnakeById(idSnake).get());
-
+        return entity;
     }
 
-    private String sortBy(int sortBy){
-        switch (sortBy){
+    private String sortBy(int sortBy) {
+        switch (sortBy) {
             case DAOFactory.SORT_BY_EARLIEST_DATE:
                 return "ORDER BY g.startTime;";
             case DAOFactory.SORT_BY_LATEST_DATE:

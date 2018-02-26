@@ -76,6 +76,17 @@ public class GameParticipationEntity {
         return game;
     }
 
+    @Override
+    public String toString() {
+        return "GameParticipationEntity{" +
+                "idSnake=" + idSnake +
+                ", idGame=" + idGame +
+                ", score=" + score +
+                ", killCount=" + killCount +
+                ", deathCount=" + deathCount +
+                '}';
+    }
+
     public void setGame(GameEntity game) {
         if (this.game != game) {
             this.game = game;

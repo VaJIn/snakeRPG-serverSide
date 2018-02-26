@@ -15,9 +15,9 @@ public class CachedDAOFactory implements DAOFactory {
 
     public CachedDAOFactory() {
         this.userDAO = new CachedUserDAO(new UserDAOImpl(this), this, 100, 10, TimeUnit.MINUTES);
+        this.snakeDAO = new CachedSnakeDAO(new SnakeDAOImpl(this), this, 100, 10, TimeUnit.MINUTES);
         //TODO cached DAO for all other dao
         this.gameDAO = new GameDAOImpl(this);
-        this.snakeDAO = new SnakeDAOImpl(this);
         this.snakeClassDAO = new SnakeClassDAOImpl(this);
         this.gameModeDAO = new GameModeDAOImpl(this);
         this.gameParticipationDAO = new GameParticipationDAOImpl(this);

@@ -35,7 +35,6 @@ public class UserDAOImpl implements UserDAO {
             while (rs.next()){
                 try{
                     UserEntity user = resultSetToUserEntity(rs);
-                    System.out.println(user);
                     out.add(user);
                 }
                 catch (SQLException e){
