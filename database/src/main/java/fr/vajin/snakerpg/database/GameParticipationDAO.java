@@ -13,4 +13,6 @@ public interface GameParticipationDAO {
     List<GameParticipationEntity> getGameResultsByGame(int gameId, int sortBy);
 
     List<GameParticipationEntity> getGameParticipationByIds(int gameId, int snakeId, int sortBy);
+
+    List<GameParticipationEntity> getGameParticipation(Timestamp earliest, Timestamp lastest, int sortBy);
 }

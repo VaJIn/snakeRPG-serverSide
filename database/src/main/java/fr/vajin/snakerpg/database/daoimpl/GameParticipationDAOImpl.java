@@ -124,6 +124,30 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
         return gameResults;
     }
 
+    @Override
+    public List<GameParticipationEntity> getGameParticipation(Timestamp earliest, Timestamp latest, int sortBy) {
+        String condition = "";
+        if (earliest != null) {
+            condition = "WHERE (startime > '" + earliest + "')";
+        }
+        if (latest != null) {
+            if (condition.equals("")) {
+                condition = "WHERE";
+            } else {
+                condition += " AND";
+            }
+            condition += " (startime < '" + latest + "')";
+        }
+
+        String query = "SELECT gp.idGame idGame, gp.idSnake idSnake, gp.score score, gp.killCount killCount, gp.deathCount deathCount\n"
+                + "FROM GameParticipation gp "
+                + "JOIN Game g ON gp.idGame  = g.id \n"
+                + condition
+                + sortBy(sortBy);
+
+        return gameParticipationQuery(query, true, true);
+    }
+
     private GameParticipationEntity resultSetToGameParticipationEntity(ResultSet rs) throws SQLException {
 
         int idGame = rs.getInt("idGame");
