@@ -1,25 +1,21 @@
 package fr.vajin.snakerpg.servlet;
 
-import fr.vajin.snakerpg.database.DataBaseAccess;
-import fr.vajin.snakerpg.database.DummyDataBaseAccess;
 import fr.vajin.snakerpg.database.entities.UserEntity;
 import fr.vajin.snakerpg.form.LoginFormLogic;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class LoginServlet extends HttpServlet {
 
     public static final String VIEW = "/WEB-INF/loginPage.jsp";
-    DataBaseAccess dataBaseAccess = new DummyDataBaseAccess();
     private Map<String, String> idsMap;
 
     public LoginServlet() {
@@ -38,31 +34,24 @@ public class LoginServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        LoginFormLogic formLogic = new LoginFormLogic(dataBaseAccess);
+        LoginFormLogic formLogic = new LoginFormLogic();
 
-        UserEntity userEntity = formLogic.logInUser(request);
-        if (userEntity != null)
-            response.getWriter().write(userEntity.toString());
-        else {
-            response.getWriter().println("Null user");
-            if (formLogic.getErrors().isEmpty()) {
-                response.getWriter().println("No error");
-            } else {
-                for (Map.Entry<String, String> error : formLogic.getErrors().entrySet()) {
-                    response.getWriter().println(error.getKey() + " > " + error.getValue());
-                }
-            }
-        }
-        if (userEntity != null) {
+        Optional<UserEntity> userEntity = formLogic.logInUser(request);
+
+        if (userEntity.isPresent()) {
             HttpSession session = request.getSession();
 
-            session.setAttribute("user", userEntity);
+            session.setAttribute("user", userEntity.get());
 
             response.sendRedirect("/home");
         } else {
-            if (formLogic.getErrors().isEmpty())
+            if (formLogic.getErrors().isEmpty()) {
                 formLogic.getErrors().put("login", "Wrong account name or password");
+            }
+
+            request.setAttribute("oldValues", formLogic.getValues());
             request.setAttribute("error", formLogic.getErrors());
+            request.setAttribute("id", idsMap);
             this.getServletContext().getRequestDispatcher(VIEW).forward(request, response);
         }
     }

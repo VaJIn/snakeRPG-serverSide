@@ -1,25 +1,27 @@
 package fr.vajin.snakerpg.form;
 
+import fr.vajin.snakerpg.FactoryProvider;
 import fr.vajin.snakerpg.database.entities.UserEntity;
 import org.apache.commons.validator.routines.EmailValidator;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class RegistrationFormLogic {
 
     public static final String FORM_NAME = "registerForm";
 
-    public static final String CHAMP_EMAIL = "[" + FORM_NAME + "]email";
+    public static final String CHAMP_EMAIL = "email";
 
-    public static final String CHAMP_PASS = "[" + FORM_NAME + "]password";
+    public static final String CHAMP_PASS = "password";
 
-    public static final String CHAMP_CONF = "[" + FORM_NAME + "]confirmation";
+    public static final String CHAMP_CONF = "confirmation";
 
-    public static final String CHAMP_ALIAS = "[" + FORM_NAME + "]alias";
+    public static final String CHAMP_ALIAS = "alias";
 
-    public static final String CHAMP_ACCOUNT_NAME = "[" + FORM_NAME + "]accountName";
+    public static final String CHAMP_ACCOUNT_NAME = "accountName";
 
     public static final int MIN_LENGTH_ALIAS = 6;
     public static final int MAX_LENGTH_ALIAS = 30;
@@ -32,6 +34,7 @@ public class RegistrationFormLogic {
     public final static String INVALID_EMAIL_ERROR_MSG = "Please enter a valid email address.";
 
     private Map<String, String> errors;
+    private Map<String, String> values;
 
     public UserEntity registerUser(HttpServletRequest request) {
 
@@ -48,6 +51,7 @@ public class RegistrationFormLogic {
         String alias = request.getParameter(CHAMP_ALIAS);
 
         this.errors = new HashMap<>();
+        this.values = new HashMap<>();
 
         try {
             accountNameValidation(accountName);
@@ -55,11 +59,15 @@ public class RegistrationFormLogic {
             this.errors.put(CHAMP_ACCOUNT_NAME, e.getMessage());
         }
 
+        values.put(CHAMP_ACCOUNT_NAME,accountName);
+
         try {
             passwordValidation(password,confirmation);
         } catch (Exception e) {
             this.errors.put(CHAMP_PASS, e.getMessage());
         }
+
+        values.put(CHAMP_PASS,password);
 
         try {
             emailValidation(email);
@@ -67,18 +75,20 @@ public class RegistrationFormLogic {
             this.errors.put(CHAMP_EMAIL, e.getMessage());
         }
 
+        values.put(CHAMP_EMAIL, email);
+
         try {
             aliasValidation(alias);
         } catch (Exception e) {
             this.errors.put(CHAMP_ALIAS, e.getMessage());
         }
 
+        values.put(CHAMP_ALIAS, alias);
+
         userEntity.setAlias(alias);
         userEntity.setAccountName(accountName);
         userEntity.setEmail(email);
         userEntity.setPassword(password);
-
-
 
         return userEntity;
     }
@@ -111,6 +121,12 @@ public class RegistrationFormLogic {
         if (accountName.length() < MIN_LENGTH_ACCOUNT_NAME || accountName.length() > MAX_LENGTH_ACCOUNT_NAME) {
             throw new Exception("Account name must have between " + MIN_LENGTH_ACCOUNT_NAME + " and " + MAX_LENGTH_ACCOUNT_NAME + " characters.");
         }
+
+        Optional<UserEntity> user = FactoryProvider.getDAOFactory().getUserDAO().getUserByAccountName(accountName);
+        if(user.isPresent()){
+            throw new Exception("Account name already in use");
+        }
+
     }
 
     public static final String ERROR_NULL_PASSWORD = "Please enter and confirm your password";
@@ -130,4 +146,6 @@ public class RegistrationFormLogic {
     }
 
     public Map<String,String> getErrors(){ return this.errors; }
+
+    public Map<String, String> getValues(){ return this.values; }
 }

@@ -1,6 +1,6 @@
 package fr.vajin.snakerpg.servlet;
 
-import fr.vajin.snakerpg.DAO;
+import fr.vajin.snakerpg.FactoryProvider;
 import fr.vajin.snakerpg.database.entities.UserEntity;
 
 import javax.servlet.ServletException;
@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 public class PlayerProfileServlet extends HttpServlet {
 
@@ -19,7 +20,7 @@ public class PlayerProfileServlet extends HttpServlet {
 
         String userIdStr = request.getParameter("id");
 
-        UserEntity user;
+        Optional<UserEntity> user;
 
         int userId;
 
@@ -33,9 +34,9 @@ public class PlayerProfileServlet extends HttpServlet {
             }
         }
 
-        user = DAO.getInstance().getAccessor().getUser(userId);
+        user = FactoryProvider.getDAOFactory().getUserDAO().getUser(userId);
 
-        request.setAttribute("user", user);
+        request.setAttribute("user", user.get());
 
         this.getServletContext().getRequestDispatcher("/WEB-INF/profile.jsp").forward(request, response);
     }

@@ -8,16 +8,45 @@
          pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <div>
-    <form class="p-2" action="<c:url value="/login/" />" id="<c:out value="${id['form']}"/>" method="POST">
+    <form action="<c:url value="/login/" />" id="<c:out value="${id['form']}"/>"
+        <c:choose>
+            <c:when test="${oldValues==null}">
+                class="needs-validation"
+            </c:when>
+        </c:choose>
+        method="POST">
+        <c:if test="${error['login']!=null}">
+            <div class="form-control is-invalid">
+                <c:out value="${error['login']}" default=""/>
+            </div>
+        </c:if>
+
         <div class="form-group">
             <label for="<c:out value="${id['accountName']}"/>">Account Name</label>
-            <input id="<c:out value="${id['accountName']}"/>" name="${id['accountName']}" class="form-control"
+            <input id="[<c:out value="${id['form']}"/>]<c:out value="${id['accountName']}"/>" name="${id['accountName']}"
+                    <c:choose>
+                        <c:when test="${error['accountName']==null}">
+                            class="form-control is-valid"
+                        </c:when>
+                        <c:otherwise>
+                            class="form-control is-invalid"
+                        </c:otherwise>
+                    </c:choose>
                    type="text" required/>
-            <span class="invalid-feedback"><c:out value="${error['accountName']}"/>}</span>
+            <span class="invalid-feedback"><c:out value="${error['accountName']}"/></span>
         </div>
         <div class="form-group">
             <label for="<c:out value="${id['password']}"/>">Password</label>
-            <input id="<c:out value="${id['password']}"/>" name="${id['password']}" class="form-control" type="password"
+            <input id="[<c:out value="${id['form']}"/>]<c:out value="${id['password']}"/>" name="${id['password']}"
+                    <c:choose>
+                        <c:when test="${error['password']==null}">
+                            class="form-control is-valid"
+                        </c:when>
+                        <c:otherwise>
+                            class="form-control is-invalid"
+                        </c:otherwise>
+                    </c:choose>
+                   type="password"
                    required/>
             <span class="invalid-feedback"><c:out value="${error['password']}"/></span>
         </div>

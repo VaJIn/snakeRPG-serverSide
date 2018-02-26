@@ -1,4 +1,3 @@
-import fr.vajin.snakerpg.database.DummyDataBaseAccess;
 import fr.vajin.snakerpg.form.LoginFormLogic;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
