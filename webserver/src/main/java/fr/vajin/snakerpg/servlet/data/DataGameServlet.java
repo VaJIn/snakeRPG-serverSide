@@ -3,7 +3,6 @@ package fr.vajin.snakerpg.servlet.data;
 import com.google.gson.Gson;
 import fr.vajin.snakerpg.FactoryProvider;
 import fr.vajin.snakerpg.database.entities.GameEntity;
-import fr.vajin.snakerpg.database.entities.UserEntity;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,8 +14,9 @@ import java.util.Optional;
 public class DataGameServlet extends HttpServlet {
 
     static final String GAME_ID_PARAMETER ="gameId";
+    private String gameJSON;
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         int id;
         try {
@@ -34,7 +34,7 @@ public class DataGameServlet extends HttpServlet {
 
         Gson gson = new Gson();
 
-        String gameJSON = gson.toJson(game.get());
+        gameJSON = gson.toJson(game.get());
 
         response.setContentType("application/json");
         response.getWriter().write(gameJSON);
@@ -43,5 +43,9 @@ public class DataGameServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doPost(request,response);
+    }
+
+    public String getGameJSON(){
+        return this.gameJSON;
     }
 }

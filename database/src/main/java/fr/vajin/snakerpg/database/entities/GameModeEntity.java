@@ -1,6 +1,5 @@
 package fr.vajin.snakerpg.database.entities;
 
-import java.util.Collection;
 import java.util.Objects;
 
 public class GameModeEntity {

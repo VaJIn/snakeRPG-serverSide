@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import fr.vajin.snakerpg.FactoryProvider;
 import fr.vajin.snakerpg.database.entities.UserEntity;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,14 +13,14 @@ import java.util.Optional;
 public class DataUserServlet extends HttpServlet {
 
     static final String USER_ID_PARAMETER = "userId";
+    private String userJSON;
 
-
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         doPost(request,response);
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         int id;
         try {
@@ -35,14 +34,21 @@ public class DataUserServlet extends HttpServlet {
 
         if (!user.isPresent()) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
+
         }
+
 
         Gson gson = new Gson();
 
-        String userJSON = gson.toJson(user.get());
+        userJSON = gson.toJson(user.get());
 
         response.setContentType("application/json");
         response.getWriter().write(userJSON);
+
+    }
+
+    public String getUserJSON(){
+        return this.userJSON;
     }
 
 }

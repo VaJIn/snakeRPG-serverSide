@@ -1,6 +1,6 @@
 import com.google.gson.Gson;
 import fr.vajin.snakerpg.FactoryProvider;
-import fr.vajin.snakerpg.servlet.data.DataUserServlet;
+import fr.vajin.snakerpg.servlet.data.DataGameServlet;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,19 +8,18 @@ import org.junit.jupiter.api.Test;
 import javax.servlet.http.HttpServletResponse;
 import java.util.NoSuchElementException;
 
-public class DataUserServletTest {
-
-    DataUserServlet userServlet = new DataUserServlet();
+public class DataGameServletTest {
+    DataGameServlet gameServlet = new DataGameServlet();
 
     @Test
-    @DisplayName("userId ok")
+    @DisplayName("gameId ok")
     void doPostTest(){
 
         MockHttpRequest request = new MockHttpRequest();
-        request.addParameters("userId","1");
+        request.addParameters("gameId","1");
         HttpServletResponse response = new MockHttpResponse();
 
-        Assertions.assertAll(() -> userServlet.doPost(request,response));
+        Assertions.assertAll(() -> gameServlet.doPost(request,response));
 
         Assertions.assertEquals("application/json",response.getContentType());
 
@@ -28,13 +27,13 @@ public class DataUserServletTest {
     }
 
     @Test
-    @DisplayName("userId non ok")
+    @DisplayName("gameId non ok")
     void doPostTestFail(){
         MockHttpRequest request = new MockHttpRequest();
-        request.addParameters("userId","10");
+        request.addParameters("gameId","100");
         HttpServletResponse response = new MockHttpResponse();
 
-        Assertions.assertThrows(NoSuchElementException.class, ()-> userServlet.doPost(request,response));
+        Assertions.assertThrows(NoSuchElementException.class, ()-> gameServlet.doPost(request,response));
 
     }
 
@@ -42,17 +41,16 @@ public class DataUserServletTest {
     @DisplayName("test JSONString")
     void testJSONString(){
         MockHttpRequest request = new MockHttpRequest();
-        request.addParameters("userId","1");
+        request.addParameters("gameId","1");
         HttpServletResponse response = new MockHttpResponse();
 
-        Assertions.assertAll(() ->userServlet.doPost(request,response));
+        Assertions.assertAll(() ->gameServlet.doPost(request,response));
 
         Gson gson =new Gson();
-        String testUserJSON = gson.toJson(FactoryProvider.getDAOFactory().getUserDAO().getUser(1).get());
+        String testGameJSON = gson.toJson(FactoryProvider.getDAOFactory().getGameDAO().getGame(1).get());
 
-        Assertions.assertEquals(testUserJSON,userServlet.getUserJSON());
+        Assertions.assertEquals(testGameJSON,gameServlet.getGameJSON());
 
 
     }
-
 }
