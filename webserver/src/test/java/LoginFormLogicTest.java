@@ -1,8 +1,8 @@
 import fr.vajin.snakerpg.database.entities.UserEntity;
 import fr.vajin.snakerpg.form.LoginFormLogic;
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 import java.util.Optional;

@@ -2,6 +2,7 @@ package fr.vajin.snakerpg.servlet.data;
 
 import com.google.gson.Gson;
 import fr.vajin.snakerpg.FactoryProvider;
+import fr.vajin.snakerpg.database.entities.GameEntity;
 import fr.vajin.snakerpg.database.entities.UserEntity;
 
 import javax.servlet.ServletException;
@@ -11,38 +12,36 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
-public class DataUserServlet extends HttpServlet {
+public class DataGameServlet extends HttpServlet {
 
-    static final String USER_ID_PARAMETER = "userId";
-
-
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        doPost(request,response);
-    }
+    static final String GAME_ID_PARAMETER ="gameId";
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         int id;
         try {
-            id = Integer.parseInt(request.getParameter(USER_ID_PARAMETER));
+            id = Integer.parseInt(request.getParameter(GAME_ID_PARAMETER));
         } catch (NumberFormatException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
-        Optional<UserEntity> user = FactoryProvider.getDAOFactory().getUserDAO().getUser(id);
+        Optional<GameEntity> game = FactoryProvider.getDAOFactory().getGameDAO().getGame(id);
 
-        if (!user.isPresent()) {
+        if (!game.isPresent()) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
 
         Gson gson = new Gson();
 
-        String userJSON = gson.toJson(user.get());
+        String gameJSON = gson.toJson(game.get());
 
         response.setContentType("application/json");
-        response.getWriter().write(userJSON);
+        response.getWriter().write(gameJSON);
+
     }
 
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doPost(request,response);
+    }
 }

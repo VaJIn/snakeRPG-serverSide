@@ -9,8 +9,8 @@ public class GameParticipationEntity {
     private int score;
     private int killCount;
     private int deathCount;
-    private GameEntity game;
-    private SnakeEntity snake;
+    transient private GameEntity game;
+    transient private SnakeEntity snake;
 
     public GameParticipationEntity(){
         this.idSnake = -1;

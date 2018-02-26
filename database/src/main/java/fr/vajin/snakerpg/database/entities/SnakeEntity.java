@@ -11,7 +11,7 @@ public class SnakeEntity {
     private String name;
     private int expPoint;
     private byte[] info;
-    private UserEntity user;
+    transient private UserEntity user;
     private SnakeClassEntity snakeClass;
 
     public SnakeEntity() {
