@@ -28,6 +28,14 @@ public class UserDAOTest {
         Assertions.assertEquals("user1", user1.getAccountName());
         Assertions.assertEquals("alias1", user1.getAlias());
         Assertions.assertEquals("user1@domain.fr", user1.getEmail());
+
+        Optional<UserEntity> optionalUser2 = userDAO.getUser(2, false);
+
+        Assertions.assertTrue(optionalUser2.isPresent());
+
+        UserEntity user2 = optionalUser2.get();
+        Assertions.assertEquals(2, user2.getId());
+        Assertions.assertNotNull(user2.getSnakes());
     }
 
     @Test
@@ -46,7 +54,10 @@ public class UserDAOTest {
         Assertions.assertNotNull(users);
         Assertions.assertEquals(0,users.size());
 
-        Assertions.assertNotNull(userDAO.getUserByAlias("alias3"));
+        Collection<UserEntity> userByAlias = userDAO.getUserByAlias("alias3");
+
+        Assertions.assertNotNull(userByAlias);
+        Assertions.assertFalse(userByAlias.isEmpty());
     }
 
     @Test

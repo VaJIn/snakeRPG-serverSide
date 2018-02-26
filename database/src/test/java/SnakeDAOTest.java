@@ -64,8 +64,6 @@ public class SnakeDAOTest {
 
         Collection<SnakeEntity> snakesBeforeInsert = snakeDAO.getSnakeByUser(user.get().getId());
 
-        System.out.println(snakesBeforeInsert.size());
-
         Assertions.assertAll(() -> snakeDAO.addSnake(snake));
 
         Collection<SnakeEntity> snakesAfterInsert = snakeDAO.getSnakeByUser(user.get().getId());

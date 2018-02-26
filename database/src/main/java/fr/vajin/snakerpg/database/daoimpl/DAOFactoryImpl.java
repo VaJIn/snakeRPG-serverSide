@@ -2,6 +2,7 @@ package fr.vajin.snakerpg.database.daoimpl;
 
 import fr.vajin.snakerpg.database.*;
 
+
 public class DAOFactoryImpl implements DAOFactory{
 
     @Override

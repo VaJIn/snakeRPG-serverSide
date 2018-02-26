@@ -133,7 +133,7 @@ public class SnakeEntity {
     @Override
     public int hashCode() {
 
-        int result = Objects.hash(userId, id, name, expPoint, user);
+        int result = Objects.hash(userId, id, name, expPoint);
         result = 31 * result + Arrays.hashCode(info);
         return result;
     }

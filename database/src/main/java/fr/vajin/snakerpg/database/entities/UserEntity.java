@@ -20,7 +20,7 @@ public class UserEntity {
         accountName = "";
         alias = "";
         password = "";
-        snakes = null;
+        snakes = new HashSet<>();
     }
 
     public UserEntity(int id, String alias, String email, String accountName, String password) {

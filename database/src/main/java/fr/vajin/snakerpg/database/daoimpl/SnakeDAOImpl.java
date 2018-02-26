@@ -72,6 +72,8 @@ public class SnakeDAOImpl implements SnakeDAO {
                     if (opt.isPresent()) {
                         user = opt.get();
                         userEntityCache.put(user.getId(), user);
+                    } else {
+                        user = new UserEntity();
                     }
                 }
                 snakeEntity.setUser(user);
