@@ -12,6 +12,7 @@ import fr.vajin.snakerpg.database.entities.SnakeEntity;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -59,14 +60,19 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
     }
 
     @Override
-    public List<GameParticipationEntity> getGameParticipationByIds(int gameId, int snakeId, int sortBy) {
+    public Optional<GameParticipationEntity> getGameParticipationByIds(int gameId, int snakeId, int sortBy) {
         String query = "SELECT gp.idGame idGame, gp.idSnake idSnake, gp.score score, gp.killCount killCount, gp.deathCount deathCount\n"
                 + "FROM GameParticipation gp "
                 + "JOIN Game g ON gp.idGame  = g.id \n"
-                + "WHERE idSnake=" + snakeId + " "
+                + "WHERE idSnake=" + snakeId + " AND idGame=" + gameId + " "
                 + sortBy(sortBy);
 
-        return gameParticipationQuery(query, true, true);
+        Iterator<GameParticipationEntity> it = gameParticipationQuery(query, true, true).iterator();
+        if (it.hasNext()) {
+            return Optional.of(it.next());
+        } else {
+            return Optional.empty();
+        }
     }
 
     private List<GameParticipationEntity> gameParticipationQuery(String query, boolean retrieveGameEntity, boolean retrieveSnake) {

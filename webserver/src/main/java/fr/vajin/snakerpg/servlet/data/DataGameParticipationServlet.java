@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
+import java.util.Optional;
 
 public class DataGameParticipationServlet extends HttpServlet {
     static final String GAME_ID_PARAMETER ="gameId";
@@ -26,14 +26,23 @@ public class DataGameParticipationServlet extends HttpServlet {
             return;
         }
 
-        List<GameParticipationEntity> gameParticipation = FactoryProvider.getDAOFactory().getGameParticipationDAO().getGameParticipationByIds(idGame,idSnake,0);
-
-        Gson gson = new Gson();
-
-        String gameParticipationJSON = gson.toJson(gameParticipation);
+        Optional<GameParticipationEntity> gameParticipationEntityOptional =
+                FactoryProvider
+                        .getDAOFactory()
+                        .getGameParticipationDAO()
+                        .getGameParticipationByIds(idGame, idSnake, 0);
 
         response.setContentType("application/json");
-        response.getWriter().write(gameParticipationJSON);
+
+        if (gameParticipationEntityOptional.isPresent()) {
+            Gson gson = new Gson();
+
+            gameParticipationJSON = gson.toJson(gameParticipationEntityOptional.get());
+
+            response.getWriter().write(gameParticipationJSON);
+        } else {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        }
 
     }
 

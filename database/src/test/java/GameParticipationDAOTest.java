@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Optional;
 
 public class GameParticipationDAOTest {
 
@@ -52,9 +53,11 @@ public class GameParticipationDAOTest {
     @Test
     @DisplayName("Test GameParticipation getGameParticipationByIds")
     void testGetGameResultsByIds(){
-        Collection<GameParticipationEntity> gp = gameParticipationDAO.getGameParticipationByIds(-1,-1,0);
-        Assertions.assertNotNull(gp);
-        Assertions.assertEquals(0,gp.size());
-        Assertions.assertNotNull(gameParticipationDAO.getGameParticipationByIds(1,1,0));
+        Optional<GameParticipationEntity> gp = gameParticipationDAO.getGameParticipationByIds(-1, -1, 0);
+        Assertions.assertFalse(gp.isPresent());
+
+        gp = gameParticipationDAO.getGameParticipationByIds(1, 1, 0);
+        Assertions.assertTrue(gp.isPresent());
+
     }
 }
