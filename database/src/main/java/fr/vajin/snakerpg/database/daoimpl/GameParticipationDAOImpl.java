@@ -27,12 +27,31 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
         this.daoFactory = daoFactory;
     }
 
+    private String getTimeCondition(Timestamp earliest, Timestamp latest) {
+        String timeCondition = "";
+        if (earliest != null) {
+            timeCondition += "WHERE ( startTime >'" + earliest + "')";
+            if (latest != null) {
+                timeCondition += " AND ";
+            }
+        }
+        if (latest != null) {
+            if (earliest == null) {
+                timeCondition += "WHERE ";
+            }
+            timeCondition += "( startTime < '" + latest + "')";
+        }
+        return timeCondition;
+    }
 
     @Override
     public List<GameParticipationEntity> getGameResultsByUser(int userId, int sortBy, Timestamp earliest, Timestamp latest, int startIndex, int count) {
+
+        String timeCondition = getTimeCondition(earliest, latest);
+
         String query = "SELECT gp.idGame idGame, gp.idSnake, gp.score, gp.killCount, gp.deathCount, g.id, g.startTime, g.endTime, g.idGameMode "
                 + "FROM GameParticipation gp "
-                + "JOIN (SELECT * FROM Game WHERE (startTime >'" + earliest + "') AND (startTime <'" + latest + "')) as g "
+                + "JOIN (SELECT * FROM Game " + timeCondition + ") as g "
                 + "ON gp.idGame  = g.id "
                 + "WHERE gp.idSnake in (SELECT id from Snake where userID=" + userId + ") "
                 + sortBy(sortBy);
@@ -88,18 +107,7 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
 
     @Override
     public List<GameParticipationEntity> getGameParticipation(Timestamp earliest, Timestamp latest, int sortBy, int startIndex, int count) {
-        String condition = "";
-        if (earliest != null) {
-            condition = "WHERE (startime > '" + earliest + "')";
-        }
-        if (latest != null) {
-            if (condition.equals("")) {
-                condition = "WHERE";
-            } else {
-                condition += " AND";
-            }
-            condition += " (startime < '" + latest + "')";
-        }
+        String condition = getTimeCondition(earliest, latest);
 
         String query = "SELECT gp.idGame idGame, gp.idSnake idSnake, gp.score score, gp.killCount killCount, gp.deathCount deathCount\n"
                 + "FROM GameParticipation gp "
@@ -124,7 +132,7 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
     }
 
     private List<GameParticipationEntity> gameParticipationQuery(String query, boolean retrieveGameEntity, boolean retrieveSnake) {
-        List<GameParticipationEntity> gameResults = new ArrayList<GameParticipationEntity>();
+        List<GameParticipationEntity> gameResults = new ArrayList<>();
         try {
             Connection connection = ConnectionPool.getConnection();
             Statement statement = connection.createStatement();
