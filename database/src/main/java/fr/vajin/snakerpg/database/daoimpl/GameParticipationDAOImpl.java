@@ -63,7 +63,7 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
         String query = "SELECT gp.idGame idGame, gp.idSnake idSnake, gp.score score, gp.killCount killCount, gp.deathCount deathCount\n"
                 + "FROM GameParticipation gp "
                 + "JOIN Game g ON gp.idGame  = g.id \n"
-                + "WHERE idSnake=" + snakeId + " "
+                + "WHERE idSnake=" + snakeId + " AND idGame=" + gameId + " "
                 + sortBy(sortBy);
 
         return gameParticipationQuery(query, true, true);
