@@ -30,20 +30,19 @@ public class DataUserServlet extends HttpServlet {
             return;
         }
 
-        Optional<UserEntity> user = FactoryProvider.getDAOFactory().getUserDAO().getUser(id);
+        Optional<UserEntity> userEntityOptional = FactoryProvider.getDAOFactory().getUserDAO().getUser(id);
 
-        if (!user.isPresent()) {
+        if (userEntityOptional.isPresent()) {
+            Gson gson = new Gson();
+
+            userJSON = gson.toJson(userEntityOptional.get());
+
+            response.setContentType("application/json");
+            response.getWriter().write(userJSON);
+        } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
-
         }
 
-
-        Gson gson = new Gson();
-
-        userJSON = gson.toJson(user.get());
-
-        response.setContentType("application/json");
-        response.getWriter().write(userJSON);
 
     }
 

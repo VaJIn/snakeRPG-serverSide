@@ -6,7 +6,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.NoSuchElementException;
 
 public class DataUserServletTest {
 
@@ -34,8 +33,7 @@ public class DataUserServletTest {
         request.addParameters("userId","10");
         HttpServletResponse response = new MockHttpResponse();
 
-        Assertions.assertThrows(NoSuchElementException.class, ()-> userServlet.doPost(request,response));
-
+        Assertions.assertAll(() -> userServlet.doPost(request, response));
     }
 
     @Test
