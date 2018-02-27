@@ -29,7 +29,7 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
 
 
     @Override
-    public List<GameParticipationEntity> getGameResultsByUser(int userId, int sortBy, Timestamp earliest, Timestamp latest) {
+    public List<GameParticipationEntity> getGameResultsByUser(int userId, int sortBy, Timestamp earliest, Timestamp latest, int startIndex, int count) {
         String query = "SELECT gp.idGame idGame, gp.idSnake, gp.score, gp.killCount, gp.deathCount, g.id, g.startTime, g.endTime, g.idGameMode "
                 + "FROM GameParticipation gp "
                 + "JOIN (SELECT * FROM Game WHERE (startTime >'" + earliest + "') AND (startTime <'" + latest + "')) as g "
@@ -37,8 +37,19 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
                 + "WHERE gp.idSnake in (SELECT id from Snake where userID=" + userId + ") "
                 + sortBy(sortBy);
 
+        if(startIndex>-1){
+            query+="LIMIT "+startIndex+","+count;
+        }
+
+        query +=";";
 
         return gameParticipationQuery(query, true, true);
+    }
+
+
+    @Override
+    public List<GameParticipationEntity> getGameResultsByUser(int userId, int sortBy, Timestamp earliest, Timestamp latest) {
+        return getGameResultsByUser(userId,sortBy,earliest,latest,-1,0);
     }
 
     @Override
@@ -53,7 +64,7 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
                 + "JOIN Game g "
                 + "ON gp.idGame  = g.id \n"
                 + "WHERE gp.idGame = " + gameId + " "
-                + sortBy(sortBy);
+                + sortBy(sortBy)+";";
 
 
         return gameParticipationQuery(query, retrieveGame, true);
@@ -65,7 +76,7 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
                 + "FROM GameParticipation gp "
                 + "JOIN Game g ON gp.idGame  = g.id \n"
                 + "WHERE idSnake=" + snakeId + " AND idGame=" + gameId + " "
-                + sortBy(sortBy);
+                + sortBy(sortBy)+";";
 
         Iterator<GameParticipationEntity> it = gameParticipationQuery(query, true, true).iterator();
         if (it.hasNext()) {
@@ -73,6 +84,43 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
         } else {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public List<GameParticipationEntity> getGameParticipation(Timestamp earliest, Timestamp latest, int sortBy, int startIndex, int count) {
+        String condition = "";
+        if (earliest != null) {
+            condition = "WHERE (startime > '" + earliest + "')";
+        }
+        if (latest != null) {
+            if (condition.equals("")) {
+                condition = "WHERE";
+            } else {
+                condition += " AND";
+            }
+            condition += " (startime < '" + latest + "')";
+        }
+
+        String query = "SELECT gp.idGame idGame, gp.idSnake idSnake, gp.score score, gp.killCount killCount, gp.deathCount deathCount\n"
+                + "FROM GameParticipation gp "
+                + "JOIN Game g ON gp.idGame  = g.id \n"
+                + condition
+                + sortBy(sortBy);
+
+        if(startIndex>-1){
+            query+="LIMIT "+startIndex+","+count;
+        }
+
+        query+=";";
+        return gameParticipationQuery(query, true, true);
+
+    }
+
+    @Override
+    public List<GameParticipationEntity> getGameParticipation(Timestamp earliest, Timestamp latest, int sortBy) {
+
+        return getGameParticipation(earliest,latest,sortBy,-1,0);
+
     }
 
     private List<GameParticipationEntity> gameParticipationQuery(String query, boolean retrieveGameEntity, boolean retrieveSnake) {
@@ -130,30 +178,6 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
         return gameResults;
     }
 
-    @Override
-    public List<GameParticipationEntity> getGameParticipation(Timestamp earliest, Timestamp latest, int sortBy) {
-        String condition = "";
-        if (earliest != null) {
-            condition = "WHERE (startime > '" + earliest + "')";
-        }
-        if (latest != null) {
-            if (condition.equals("")) {
-                condition = "WHERE";
-            } else {
-                condition += " AND";
-            }
-            condition += " (startime < '" + latest + "')";
-        }
-
-        String query = "SELECT gp.idGame idGame, gp.idSnake idSnake, gp.score score, gp.killCount killCount, gp.deathCount deathCount\n"
-                + "FROM GameParticipation gp "
-                + "JOIN Game g ON gp.idGame  = g.id \n"
-                + condition
-                + sortBy(sortBy);
-
-        return gameParticipationQuery(query, true, true);
-    }
-
     private GameParticipationEntity resultSetToGameParticipationEntity(ResultSet rs) throws SQLException {
 
         int idGame = rs.getInt("idGame");
@@ -176,14 +200,14 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
     private String sortBy(int sortBy) {
         switch (sortBy) {
             case DAOFactory.SORT_BY_EARLIEST_DATE:
-                return "ORDER BY g.startTime;";
+                return "ORDER BY g.startTime ";
             case DAOFactory.SORT_BY_LATEST_DATE:
-                return "ORDER BY g.startTime DESC;";
+                return "ORDER BY g.startTime DESC ";
             case DAOFactory.SORT_BY_SCORE_ASC:
-                return "ORDER BY score;";
+                return "ORDER BY score ";
             case DAOFactory.SORT_BY_SCORE_DESC:
-                return "ORDER BY score DESC;";
+                return "ORDER BY score DESC ";
         }
-        return ";";
+        return " ";
     }
 }

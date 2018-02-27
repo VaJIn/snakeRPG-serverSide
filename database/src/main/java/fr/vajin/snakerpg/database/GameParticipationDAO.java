@@ -8,6 +8,7 @@ import java.util.Optional;
 
 public interface GameParticipationDAO {
 
+    List<GameParticipationEntity> getGameResultsByUser(int userId, int sortBy, Timestamp earliest, Timestamp latest, int startIndex, int count);
     List<GameParticipationEntity> getGameResultsByUser(int userId, int sortBy, Timestamp earliest, Timestamp latest);
 
     List<GameParticipationEntity> getGameResultsByGame(int gameId, int sortBy, boolean retrieveGameEntity);
@@ -15,5 +16,6 @@ public interface GameParticipationDAO {
 
     Optional<GameParticipationEntity> getGameParticipationByIds(int gameId, int snakeId, int sortBy);
 
+    List<GameParticipationEntity> getGameParticipation(Timestamp earliest, Timestamp lastest, int sortBy, int startIndex, int endIndex);
     List<GameParticipationEntity> getGameParticipation(Timestamp earliest, Timestamp lastest, int sortBy);
 }
