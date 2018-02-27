@@ -53,7 +53,7 @@ public class MockHttpResponse implements HttpServletResponse{
 
     @Override
     public void sendError(int sc, String msg) throws IOException {
-
+        this.sc = sc;
     }
 
     @Override
@@ -108,7 +108,7 @@ public class MockHttpResponse implements HttpServletResponse{
 
     @Override
     public int getStatus() {
-        return 0;
+        return sc;
     }
 
     @Override

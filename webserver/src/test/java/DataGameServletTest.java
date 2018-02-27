@@ -6,7 +6,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.NoSuchElementException;
 
 public class DataGameServletTest {
     DataGameServlet gameServlet = new DataGameServlet();
@@ -33,8 +32,8 @@ public class DataGameServletTest {
         request.addParameters("gameId","100");
         MockHttpResponse response = new MockHttpResponse();
 
-        Assertions.assertThrows(NoSuchElementException.class, ()-> gameServlet.doPost(request,response));
-
+        Assertions.assertAll(() -> gameServlet.doPost(request, response));
+        Assertions.assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
     }
 
     @Test
@@ -49,7 +48,7 @@ public class DataGameServletTest {
         Gson gson =new Gson();
         String testGameJSON = gson.toJson(FactoryProvider.getDAOFactory().getGameDAO().getGame(1).get());
 
-        Assertions.assertEquals(testGameJSON,gameServlet.getGameJSON());
+        Assertions.assertEquals(testGameJSON, response.getContent());
 
 
     }

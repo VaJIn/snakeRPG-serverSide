@@ -5,8 +5,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import javax.servlet.http.HttpServletResponse;
-
 public class DataUserServletTest {
 
     DataUserServlet userServlet = new DataUserServlet();
@@ -22,7 +20,6 @@ public class DataUserServletTest {
         Assertions.assertAll(() -> userServlet.doPost(request,response));
 
         Assertions.assertEquals("application/json",response.getContentType());
-
 
     }
 

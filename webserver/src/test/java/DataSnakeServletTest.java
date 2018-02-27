@@ -6,7 +6,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.NoSuchElementException;
 
 public class DataSnakeServletTest {
 
@@ -34,7 +33,8 @@ public class DataSnakeServletTest {
         request.addParameters("snakeId","100");
         MockHttpResponse response = new MockHttpResponse();
 
-        Assertions.assertThrows(NoSuchElementException.class, ()-> snakeServlet.doPost(request,response));
+        Assertions.assertAll(() -> snakeServlet.doPost(request, response));
+        Assertions.assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
 
     }
 
@@ -50,7 +50,7 @@ public class DataSnakeServletTest {
         Gson gson =new Gson();
         String testUserJSON = gson.toJson(FactoryProvider.getDAOFactory().getSnakeDAO().getSnakeById(1).get());
 
-        Assertions.assertEquals(testUserJSON,snakeServlet.getSnakeJSON());
+        Assertions.assertEquals(testUserJSON, response.getContent());
 
 
     }

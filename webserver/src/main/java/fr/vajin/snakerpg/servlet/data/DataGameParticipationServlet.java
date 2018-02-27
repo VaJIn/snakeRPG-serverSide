@@ -37,7 +37,7 @@ public class DataGameParticipationServlet extends HttpServlet {
         if (gameParticipationEntityOptional.isPresent()) {
             Gson gson = new Gson();
 
-            gameParticipationJSON = gson.toJson(gameParticipationEntityOptional.get());
+            String gameParticipationJSON = gson.toJson(gameParticipationEntityOptional.get());
 
             response.getWriter().write(gameParticipationJSON);
         } else {
