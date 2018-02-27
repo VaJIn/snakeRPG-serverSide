@@ -17,7 +17,7 @@ public class DataGameServletTest {
 
         MockHttpRequest request = new MockHttpRequest();
         request.addParameters("gameId","1");
-        HttpServletResponse response = new MockHttpResponse();
+        MockHttpResponse response = new MockHttpResponse();
 
         Assertions.assertAll(() -> gameServlet.doPost(request,response));
 
@@ -31,7 +31,7 @@ public class DataGameServletTest {
     void doPostTestFail(){
         MockHttpRequest request = new MockHttpRequest();
         request.addParameters("gameId","100");
-        HttpServletResponse response = new MockHttpResponse();
+        MockHttpResponse response = new MockHttpResponse();
 
         Assertions.assertThrows(NoSuchElementException.class, ()-> gameServlet.doPost(request,response));
 
@@ -42,7 +42,7 @@ public class DataGameServletTest {
     void testJSONString(){
         MockHttpRequest request = new MockHttpRequest();
         request.addParameters("gameId","1");
-        HttpServletResponse response = new MockHttpResponse();
+        MockHttpResponse response = new MockHttpResponse();
 
         Assertions.assertAll(() ->gameServlet.doPost(request,response));
 

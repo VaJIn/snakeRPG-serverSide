@@ -17,7 +17,7 @@ public class DataUserServletTest {
 
         MockHttpRequest request = new MockHttpRequest();
         request.addParameters("userId","1");
-        HttpServletResponse response = new MockHttpResponse();
+        MockHttpResponse response = new MockHttpResponse();
 
         Assertions.assertAll(() -> userServlet.doPost(request,response));
 
@@ -31,7 +31,7 @@ public class DataUserServletTest {
     void doPostTestFail(){
         MockHttpRequest request = new MockHttpRequest();
         request.addParameters("userId","10");
-        HttpServletResponse response = new MockHttpResponse();
+        MockHttpResponse response = new MockHttpResponse();
 
         Assertions.assertAll(() -> userServlet.doPost(request, response));
     }
@@ -41,14 +41,14 @@ public class DataUserServletTest {
     void testJSONString(){
         MockHttpRequest request = new MockHttpRequest();
         request.addParameters("userId","1");
-        HttpServletResponse response = new MockHttpResponse();
+        MockHttpResponse response = new MockHttpResponse();
 
         Assertions.assertAll(() ->userServlet.doPost(request,response));
 
         Gson gson =new Gson();
         String testUserJSON = gson.toJson(FactoryProvider.getDAOFactory().getUserDAO().getUser(1).get());
 
-        Assertions.assertEquals(testUserJSON,userServlet.getUserJSON());
+        Assertions.assertEquals(testUserJSON,response.getContent());
 
 
     }

@@ -14,7 +14,6 @@ import java.util.List;
 public class DataGameParticipationServlet extends HttpServlet {
     static final String GAME_ID_PARAMETER ="gameId";
     static final String SNAKE_ID_PARAMETER = "snakeId";
-    private String gameParticipationJSON;
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -31,7 +30,7 @@ public class DataGameParticipationServlet extends HttpServlet {
 
         Gson gson = new Gson();
 
-        gameParticipationJSON = gson.toJson(gameParticipation);
+        String gameParticipationJSON = gson.toJson(gameParticipation);
 
         response.setContentType("application/json");
         response.getWriter().write(gameParticipationJSON);

@@ -3,12 +3,23 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Locale;
 
 public class MockHttpResponse implements HttpServletResponse{
 
     private String contentType;
+
+    private int sc;
+
+    private String content;
+
+    private StringWriter stringWriter;
+
+    public MockHttpResponse(){
+        this.stringWriter = new StringWriter();
+    }
 
     @Override
     public void addCookie(Cookie cookie) {
@@ -47,7 +58,7 @@ public class MockHttpResponse implements HttpServletResponse{
 
     @Override
     public void sendError(int sc) throws IOException {
-
+        this.sc = sc;
     }
 
     @Override
@@ -132,7 +143,10 @@ public class MockHttpResponse implements HttpServletResponse{
 
     @Override
     public PrintWriter getWriter() throws IOException {
-        return new PrintWriter(System.out);
+
+        PrintWriter writer = new PrintWriter(this.stringWriter,true);
+
+        return writer;
     }
 
     @Override
@@ -193,5 +207,9 @@ public class MockHttpResponse implements HttpServletResponse{
     @Override
     public Locale getLocale() {
         return null;
+    }
+
+    public String getContent(){
+        return stringWriter.toString();
     }
 }

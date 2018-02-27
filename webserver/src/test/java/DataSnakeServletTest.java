@@ -18,7 +18,7 @@ public class DataSnakeServletTest {
 
         MockHttpRequest request = new MockHttpRequest();
         request.addParameters("snakeId","1");
-        HttpServletResponse response = new MockHttpResponse();
+        MockHttpResponse response = new MockHttpResponse();
 
         Assertions.assertAll(() -> snakeServlet.doPost(request,response));
 
@@ -32,7 +32,7 @@ public class DataSnakeServletTest {
     void doPostTestFail(){
         MockHttpRequest request = new MockHttpRequest();
         request.addParameters("snakeId","100");
-        HttpServletResponse response = new MockHttpResponse();
+        MockHttpResponse response = new MockHttpResponse();
 
         Assertions.assertThrows(NoSuchElementException.class, ()-> snakeServlet.doPost(request,response));
 
@@ -43,7 +43,7 @@ public class DataSnakeServletTest {
     void testJSONString(){
         MockHttpRequest request = new MockHttpRequest();
         request.addParameters("snakeId","1");
-        HttpServletResponse response = new MockHttpResponse();
+        MockHttpResponse response = new MockHttpResponse();
 
         Assertions.assertAll(() ->snakeServlet.doPost(request,response));
 

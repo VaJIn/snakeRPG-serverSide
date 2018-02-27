@@ -14,7 +14,6 @@ import java.util.Optional;
 public class DataGameServlet extends HttpServlet {
 
     static final String GAME_ID_PARAMETER ="gameId";
-    private String gameJSON;
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -28,16 +27,17 @@ public class DataGameServlet extends HttpServlet {
 
         Optional<GameEntity> game = FactoryProvider.getDAOFactory().getGameDAO().getGame(id);
 
-        if (!game.isPresent()) {
+        if(game.isPresent()){
+            Gson gson = new Gson();
+
+            String gameJSON = gson.toJson(game.get());
+
+            response.setContentType("application/json");
+            response.getWriter().write(gameJSON);
+        }
+        else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
-
-        Gson gson = new Gson();
-
-        gameJSON = gson.toJson(game.get());
-
-        response.setContentType("application/json");
-        response.getWriter().write(gameJSON);
 
     }
 
@@ -45,7 +45,4 @@ public class DataGameServlet extends HttpServlet {
         doPost(request,response);
     }
 
-    public String getGameJSON(){
-        return this.gameJSON;
-    }
 }

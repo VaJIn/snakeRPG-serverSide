@@ -13,7 +13,6 @@ import java.util.Optional;
 public class DataUserServlet extends HttpServlet {
 
     static final String USER_ID_PARAMETER = "userId";
-    private String userJSON;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -35,7 +34,7 @@ public class DataUserServlet extends HttpServlet {
         if (userEntityOptional.isPresent()) {
             Gson gson = new Gson();
 
-            userJSON = gson.toJson(userEntityOptional.get());
+            String userJSON = gson.toJson(userEntityOptional.get());
 
             response.setContentType("application/json");
             response.getWriter().write(userJSON);
@@ -44,11 +43,6 @@ public class DataUserServlet extends HttpServlet {
         }
 
 
-    }
-
-
-    public String getUserJSON(){
-        return this.userJSON;
     }
 
 }
