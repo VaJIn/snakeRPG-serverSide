@@ -25,6 +25,7 @@ public class CacheProxySnakeEntity extends SnakeEntity {
             UserDAO userDAO = daoFactory.getUserDAO();
             Optional<UserEntity> userEntityOptional = userDAO.getUser(this.getUserId());
             userEntityOptional.ifPresent(this::setUser);
+            this.retrievedUser = true;
         }
         return super.getUser();
     }
@@ -41,6 +42,7 @@ public class CacheProxySnakeEntity extends SnakeEntity {
             SnakeClassDAO snakeClassDAO = daoFactory.getSnakeClassDAO();
             Optional<SnakeClassEntity> snakeClassEntityOptional = snakeClassDAO.getSnakeClassById(this.getSnakeClassId());
             snakeClassEntityOptional.ifPresent(this::setSnakeClass);
+            this.retrievedSnakeClass = true;
         }
         return super.getSnakeClass();
     }

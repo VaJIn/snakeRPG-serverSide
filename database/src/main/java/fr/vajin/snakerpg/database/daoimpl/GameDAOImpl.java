@@ -1,9 +1,12 @@
 package fr.vajin.snakerpg.database.daoimpl;
 
-import fr.vajin.snakerpg.database.*;
+import fr.vajin.snakerpg.database.ConnectionPool;
+import fr.vajin.snakerpg.database.DAOFactory;
+import fr.vajin.snakerpg.database.GameDAO;
 import fr.vajin.snakerpg.database.entities.GameEntity;
 import fr.vajin.snakerpg.database.entities.GameModeEntity;
 import fr.vajin.snakerpg.database.entities.GameParticipationEntity;
+import fr.vajin.snakerpg.database.entities.cached.CacheProxyGameEntity;
 
 import java.sql.*;
 import java.util.*;
@@ -18,7 +21,7 @@ public class GameDAOImpl implements GameDAO {
 
     }
 
-    List<GameEntity> getGameByCondition(String condition, int sortBy, boolean retrieveGameParticipation) {
+    private List<GameEntity> getGameByCondition(String condition, int sortBy) {
 
         StringBuilder queryBuilder = new StringBuilder();
         queryBuilder.append("SELECT * FROM Game ");
@@ -38,20 +41,13 @@ public class GameDAOImpl implements GameDAO {
             rs = statement.executeQuery(query);
             while (rs.next()) {
                 try {
-                    GameEntity g = new GameEntity();
-                    g.setId(rs.getInt("id"));
-                    g.setStartTime(rs.getTimestamp("startTime"));
-                    g.setEndTime(rs.getTimestamp("endTime"));
-                    int gamemodeId = rs.getInt("idGameMode");
+//                    GameEntity g = new GameEntity();
+//                    g.setId(rs.getInt("id"));
+//                    g.setStartTime(rs.getTimestamp("startTime"));
+//                    g.setEndTime(rs.getTimestamp("endTime"));
+//                    int gamemodeId = rs.getInt("idGameMode");
 
-                    Optional<GameModeEntity> gameModeEntityOptional = daoFactory.getGameModeDAO().getGameMode(gamemodeId);
-                    if (gameModeEntityOptional.isPresent()) {
-                        g.setGameMode(gameModeEntityOptional.get());
-                    } else {
-                        g.setGameMode(new GameModeEntity());
-                    }
-
-                    games.add(g);
+                    games.add(resultSetToGameEntity(rs));
                 } catch (SQLException e) {
                     //Means that a row of the sql table has incorrect value(s). Not returning null nor returning empty list so that the other
                     //potentially read rows are correctly retrieved.
@@ -61,13 +57,6 @@ public class GameDAOImpl implements GameDAO {
             connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-
-        if (retrieveGameParticipation) {
-            for (GameEntity g : games) {
-                GameParticipationDAO gameParticipationDAO = daoFactory.getGameParticipationDAO();
-                g.setGameParticipationEntities(new HashSet<>(gameParticipationDAO.getGameResultsByGame(g.getId(), -1)));
-            }
         }
 
         return games;
@@ -106,11 +95,11 @@ public class GameDAOImpl implements GameDAO {
     }
 
     @Override
-    public Optional<GameEntity> getGame(int id, boolean retrieveGameParticipation) {
+    public Optional<GameEntity> getGame(int id) {
 
         String condition = "id = " + id;
 
-        Collection<GameEntity> result = getGameByCondition(condition, -1, retrieveGameParticipation);
+        Collection<GameEntity> result = getGameByCondition(condition, -1);
 
 
         Iterator<GameEntity> it = result.iterator();
@@ -119,12 +108,6 @@ public class GameDAOImpl implements GameDAO {
         }
         return Optional.empty();
     }
-
-    @Override
-    public Optional<GameEntity> getGame(int id) {
-        return getGame(id, true);
-    }
-
 
     //Si earliest ou latest est null, alors on ignore la condition
     @Override
@@ -141,33 +124,35 @@ public class GameDAOImpl implements GameDAO {
             }
             condition += " (startime < '" + latest + "')";
         }
-        return getGameByCondition(condition, sortBy, true);
+        return getGameByCondition(condition, sortBy);
     }
 
     @Override
     public List<GameEntity> getGameByGameMode(GameModeEntity gameModeEntity, int sortBy) {
         String condition = "idGameMode=" + gameModeEntity.getId() + " ";
 
-        return getGameByCondition(condition, sortBy, true);
+        return getGameByCondition(condition, sortBy);
     }
 
     private GameEntity resultSetToGameEntity(ResultSet rs) throws SQLException {
 
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+0"));
 
+        GameEntity entity = new CacheProxyGameEntity(this.daoFactory);
+
         int id = rs.getInt("id");
+        entity.setId(id);
+
         Timestamp startTime = rs.getTimestamp("startTime", calendar);
+        entity.setStartTime(startTime);
+
         Timestamp endTime = rs.getTimestamp("endTime", calendar);
+        entity.setEndTime(endTime);
+
         int idGameMode = rs.getInt("idGameMode");
+        entity.setGameModeId(idGameMode);
 
-        //Paulin 21/02 -> passage par la factory
-//        GameModeDAO gameModeDAO = new GameModeDAOImpl(); //Useless
-        GameModeDAO gameModeDAO = this.daoFactory.getGameModeDAO();
-
-        //If it's not present there is a problem with the database
-        GameModeEntity gameModeEntity = gameModeDAO.getGameMode(idGameMode).orElse(new GameModeEntity());
-
-        return new GameEntity(id, startTime, endTime, gameModeEntity);
+        return entity;
     }
 
     private String sortBy(int sortBy){

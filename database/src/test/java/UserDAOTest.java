@@ -1,4 +1,5 @@
 import fr.vajin.snakerpg.database.UserDAO;
+import fr.vajin.snakerpg.database.entities.SnakeEntity;
 import fr.vajin.snakerpg.database.entities.UserEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
@@ -29,13 +30,10 @@ public class UserDAOTest {
         Assertions.assertEquals("alias1", user1.getAlias());
         Assertions.assertEquals("user1@domain.fr", user1.getEmail());
 
-        Optional<UserEntity> optionalUser2 = userDAO.getUser(2, false);
+        Collection<SnakeEntity> snakeEntities = user1.getSnakes();
+        Assertions.assertNotNull(snakeEntities);
+        Assertions.assertFalse(snakeEntities.isEmpty());
 
-        Assertions.assertTrue(optionalUser2.isPresent());
-
-        UserEntity user2 = optionalUser2.get();
-        Assertions.assertEquals(2, user2.getId());
-        Assertions.assertNotNull(user2.getSnakes());
     }
 
     @Test

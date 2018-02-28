@@ -9,13 +9,16 @@ import fr.vajin.snakerpg.database.SnakeClassDAO;
 import fr.vajin.snakerpg.database.SnakeDAO;
 import fr.vajin.snakerpg.database.entities.SnakeClassEntity;
 import fr.vajin.snakerpg.database.entities.SnakeEntity;
-import fr.vajin.snakerpg.database.entities.UserEntity;
+import fr.vajin.snakerpg.database.entities.cached.CacheProxySnakeEntity;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 public class SnakeDAOImpl implements SnakeDAO {
@@ -39,7 +42,7 @@ public class SnakeDAOImpl implements SnakeDAO {
         connection.close();
     }
 
-    private Collection<SnakeEntity> getSnakeByCondition(String condition, boolean retrieveUserEntity) {
+    private Collection<SnakeEntity> getSnakeByCondition(String condition) {
         String query = "SELECT *" +
                 " FROM Snake " +
                 " WHERE " + condition + ";";
@@ -68,24 +71,6 @@ public class SnakeDAOImpl implements SnakeDAO {
             return null;
         }
 
-        if (retrieveUserEntity) {
-            Map<Integer, UserEntity> userEntityCache = new HashMap<>();
-
-            for (SnakeEntity snakeEntity : out) {
-                UserEntity user = userEntityCache.get(snakeEntity.getUserId());
-                if (user == null) {
-                    Optional<UserEntity> opt = daoFactory.getUserDAO().getUser(snakeEntity.getUserId(), false);
-                    if (opt.isPresent()) {
-                        user = opt.get();
-                        userEntityCache.put(user.getId(), user);
-                    } else {
-                        user = new UserEntity();
-                    }
-                }
-                snakeEntity.setUser(user);
-            }
-        }
-
         SnakeClassDAO snakeClassDAO = daoFactory.getSnakeClassDAO();
         //Retrieve SnakeClass
         LoadingCache<Integer, SnakeClassEntity> cache = CacheBuilder.newBuilder().build(new CacheLoader<Integer, SnakeClassEntity>() {
@@ -107,10 +92,10 @@ public class SnakeDAOImpl implements SnakeDAO {
     }
 
     @Override
-    public Optional<SnakeEntity> getSnakeById(int id, boolean retrieveUserEntity) {
+    public Optional<SnakeEntity> getSnakeById(int id) {
         String condition = " id = " + id;
 
-        Collection<SnakeEntity> results = getSnakeByCondition(condition, retrieveUserEntity);
+        Collection<SnakeEntity> results = getSnakeByCondition(condition);
 
         if (results != null) {
             Iterator<SnakeEntity> it = results.iterator();
@@ -122,38 +107,32 @@ public class SnakeDAOImpl implements SnakeDAO {
     }
 
     @Override
-    public Optional<SnakeEntity> getSnakeById(int id) {
-        return getSnakeById(id, true);
-    }
-
-    @Override
-    public Collection<SnakeEntity> getSnakeByUser(int userId, boolean retrieveUserEntity) {
+    public Collection<SnakeEntity> getSnakeByUser(int userId) {
         String condition = "userId= " + userId;
 
-        return getSnakeByCondition(condition, retrieveUserEntity);
-    }
-
-
-    @Override
-    public Collection<SnakeEntity> getSnakeByUser(int userId) {
-        return getSnakeByUser(userId, true);
+        return getSnakeByCondition(condition);
     }
 
     private SnakeEntity resultSetToSnakeEntity(ResultSet rs) throws SQLException{
 
-        int id = rs.getInt("id");
-        int userId = rs.getInt("userId");
-        String name = rs.getString("name");
-        int exp = rs.getInt("exp");
-        byte[] info = rs.getBytes("info");
-        int idSnakeClass = rs.getInt("idSnakeClass");
+        SnakeEntity entity = new CacheProxySnakeEntity(this.daoFactory);
 
-        SnakeEntity entity = new SnakeEntity();
+        int id = rs.getInt("id");
         entity.setId(id);
+
+        int userId = rs.getInt("userId");
         entity.setUserId(userId);
+
+        String name = rs.getString("name");
         entity.setName(name);
+
+        int exp = rs.getInt("exp");
         entity.setExpPoint(exp);
+
+        byte[] info = rs.getBytes("info");
         entity.setInfo(info);
+
+        int idSnakeClass = rs.getInt("idSnakeClass");
         entity.setSnakeClassId(idSnakeClass);
 
         return entity;

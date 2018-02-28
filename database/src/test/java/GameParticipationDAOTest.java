@@ -31,7 +31,7 @@ public class GameParticipationDAOTest {
         Assertions.assertEquals(0,results.size());
         Assertions.assertNotNull(gameParticipationDAO.getGameResultsByGame(1,0));
 
-        results = gameParticipationDAO.getGameResultsByGame(2, DAOFactory.SORT_BY_SCORE_DESC, true);
+        results = gameParticipationDAO.getGameResultsByGame(2, DAOFactory.SORT_BY_SCORE_DESC);
 
         Assertions.assertNotNull(results);
         Assertions.assertFalse(results.isEmpty());

@@ -1,21 +1,16 @@
 package fr.vajin.snakerpg.database.daoimpl;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import fr.vajin.snakerpg.database.ConnectionPool;
 import fr.vajin.snakerpg.database.DAOFactory;
 import fr.vajin.snakerpg.database.GameParticipationDAO;
-import fr.vajin.snakerpg.database.entities.GameEntity;
 import fr.vajin.snakerpg.database.entities.GameParticipationEntity;
-import fr.vajin.snakerpg.database.entities.UserEntity;
+import fr.vajin.snakerpg.database.entities.cached.CacheProxyGameParticipationEntity;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 
 
 public class GameParticipationDAOImpl implements GameParticipationDAO {
@@ -61,7 +56,7 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
 
         query +=";";
 
-        return gameParticipationQuery(query, true, true);
+        return gameParticipationQuery(query);
     }
 
 
@@ -72,11 +67,6 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
 
     @Override
     public List<GameParticipationEntity> getGameResultsByGame(int gameId, int sortBy) {
-        return getGameResultsByGame(gameId, sortBy, true);
-    }
-
-    @Override
-    public List<GameParticipationEntity> getGameResultsByGame(int gameId, int sortBy, boolean retrieveGame) {
         String query = "SELECT gp.idGame idGame, gp.idUser idUser, gp.score score, gp.killCount killCount, gp.deathCount deathCount\n"
                 + "FROM GameParticipation gp "
                 + "JOIN Game g "
@@ -85,7 +75,7 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
                 + sortBy(sortBy)+";";
 
 
-        return gameParticipationQuery(query, retrieveGame, true);
+        return gameParticipationQuery(query);
     }
 
     @Override
@@ -96,7 +86,7 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
                 + "WHERE idUser=" + userId + " AND idGame=" + gameId + " "
                 + sortBy(sortBy)+";";
 
-        Iterator<GameParticipationEntity> it = gameParticipationQuery(query, true, true).iterator();
+        Iterator<GameParticipationEntity> it = gameParticipationQuery(query).iterator();
         if (it.hasNext()) {
             return Optional.of(it.next());
         } else {
@@ -119,7 +109,7 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
         }
 
         query+=";";
-        return gameParticipationQuery(query, true, true);
+        return gameParticipationQuery(query);
 
     }
 
@@ -130,7 +120,7 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
 
     }
 
-    private List<GameParticipationEntity> gameParticipationQuery(String query, boolean retrieveGameEntity, boolean retrieveUser) {
+    private List<GameParticipationEntity> gameParticipationQuery(String query) {
         List<GameParticipationEntity> gameResults = new ArrayList<>();
         try {
             Connection connection = ConnectionPool.getConnection();
@@ -153,35 +143,6 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
             e.printStackTrace();
         }
 
-        if (retrieveGameEntity || retrieveUser) {
-            LoadingCache<Integer, Optional<GameEntity>> gameCache = CacheBuilder.newBuilder().build(new CacheLoader<Integer, Optional<GameEntity>>() {
-                @Override
-                public Optional<GameEntity> load(Integer key) throws Exception {
-                    return daoFactory.getGameDAO().getGame(key, false);
-                }
-            });
-            LoadingCache<Integer, Optional<UserEntity>> userCache = CacheBuilder.newBuilder().build(new CacheLoader<Integer, Optional<UserEntity>>() {
-                @Override
-                public Optional<UserEntity> load(Integer key) throws Exception {
-                    return daoFactory.getUserDAO().getUser(key);
-                }
-            });
-            for (GameParticipationEntity gp : gameResults) {
-                if (retrieveGameEntity) {
-                    try {
-                        gameCache.get(gp.getIdGame()).ifPresent(gp::setGame);
-                    } catch (ExecutionException e) {
-                    }
-                }
-                if (retrieveUser) {
-                    try {
-                        userCache.get(gp.getIdUser()).ifPresent(gp::setUser);
-                    } catch (ExecutionException e) {
-                    }
-                }
-            }
-        }
-
         return gameResults;
     }
 
@@ -193,7 +154,7 @@ public class GameParticipationDAOImpl implements GameParticipationDAO {
         int killCount = rs.getInt("killCount");
         int deathCount = rs.getInt("deathCount");
 
-        GameParticipationEntity entity = new GameParticipationEntity();
+        GameParticipationEntity entity = new CacheProxyGameParticipationEntity(this.daoFactory);
 
         entity.setIdGame(idGame);
         entity.setIdUser(idUser);

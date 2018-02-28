@@ -12,6 +12,9 @@ public class GameEntity {
     private Timestamp startTime;
     private Timestamp endTime;
     private GameModeEntity gameMode;
+    private int gameModeId;
+
+
     private static Comparator<GameParticipationEntity> gameParticipationEntityComparator =
             Comparator
                     .comparing(GameParticipationEntity::getScore)
@@ -31,17 +34,11 @@ public class GameEntity {
         this.startTime = new Timestamp(0);
         this.endTime = new Timestamp(0);
         this.gameMode = new GameModeEntity();
+        this.gameModeId = -1;
         this.gameParticipationEntities = new TreeSet<>(gameParticipationEntityComparator);
 
     }
 
-    public GameEntity(int id, Timestamp startTime, Timestamp endTime, GameModeEntity gameMode) {
-        this.id = id;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.gameMode = gameMode;
-        this.gameParticipationEntities = new TreeSet<>(gameParticipationEntityComparator);
-    }
 
     public int getId() {
         return id;
@@ -73,6 +70,7 @@ public class GameEntity {
 
     public void setGameMode(GameModeEntity gameMode) {
         this.gameMode = gameMode;
+        this.gameModeId = gameMode.getId();
     }
 
     public Set<GameParticipationEntity> getGameParticipationEntities() {
@@ -89,11 +87,21 @@ public class GameEntity {
         }
     }
 
-    protected void addGameParticipation(GameParticipationEntity gameParticipationEntity) {
-        if (!this.gameParticipationEntities.contains(gameParticipationEntity)) {
-            this.gameParticipationEntities.add(gameParticipationEntity);
+    void addGameParticipation(GameParticipationEntity gameParticipationEntity) {
+        boolean mustSet = !this.gameParticipationEntities.contains(gameParticipationEntity);
+
+        this.gameParticipationEntities.add(gameParticipationEntity);
+        if (mustSet) {
             gameParticipationEntity.setGame(this);
         }
+    }
+
+    public int getGameModeId() {
+        return gameModeId;
+    }
+
+    public void setGameModeId(int gameModeId) {
+        this.gameModeId = gameModeId;
     }
 
     @Override

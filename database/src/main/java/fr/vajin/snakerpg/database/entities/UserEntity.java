@@ -81,17 +81,16 @@ public class UserEntity {
     public void setSnakes(Collection<SnakeEntity> snakes) {
         this.snakes = new HashSet<>(snakes);
         for (SnakeEntity snake : this.snakes) {
-            if (snake.getUser() != this) {
-                snake.setUser(this);
-            }
+            snake.setUser(this);
         }
     }
 
     public void addSnake(SnakeEntity snakeEntity) {
-        if (snakeEntity.getUser() != this) {
-            snakeEntity.setUser(this);
+        boolean mustSet = !snakes.contains(snakeEntity);
+        snakeEntity.setUser(this);
+        if (mustSet) {
+            this.snakes.add(snakeEntity);
         }
-        this.snakes.add(snakeEntity);
     }
 
     @Override

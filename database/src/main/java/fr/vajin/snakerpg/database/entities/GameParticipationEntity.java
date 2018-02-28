@@ -91,9 +91,7 @@ public class GameParticipationEntity {
         if (this.game != game) {
             this.game = game;
             this.idGame = game.getId();
-            if (!game.getGameParticipationEntities().contains(this)) {
-                game.addGameParticipation(this);
-            }
+            game.addGameParticipation(this);
         }
     }
 

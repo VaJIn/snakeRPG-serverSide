@@ -12,7 +12,6 @@ public interface GameDAO {
 
     void addGame(GameEntity gameEntity) throws SQLException;
 
-    Optional<GameEntity> getGame(int id, boolean retrieveGameParticipation);
     Optional<GameEntity> getGame(int id);
 
     List<GameEntity> getGameByDate(Timestamp earliest, Timestamp latest, int sortBy);
