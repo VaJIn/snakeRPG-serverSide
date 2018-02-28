@@ -86,6 +86,7 @@ project(":gameroom"){
     dependencies{
         testCompile 'org.junit.jupiter:junit-jupiter-api:5.0.1'
 
+        compile project(":database")
         compile project(":engine")
     }
 }
