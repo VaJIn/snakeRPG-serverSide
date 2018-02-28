@@ -1,6 +1,9 @@
 package fr.vajin.snakerpg.gameroom.impl;
 
+import com.google.common.collect.Maps;
 import com.google.common.io.ByteSource;
+import com.sun.istack.internal.NotNull;
+import fr.vajin.snakerpg.gameroom.Controller;
 import fr.vajin.snakerpg.gameroom.NewConnectionHandler;
 import fr.vajin.snakerpg.gameroom.PlayerHandler;
 import fr.vajin.snakerpg.gameroom.Receiver;
@@ -13,13 +16,14 @@ import java.util.Scanner;
 
 public class ReceiverImpl implements Receiver {
 
-    final int idProtocol;
-    Map<Integer, PlayerHandler> playerHandlerMap;
-    NewConnectionHandler newConnectionHandler;
+    private final int idProtocol;
+    private Controller controller;
+    private Map<Integer, PlayerHandler> playerHandlerMap;
+    private NewConnectionHandler newConnectionHandler;
 
-    public ReceiverImpl(int idProtocol, Map<Integer, PlayerHandler> playerHandlerMap, NewConnectionHandler newConnectionHandler) {
+    public ReceiverImpl(int idProtocol, Controller controller, NewConnectionHandler newConnectionHandler) {
         this.idProtocol = idProtocol;
-        this.playerHandlerMap = playerHandlerMap;
+        this.playerHandlerMap = Maps.newConcurrentMap();
         this.newConnectionHandler = newConnectionHandler;
     }
 
@@ -32,28 +36,31 @@ public class ReceiverImpl implements Receiver {
             Scanner scanner = new Scanner(stream);
 
             int idProtocol = scanner.nextInt();
-            if (idProtocol != this.idProtocol) {
-                return; //Discard the packet
-            } else {
-                //TODO
+            if (idProtocol == this.idProtocol) {
+                int playerId = scanner.nextInt();
 
+                if (playerHandlerMap.containsKey(playerId)) {
+                    playerHandlerMap.get(playerId).getPlayerPacketHandler().handleDatagramPacket(packet);
+                } else {
+                    newConnectionHandler.handleDatagramPacket(packet);
+                }
             }
         } catch (IOException e) {
         }
     }
 
     @Override
-    public void setNewConnectionHandler(NewConnectionHandler newConnectionHandler) {
-
+    public void setNewConnectionHandler(@NotNull NewConnectionHandler newConnectionHandler) {
+        this.newConnectionHandler = newConnectionHandler;
     }
 
     @Override
     public void addPlayerHandler(PlayerHandler handler) {
-
+        playerHandlerMap.put(handler.getUserId(), handler);
     }
 
     @Override
     public void removePlayerHandler(PlayerHandler handler) {
-
+        playerHandlerMap.remove(handler.getUserId());
     }
 }
