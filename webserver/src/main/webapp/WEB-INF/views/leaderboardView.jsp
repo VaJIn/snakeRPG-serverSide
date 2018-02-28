@@ -26,7 +26,7 @@
                         ${status.index + 1}
                 </td>
                 <td>
-                    <a href="/player/${gp.snake.user.id}" class="">${gp.snake.user.alias}</a> ( ${gp.snake.name} )
+                    <a href="/player/${gp.user.id}" class="">${gp.user.alias}</a>
                 </td>
                 <td class="text-center">
                         ${gp.score}
@@ -36,19 +36,19 @@
                 </td>
                 <td>
                     <button class="leaderboard-player btn btn-outline-dark w-100" type="button"
-                            id="detail-${gp.idSnake}-${gp.idGame}-collapse"
-                            data-game-id="${gp.game.id}" data-snake-id="${gp.snake.id}" data-toggle="collapse"
-                            data-target="#score-${gp.idSnake}-${gp.idGame}-collapse"
-                            aria-expanded="true" aria-controls="score-${gp.idSnake}#${gp.idGame}-collapse">
+                            id="detail-${gp.idUser}-${gp.idGame}-collapse"
+                            data-game-id="${gp.game.id}" data-user-id="${gp.user.id}" data-toggle="collapse"
+                            data-target="#score-${gp.idUser}-${gp.idGame}-collapse"
+                            aria-expanded="true" aria-controls="score-${gp.idUser}#${gp.idGame}-collapse">
                         See details
                     </button>
                 </td>
             </tr>
-            <tr id="score-${gp.idSnake}-${gp.idGame}-collapse" class="collapse"
-                aria-labelledby="detail-${gp.idSnake}-${gp.idGame}-collapse">
+            <tr id="score-${gp.idUser}-${gp.idGame}-collapse" class="collapse"
+                aria-labelledby="detail-${gp.idUser}-${gp.idGame}-collapse">
                 <td colspan="4">
                     <div class="card">
-                        <div class="card-body" id="score-${gp.idSnake}-${gp.idGame}-content">
+                        <div class="card-body" id="score-${gp.idUser}-${gp.idGame}-content">
                             Retrieving....
                         </div>
                     </div>

@@ -29,13 +29,12 @@
                     <th scope="col" style="font-size: 120%">Kill</th>
                     <th scope="col" style="font-size: 120%">Death</th>
                 </tr>
-                <c:forEach var="gp" items="${gameEntity.participationEntitySet}">
+                <c:forEach var="gp" items="${gameEntity.gameParticipationEntities}">
                     <tr>
                         <td class="border p-1">
-                            <a href="<c:url value="/player/${gp.snake.userId}" />">
-                                <c:out value="${gp.snake.user.alias}" default="undefined_alias"/>
+                            <a href="<c:url value="/player/${gp.user.id}" />">
+                                <c:out value="${gp.user.alias}" default="undefined_alias"/>
                             </a>
-                            (<c:out value="${gp.snake.name}"/>)
                         </td>
                         <td class="border text-right p-1">
                             <c:out value="${gp.score}" default="-1"/>
@@ -66,7 +65,7 @@
                 </tr>
                 <tr>
                     <th scope="row">Game size</th>
-                    <td>${gameEntity.participationEntitySet.size()} players</td>
+                    <td>${gameEntity.gameParticipationEntities.size()} players</td>
                 </tr>
             </table>
         </div>

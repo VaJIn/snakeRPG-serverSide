@@ -5,9 +5,9 @@ $(".leaderboard-player").click(function () {
     var elt = $(this);
 
     var gameId = elt.attr("data-game-id");
-    var snakeId = elt.attr("data-snake-id");
+    var userId = elt.attr("data-user-id");
 
-    target = "#score-" + snakeId + "-" + gameId + "-content";
+    target = "#score-" + userId + "-" + gameId + "-content";
     console.log(target);
 
 

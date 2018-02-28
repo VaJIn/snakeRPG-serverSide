@@ -15,17 +15,17 @@
     <h1>${user.alias}</h1>
     <div class="row">
         <div class="col-4 list-group" role="tablist" id="u${user.id}-snakelist">
-            <c:forEach items="${user.snakes}" var="snake" varStatus="status">
+            <c:forEach items="${user.snakes}" var="user" varStatus="status">
                 <a class="list-group-item list-group-item-action <c:if test="${status.index == 0}">active</c:if> "
-                   id="s${snake.id}-list" data-toggle="list" href="#view-s${snake.id}" role="tab">
-                        ${snake.name}
+                   id="s${user.id}-list" data-toggle="list" href="#view-s${user.id}" role="tab">
+                        ${user.name}
                 </a>
             </c:forEach>
         </div>
         <div class="col-8 tab-content">
-            <c:forEach items="${user.snakes}" var="snake" varStatus="status">
-                <div class="tab-pane <c:if test="${status.index == 0}">show active</c:if>" id="view-s${snake.id}"
-                     role="tabpanel" aria-labelledby="s${snake.id}-list">
+            <c:forEach items="${user.snakes}" var="user" varStatus="status">
+                <div class="tab-pane <c:if test="${status.index == 0}">show active</c:if>" id="view-s${user.id}"
+                     role="tabpanel" aria-labelledby="s${user.id}-list">
                     <table class="table">
                         <colgroup>
                             <col class=""/>
@@ -33,15 +33,15 @@
                         </colgroup>
                         <tr>
                             <th scope="row">Id</th>
-                            <td><c:out value="${snake.id}" default="-1"/></td>
+                            <td><c:out value="${user.id}" default="-1"/></td>
                         </tr>
                         <tr>
                             <th scope="row">Name</th>
-                            <td><c:out value="${snake.name}" default="Undefined"/></td>
+                            <td><c:out value="${user.name}" default="Undefined"/></td>
                         </tr>
                         <tr>
                             <th scope="row">Experience Points</th>
-                            <td><c:out value="${snake.expPoint}" default="-1"/></td>
+                            <td><c:out value="${user.expPoint}" default="-1"/></td>
                         </tr>
                     </table>
                 </div>
