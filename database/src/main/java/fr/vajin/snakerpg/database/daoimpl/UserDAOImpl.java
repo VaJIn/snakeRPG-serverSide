@@ -5,6 +5,7 @@ import fr.vajin.snakerpg.database.DAOFactory;
 import fr.vajin.snakerpg.database.UserDAO;
 import fr.vajin.snakerpg.database.entities.SnakeEntity;
 import fr.vajin.snakerpg.database.entities.UserEntity;
+import fr.vajin.snakerpg.database.entities.cached.CacheProxyUserEntity;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -145,13 +146,22 @@ public class UserDAOImpl implements UserDAO {
      */
     private UserEntity resultSetToUserEntity(ResultSet rs) throws SQLException {
 
-        int id = rs.getInt("id");
-        String alias = rs.getString("alias");
-        String email = rs.getString("email");
-        String accountName = rs.getString("accountName");
-        String password = rs.getString("password");
+        UserEntity entity = new CacheProxyUserEntity(this.daoFactory);
 
-        UserEntity entity = new UserEntity(id, alias, email, accountName, password);
+        int id = rs.getInt("id");
+        entity.setId(id);
+
+        String alias = rs.getString("alias");
+        entity.setAlias(alias);
+
+        String email = rs.getString("email");
+        entity.setEmail(email);
+
+        String accountName = rs.getString("accountName");
+        entity.setAccountName(accountName);
+
+        String password = rs.getString("password");
+        entity.setPassword(password);
 
         return entity;
     }

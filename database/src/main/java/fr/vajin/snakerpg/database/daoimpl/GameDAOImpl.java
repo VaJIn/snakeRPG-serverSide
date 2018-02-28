@@ -66,7 +66,7 @@ public class GameDAOImpl implements GameDAO {
         if (retrieveGameParticipation) {
             for (GameEntity g : games) {
                 GameParticipationDAO gameParticipationDAO = daoFactory.getGameParticipationDAO();
-                g.setParticipationEntitySet(new HashSet<>(gameParticipationDAO.getGameResultsByGame(g.getId(), -1)));
+                g.setGameParticipationEntities(new HashSet<>(gameParticipationDAO.getGameResultsByGame(g.getId(), -1)));
             }
         }
 
@@ -87,13 +87,14 @@ public class GameDAOImpl implements GameDAO {
         int idGame = -1;
         if (keys.next()) {
             idGame = keys.getInt(0);
+            gameEntity.setId(idGame);
         }
 
 
-        for (GameParticipationEntity gp : gameEntity.getParticipationEntitySet()) {
+        for (GameParticipationEntity gp : gameEntity.getGameParticipationEntities()) {
 
             String updateGameParticipation = "INSERT INTO GameParticipation " +
-                    "VALUES (" + idGame + ", " + gp.getIdSnake() + ", " + gp.getScore() + ", " + gp.getKillCount() + ", " + gp.getDeathCount() + ");";
+                    "VALUES (" + idGame + ", " + gp.getIdUser() + ", " + gp.getScore() + ", " + gp.getKillCount() + ", " + gp.getDeathCount() + ");";
 
             statement.addBatch(updateGameParticipation);
 
@@ -102,7 +103,6 @@ public class GameDAOImpl implements GameDAO {
         statement.executeBatch();
 
         connection.close();
-
     }
 
     @Override
@@ -165,7 +165,7 @@ public class GameDAOImpl implements GameDAO {
         GameModeDAO gameModeDAO = this.daoFactory.getGameModeDAO();
 
         //If it's not present there is a problem with the database
-        GameModeEntity gameModeEntity = gameModeDAO.getGameMode(idGameMode).get();
+        GameModeEntity gameModeEntity = gameModeDAO.getGameMode(idGameMode).orElse(new GameModeEntity());
 
         return new GameEntity(id, startTime, endTime, gameModeEntity);
     }

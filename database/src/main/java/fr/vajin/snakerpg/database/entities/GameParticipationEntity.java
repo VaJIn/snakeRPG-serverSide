@@ -4,40 +4,40 @@ import java.util.Objects;
 
 public class GameParticipationEntity {
 
-    private int idSnake;
+    private int idUser;
     private int idGame;
     private int score;
     private int killCount;
     private int deathCount;
     transient private GameEntity game;
-    transient private SnakeEntity snake;
+    transient private UserEntity user;
 
     public GameParticipationEntity(){
-        this.idSnake = -1;
+        this.idUser = -1;
         this.idGame = -1;
         this.score = -1;
         this.killCount = -1;
         this.deathCount = -1;
         this.game = new GameEntity();
-        this.snake = new SnakeEntity();
+        this.user = new UserEntity();
     }
 
-    public GameParticipationEntity(int idSnake, int idGame, int score, int killCount, int deathCount, GameEntity game, SnakeEntity snake) {
-        this.idSnake = idSnake;
+    public GameParticipationEntity(int idUser, int idGame, int score, int killCount, int deathCount, GameEntity game, UserEntity user) {
+        this.idUser = idUser;
         this.idGame = idGame;
         this.score = score;
         this.killCount = killCount;
         this.deathCount = deathCount;
         this.game = game;
-        this.snake = snake;
+        this.user = user;
     }
 
-    public int getIdSnake() {
-        return idSnake;
+    public int getIdUser() {
+        return idUser;
     }
 
-    public void setIdSnake(int idSnake) {
-        this.idSnake = idSnake;
+    public void setIdUser(int idUser) {
+        this.idUser = idUser;
     }
 
     public int getIdGame() {
@@ -79,7 +79,7 @@ public class GameParticipationEntity {
     @Override
     public String toString() {
         return "GameParticipationEntity{" +
-                "idSnake=" + idSnake +
+                "idUser=" + idUser +
                 ", idGame=" + idGame +
                 ", score=" + score +
                 ", killCount=" + killCount +
@@ -91,18 +91,18 @@ public class GameParticipationEntity {
         if (this.game != game) {
             this.game = game;
             this.idGame = game.getId();
-            if (!game.getParticipationEntitySet().contains(this)) {
+            if (!game.getGameParticipationEntities().contains(this)) {
                 game.addGameParticipation(this);
             }
         }
     }
 
-    public SnakeEntity getSnake() {
-        return snake;
+    public UserEntity getUser() {
+        return user;
     }
 
-    public void setSnake(SnakeEntity snake) {
-        this.snake = snake;
+    public void setUser(UserEntity user) {
+        this.user = user;
     }
 
     @Override
@@ -110,18 +110,18 @@ public class GameParticipationEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         GameParticipationEntity that = (GameParticipationEntity) o;
-        return idSnake == that.idSnake &&
+        return idUser == that.idUser &&
                 idGame == that.idGame &&
                 score == that.score &&
                 killCount == that.killCount &&
                 deathCount == that.deathCount &&
                 Objects.equals(game, that.game) &&
-                Objects.equals(snake, that.snake);
+                Objects.equals(user, that.user);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(idSnake, idGame, score, killCount, deathCount, game, snake);
+        return Objects.hash(idUser, idGame, score, killCount, deathCount, game, user);
     }
 }

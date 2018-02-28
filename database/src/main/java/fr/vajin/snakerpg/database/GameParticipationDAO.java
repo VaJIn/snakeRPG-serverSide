@@ -14,7 +14,7 @@ public interface GameParticipationDAO {
     List<GameParticipationEntity> getGameResultsByGame(int gameId, int sortBy, boolean retrieveGameEntity);
     List<GameParticipationEntity> getGameResultsByGame(int gameId, int sortBy);
 
-    Optional<GameParticipationEntity> getGameParticipationByIds(int gameId, int snakeId, int sortBy);
+    Optional<GameParticipationEntity> getGameParticipationByIds(int gameId, int userId, int sortBy);
 
     List<GameParticipationEntity> getGameParticipation(Timestamp earliest, Timestamp lastest, int sortBy, int startIndex, int endIndex);
     List<GameParticipationEntity> getGameParticipation(Timestamp earliest, Timestamp lastest, int sortBy);

@@ -33,12 +33,12 @@ public class EntitiesTest {
         GameParticipationEntity gameParticipationEntity = new GameParticipationEntity();
         GameParticipationEntity gameParticipationEntity1 = new GameParticipationEntity();
 
-        game.setParticipationEntitySet(Sets.newHashSet(gameParticipationEntity1));
+        game.setGameParticipationEntities(Sets.newHashSet(gameParticipationEntity1));
 
         gameParticipationEntity.setGame(game);
 
-        Assertions.assertTrue(game.getParticipationEntitySet().contains(gameParticipationEntity));
-        Assertions.assertTrue(game.getParticipationEntitySet().contains(gameParticipationEntity1));
+        Assertions.assertTrue(game.getGameParticipationEntities().contains(gameParticipationEntity));
+        Assertions.assertTrue(game.getGameParticipationEntities().contains(gameParticipationEntity1));
 
         Assertions.assertTrue(gameParticipationEntity.getGame() == game);
         Assertions.assertTrue(gameParticipationEntity1.getGame() == game);

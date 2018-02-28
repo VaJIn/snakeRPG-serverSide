@@ -5,6 +5,7 @@ import fr.vajin.snakerpg.database.entities.GameModeEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,8 +30,8 @@ public class GameDAOTest {
         GameModeEntity gameModeGame1 = game1.getGameMode();
         Assertions.assertEquals(1, gameModeGame1.getId());
 
-        Assertions.assertNotNull(game1.getParticipationEntitySet());
-        Assertions.assertEquals(1, game1.getParticipationEntitySet().size());
+        Assertions.assertNotNull(game1.getGameParticipationEntities());
+        Assertions.assertEquals(1, game1.getGameParticipationEntities().size());
 
         Assertions.assertNotNull(game1.getStartTime());
 

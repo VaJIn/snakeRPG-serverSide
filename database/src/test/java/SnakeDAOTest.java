@@ -75,7 +75,7 @@ public class SnakeDAOTest {
         Assertions.assertEquals(name,newSnake.getName());
         Assertions.assertEquals(expPoint,newSnake.getExpPoint());
         Assertions.assertEquals(info,newSnake.getInfo());
-        Assertions.assertEquals(user.get().getId(),newSnake.getUserId());
+        Assertions.assertEquals(user.get().getId(),newSnake.getIdUser());
         Assertions.assertEquals(snakeClass.get().getId(),newSnake.getSnakeClass().getId());
 */
 

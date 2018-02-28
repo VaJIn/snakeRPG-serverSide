@@ -1,12 +1,10 @@
 package fr.vajin.snakerpg.database.entities;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 
 import java.sql.Timestamp;
-import java.util.Comparator;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 public class GameEntity {
 
@@ -14,8 +12,6 @@ public class GameEntity {
     private Timestamp startTime;
     private Timestamp endTime;
     private GameModeEntity gameMode;
-    private Set<GameParticipationEntity> participationEntitySet;
-
     private static Comparator<GameParticipationEntity> gameParticipationEntityComparator =
             Comparator
                     .comparing(GameParticipationEntity::getScore)
@@ -26,15 +22,16 @@ public class GameEntity {
                                     .thenComparing(
                                             Comparator.comparingInt(GameParticipationEntity::getDeathCount)
                                                     .thenComparing(
-                                                            Comparator.comparingInt(GameParticipationEntity::getIdSnake)
+                                                            Comparator.comparingInt(GameParticipationEntity::getIdUser)
                                                     )));
+    private Set<GameParticipationEntity> gameParticipationEntities;
 
     public GameEntity() {
         this.id = -1;
         this.startTime = new Timestamp(0);
         this.endTime = new Timestamp(0);
         this.gameMode = new GameModeEntity();
-        this.participationEntitySet = new TreeSet<>(gameParticipationEntityComparator);
+        this.gameParticipationEntities = new TreeSet<>(gameParticipationEntityComparator);
 
     }
 
@@ -43,7 +40,7 @@ public class GameEntity {
         this.startTime = startTime;
         this.endTime = endTime;
         this.gameMode = gameMode;
-        this.participationEntitySet = new TreeSet<>(gameParticipationEntityComparator);
+        this.gameParticipationEntities = new TreeSet<>(gameParticipationEntityComparator);
     }
 
     public int getId() {
@@ -78,23 +75,23 @@ public class GameEntity {
         this.gameMode = gameMode;
     }
 
-    public Set<GameParticipationEntity> getParticipationEntitySet() {
-        return ImmutableSet.copyOf(participationEntitySet);
+    public Set<GameParticipationEntity> getGameParticipationEntities() {
+        return ImmutableSet.copyOf(gameParticipationEntities);
     }
 
 
-    public void setParticipationEntitySet(Set<GameParticipationEntity> participationEntitySet) {
+    public void setGameParticipationEntities(Collection<GameParticipationEntity> gameParticipationEntities) {
 
-        this.participationEntitySet = new TreeSet<>(gameParticipationEntityComparator);
-        this.participationEntitySet.addAll(participationEntitySet);
-        for (GameParticipationEntity gameParticipationEntity : this.participationEntitySet) {
+        this.gameParticipationEntities = Sets.newTreeSet(gameParticipationEntityComparator);
+        this.gameParticipationEntities.addAll(gameParticipationEntities);
+        for (GameParticipationEntity gameParticipationEntity : this.gameParticipationEntities) {
             gameParticipationEntity.setGame(this);
         }
     }
 
     protected void addGameParticipation(GameParticipationEntity gameParticipationEntity) {
-        if (!this.participationEntitySet.contains(gameParticipationEntity)) {
-            this.participationEntitySet.add(gameParticipationEntity);
+        if (!this.gameParticipationEntities.contains(gameParticipationEntity)) {
+            this.gameParticipationEntities.add(gameParticipationEntity);
             gameParticipationEntity.setGame(this);
         }
     }
