@@ -60,6 +60,10 @@
         <servlet-name>DataSnakeServlet</servlet-name>
         <servlet-class>fr.vajin.snakerpg.servlet.data.DataSnakeServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DataUserGamesServlet</servlet-name>
+        <servlet-class>fr.vajin.snakerpg.servlet.data.DataUserGamesServlet</servlet-class>
+    </servlet>
 
 
     <servlet-mapping>
@@ -105,5 +109,9 @@
     <servlet-mapping>
         <servlet-name>DataSnakeServlet</servlet-name>
         <url-pattern>/data/snake</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DataUserGamesServlet</servlet-name>
+        <url-pattern>/data/usergames</url-pattern>
     </servlet-mapping>
 </web-app>

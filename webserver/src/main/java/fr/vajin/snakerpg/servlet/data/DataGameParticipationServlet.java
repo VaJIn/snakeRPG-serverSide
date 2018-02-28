@@ -17,7 +17,9 @@ public class DataGameParticipationServlet extends HttpServlet {
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        int idGame, idSnake;
+        Integer idGame = null;
+        Integer idSnake = null;
+        String paramSortBy;
         try {
             idGame = Integer.parseInt(request.getParameter(GAME_ID_PARAMETER));
             idSnake = Integer.parseInt(request.getParameter(SNAKE_ID_PARAMETER));

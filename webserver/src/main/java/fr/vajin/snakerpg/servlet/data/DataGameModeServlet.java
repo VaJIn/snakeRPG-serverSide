@@ -39,7 +39,6 @@ public class DataGameModeServlet extends HttpServlet {
             response.setContentType("application/json");
             response.getWriter().write(gameModeJSON);
 
-
         }
         else{
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
