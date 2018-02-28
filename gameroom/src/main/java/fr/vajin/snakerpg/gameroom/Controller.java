@@ -9,5 +9,4 @@ public interface Controller {
     void addPlayerHandler(PlayerHandler playerHandler);
 
     UserEntity acceptConnection(int userId, byte[] token);
-
 }
