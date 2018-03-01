@@ -6,10 +6,7 @@ import fr.vajin.snakerpg.database.UserDAO;
 import fr.vajin.snakerpg.database.entities.UserEntity;
 import fr.vajin.snakerpg.database.entities.cached.CacheProxyUserEntity;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.*;
 
 public class UserDAOImpl implements UserDAO {
@@ -55,15 +52,24 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public void addUser(UserEntity userEntity) throws SQLException {
+    public int addUser(UserEntity userEntity) throws SQLException {
         String updateUser = "INSERT INTO User (alias, email, accountName, password) " +
                 "VALUES ('" + userEntity.getAlias() + "', '" + userEntity.getEmail() + "', '" + userEntity.getAccountName() + "', '" + userEntity.getPassword() + "');";
 
         Connection connection = ConnectionPool.getConnection();
-        Statement statement = connection.createStatement();
-        statement.addBatch(updateUser);
-        statement.executeBatch();
+        PreparedStatement statement = connection.prepareStatement(updateUser, Statement.RETURN_GENERATED_KEYS);
+        statement.executeUpdate();
+
+        int idUser = -1;
+        ResultSet generatedKey = statement.getGeneratedKeys();
+        if (generatedKey.next()) {
+            idUser = generatedKey.getInt(1);
+            userEntity.setId(idUser);
+        }
+
         connection.close();
+
+        return idUser;
     }
 
     @Override

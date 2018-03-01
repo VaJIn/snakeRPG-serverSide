@@ -8,7 +8,14 @@ import java.util.Optional;
 
 public interface UserDAO {
 
-    void addUser(UserEntity userEntity) throws SQLException;
+    /**
+     * Insert the given user entity in the database. The propriety id in the userEntity is set to the attributed id by the database.
+     *
+     * @param userEntity the user to insert in the database. The id property is modified to the attributed id.
+     * @return the id of the inserted user.
+     * @throws SQLException
+     */
+    int addUser(UserEntity userEntity) throws SQLException;
 
     Optional<UserEntity> getUser(int id);
 
