@@ -41,7 +41,7 @@ public class SnakeDAOTest {
         while (it.hasNext()) {
             UserEntity user2 = it.next().getUser();
             Assertions.assertNotNull(user2);
-            Assertions.assertTrue(user == user2);
+            Assertions.assertEquals(user, user2);
         }
     }
 

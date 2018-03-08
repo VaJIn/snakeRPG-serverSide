@@ -27,7 +27,7 @@ public class CacheProxyUserEntity extends UserEntity {
     public Set<SnakeEntity> getSnakes() {
         if (!retrievedSnake) {
             SnakeDAO snakeDAO = daoFactory.getSnakeDAO();
-            Collection<SnakeEntity> snakeEntities = snakeDAO.getSnakeByUser(this.getId(), false);
+            Collection<SnakeEntity> snakeEntities = snakeDAO.getSnakeByUser(this.getId());
             this.setSnakes(snakeEntities);
         }
         return super.getSnakes();

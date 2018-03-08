@@ -1,8 +1,10 @@
 package fr.vajin.snakerpg.servlet.data;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import fr.vajin.snakerpg.FactoryProvider;
 import fr.vajin.snakerpg.database.entities.UserEntity;
+import fr.vajin.snakerpg.servlet.data.serializer.PublicUserEntitySerializer;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -32,9 +34,16 @@ public class DataUserServlet extends HttpServlet {
         Optional<UserEntity> userEntityOptional = FactoryProvider.getDAOFactory().getUserDAO().getUser(id);
 
         if (userEntityOptional.isPresent()) {
-            Gson gson = new Gson();
 
-            String userJSON = gson.toJson(userEntityOptional.get());
+            UserEntity userEntity = userEntityOptional.get();
+
+            userEntity.getSnakes();
+
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            gsonBuilder.registerTypeHierarchyAdapter(UserEntity.class, new PublicUserEntitySerializer());
+            Gson gson = gsonBuilder.create();
+
+            String userJSON = gson.toJson(userEntity);
 
             response.setContentType("application/json");
             response.getWriter().write(userJSON);

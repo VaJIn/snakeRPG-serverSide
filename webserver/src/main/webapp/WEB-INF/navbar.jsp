@@ -21,9 +21,10 @@
                     aria-haspopup="true" aria-expanded="false">Leaderboard </a>
                 <div class="dropdown-menu"
                      aria-labelledby="navbarDropdownLeaderboard">
-                    <a class="dropdown-item" href="<c:url value="/leaderboard/today" />">Today</a>
-                    <a class="dropdown-item" href="<c:url value="/leaderboard/currentweek" />">This week</a>
-                    <a class="dropdown-item" href="<c:url value="/leaderboard/global" />">All time</a>
+                    <a class="dropdown-item" href="<c:url value="/leaderboard?period=today" />">Today</a>
+                    <a class="dropdown-item" href="<c:url value="/leaderboard?period=thisWeek" />">This week</a>
+                    <a class="dropdown-item" href="<c:url value="/leaderboard?period=thisMonth"/>">This month</a>
+                    <a class="dropdown-item" href="<c:url value="/leaderboard?period=all" />">All time</a>
                 </div>
             </li>
         </ul>

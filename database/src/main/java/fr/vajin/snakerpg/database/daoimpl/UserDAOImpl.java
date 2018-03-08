@@ -3,14 +3,10 @@ package fr.vajin.snakerpg.database.daoimpl;
 import fr.vajin.snakerpg.database.ConnectionPool;
 import fr.vajin.snakerpg.database.DAOFactory;
 import fr.vajin.snakerpg.database.UserDAO;
-import fr.vajin.snakerpg.database.entities.SnakeEntity;
 import fr.vajin.snakerpg.database.entities.UserEntity;
 import fr.vajin.snakerpg.database.entities.cached.CacheProxyUserEntity;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.*;
 
 public class UserDAOImpl implements UserDAO {
@@ -21,7 +17,7 @@ public class UserDAOImpl implements UserDAO {
         this.daoFactory = daoFactory;
     }
 
-    private Collection<UserEntity> getUserByCondition(String condition, boolean retrieveSnake) {
+    private Collection<UserEntity> getUserByCondition(String condition) {
         String query = "SELECT * " +
                 " FROM User " +
                 " WHERE " + condition + ";";
@@ -51,52 +47,37 @@ public class UserDAOImpl implements UserDAO {
             e.printStackTrace();
             return null; //Only if the query is not well formed
         }
-        if (retrieveSnake) {
-            for (UserEntity userEntity : out) {
-                Collection<SnakeEntity> snakeEntities = daoFactory.getSnakeDAO().getSnakeByUser(userEntity.getId(), false);
-                for (SnakeEntity snakeEntity : snakeEntities) {
-                    userEntity.addSnake(snakeEntity);
-                }
-            }
-        }
 
         return out;
     }
 
     @Override
-    public void addUser(UserEntity userEntity) throws SQLException {
+    public int addUser(UserEntity userEntity) throws SQLException {
         String updateUser = "INSERT INTO User (alias, email, accountName, password) " +
                 "VALUES ('" + userEntity.getAlias() + "', '" + userEntity.getEmail() + "', '" + userEntity.getAccountName() + "', '" + userEntity.getPassword() + "');";
 
         Connection connection = ConnectionPool.getConnection();
-        Statement statement = connection.createStatement();
-        statement.addBatch(updateUser);
-        statement.executeBatch();
-        connection.close();
-    }
+        PreparedStatement statement = connection.prepareStatement(updateUser, Statement.RETURN_GENERATED_KEYS);
+        statement.executeUpdate();
 
-    @Override
-    public Optional<UserEntity> getUser(int id, boolean retrieveSnake) {
-
-        String condition = "id = " + id;
-
-        Iterator<UserEntity> it = getUserByCondition(condition, retrieveSnake).iterator();
-        if (it.hasNext()) {
-            return Optional.of(it.next());
-        } else {
-            return Optional.empty();
+        int idUser = -1;
+        ResultSet generatedKey = statement.getGeneratedKeys();
+        if (generatedKey.next()) {
+            idUser = generatedKey.getInt(1);
+            userEntity.setId(idUser);
         }
+
+        connection.close();
+
+        return idUser;
     }
 
     @Override
     public Optional<UserEntity> getUser(int id) {
-        return getUser(id, true);
-    }
 
-    @Override
-    public Optional<UserEntity> getUser(String accountName, String hash, boolean retrieveSnake) {
-        String condition = "accountName='" + accountName + "' AND password='" + hash + "'";
-        Iterator<UserEntity> it = getUserByCondition(condition, retrieveSnake).iterator();
+        String condition = "id = " + id;
+
+        Iterator<UserEntity> it = getUserByCondition(condition).iterator();
         if (it.hasNext()) {
             return Optional.of(it.next());
         } else {
@@ -106,26 +87,8 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public Optional<UserEntity> getUser(String accountName, String hash) {
-        return getUser(accountName, hash, true);
-    }
-
-    @Override
-    public Collection<UserEntity> getUserByAlias(String alias, boolean retrieveSnake) {
-        String condition = "alias='" + alias + "'";
-
-        return getUserByCondition(condition, true);
-    }
-
-    @Override
-    public Collection<UserEntity> getUserByAlias(String alias) {
-        return getUserByAlias(alias, true);
-    }
-
-    @Override
-    public Optional<UserEntity> getUserByAccountName(String accountName, boolean retrieveSnake) {
-        String condition = "accountName='" + accountName + "'";
-
-        Iterator<UserEntity> it = getUserByCondition(condition, true).iterator();
+        String condition = "accountName='" + accountName + "' AND password='" + hash + "'";
+        Iterator<UserEntity> it = getUserByCondition(condition).iterator();
         if (it.hasNext()) {
             return Optional.of(it.next());
         } else {
@@ -134,8 +97,22 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
+    public Collection<UserEntity> getUserByAlias(String alias) {
+        String condition = "alias='" + alias + "'";
+
+        return getUserByCondition(condition);
+    }
+
+    @Override
     public Optional<UserEntity> getUserByAccountName(String accountName) {
-        return getUserByAccountName(accountName, true);
+        String condition = "accountName='" + accountName + "'";
+
+        Iterator<UserEntity> it = getUserByCondition(condition).iterator();
+        if (it.hasNext()) {
+            return Optional.of(it.next());
+        } else {
+            return Optional.empty();
+        }
     }
 
     /**

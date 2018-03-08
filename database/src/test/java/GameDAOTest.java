@@ -25,12 +25,14 @@ public class GameDAOTest {
         Assertions.assertTrue(optionalGame1.isPresent());
         GameEntity game1 = optionalGame1.get();
         Assertions.assertEquals(1, game1.getId());
+        Assertions.assertEquals(1, game1.getGameModeId());
 
         Assertions.assertNotNull(game1.getGameMode());
         GameModeEntity gameModeGame1 = game1.getGameMode();
         Assertions.assertEquals(1, gameModeGame1.getId());
 
         Assertions.assertNotNull(game1.getGameParticipationEntities());
+        System.out.println(game1.getGameParticipationEntities().size());
         Assertions.assertEquals(1, game1.getGameParticipationEntities().size());
 
         Assertions.assertNotNull(game1.getStartTime());

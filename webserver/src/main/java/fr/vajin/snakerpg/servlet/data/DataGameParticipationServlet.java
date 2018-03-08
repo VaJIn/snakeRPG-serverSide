@@ -12,17 +12,17 @@ import java.io.IOException;
 import java.util.Optional;
 
 public class DataGameParticipationServlet extends HttpServlet {
-    static final String GAME_ID_PARAMETER ="gameId";
-    static final String SNAKE_ID_PARAMETER = "snakeId";
+    private static final String GAME_ID_PARAMETER = "gameId";
+    private static final String USER_ID_PARAMETER = "userId";
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         Integer idGame = null;
-        Integer idSnake = null;
+        Integer idUser = null;
         String paramSortBy;
         try {
             idGame = Integer.parseInt(request.getParameter(GAME_ID_PARAMETER));
-            idSnake = Integer.parseInt(request.getParameter(SNAKE_ID_PARAMETER));
+            idUser = Integer.parseInt(request.getParameter(USER_ID_PARAMETER));
         } catch (NumberFormatException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
@@ -32,7 +32,7 @@ public class DataGameParticipationServlet extends HttpServlet {
                 FactoryProvider
                         .getDAOFactory()
                         .getGameParticipationDAO()
-                        .getGameParticipationByIds(idGame, idSnake, 0);
+                        .getGameParticipationByIds(idGame, idUser, 0);
 
         response.setContentType("application/json");
 

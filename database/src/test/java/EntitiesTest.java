@@ -29,11 +29,16 @@ public class EntitiesTest {
 
     @Test
     void testGameParticipation() {
-        GameEntity game = new GameEntity(1, Timestamp.from(Instant.now()), Timestamp.from(Instant.now().plusSeconds(125)), new GameModeEntity());
+        GameEntity game = new GameEntity();
+        game.setId(1);
+        game.setStartTime(Timestamp.from(Instant.now()));
+        game.setEndTime(Timestamp.from(Instant.now().plusSeconds(125)));
+        game.setGameMode(new GameModeEntity());
+
         GameParticipationEntity gameParticipationEntity = new GameParticipationEntity();
         GameParticipationEntity gameParticipationEntity1 = new GameParticipationEntity();
 
-        game.setGameParticipationEntities(Sets.newHashSet(gameParticipationEntity1));
+        game.setGameParticipationEntities(Sets.newHashSet(gameParticipationEntity1, gameParticipationEntity));
 
         gameParticipationEntity.setGame(game);
 

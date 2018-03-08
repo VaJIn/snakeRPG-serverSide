@@ -16,28 +16,39 @@ public class PlayerProfileServlet extends HttpServlet {
 
     }
 
+    public static final String PARAMETER_USER_ID = "userId";
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        String userIdStr = request.getParameter("id");
+        String userIdStr = request.getParameter("userId");
 
         Optional<UserEntity> user;
 
         int userId;
 
-        if (userIdStr == null) {
-            userId = 1;
-        } else {
+        if (userIdStr != null) {
             try {
                 userId = Integer.parseInt(userIdStr);
+
+                user = FactoryProvider.getDAOFactory().getUserDAO().getUser(userId);
+
+                if (user.isPresent()) {
+                    request.setAttribute("user", user.get());
+                    this.getServletContext().getRequestDispatcher("/WEB-INF/profile.jsp").forward(request, response);
+                } else {
+                    request.setAttribute("errorCode", 404);
+                    request.setAttribute("errorMsg", "The requested user (" + userIdStr + ") does not exist");
+                    this.getServletContext().getRequestDispatcher("/WEB-INF/errorPage.jsp").forward(request, response);
+                }
             } catch (NumberFormatException e) {
-                userId = 1;
+                request.setAttribute("errorCode", HttpServletResponse.SC_BAD_REQUEST);
+                request.setAttribute("errorMsg", "Invalid parameter userId (must be a integer)");
+                this.getServletContext().getRequestDispatcher("/WEB-INF/errorPage.jsp").forward(request, response);
             }
+        } else {
+            request.setAttribute("errorCode", HttpServletResponse.SC_BAD_REQUEST);
+            request.setAttribute("errorMsg", "The request need a userId parameter");
+            this.getServletContext().getRequestDispatcher("/WEB-INF/errorPage.jsp").forward(request, response);
         }
-
-        user = FactoryProvider.getDAOFactory().getUserDAO().getUser(userId);
-
-        request.setAttribute("user", user.get());
-
-        this.getServletContext().getRequestDispatcher("/WEB-INF/profile.jsp").forward(request, response);
     }
 }

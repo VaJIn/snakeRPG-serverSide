@@ -1,183 +1,142 @@
 package fr.vajin.snakerpg.database.daoimpl;
 
+import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.collect.Sets;
 import fr.vajin.snakerpg.database.DAOFactory;
-import fr.vajin.snakerpg.database.SnakeDAO;
 import fr.vajin.snakerpg.database.UserDAO;
-import fr.vajin.snakerpg.database.entities.SnakeEntity;
 import fr.vajin.snakerpg.database.entities.UserEntity;
 
-import javax.annotation.Nullable;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 
-/**
- * Decorator for a UserDAO. Add two caches, one based one user id and one based on account name.
- */
 public class CachedUserDAO implements UserDAO {
 
-    private static final int NO_USER = -1;
+    private LoadingCache<Integer, Optional<UserEntity>> strongCache;
+    private Cache<Integer, UserEntity> weakReferencesCache;
+
     private UserDAO userDAO;
     private DAOFactory daoFactory;
-    private LoadingCache<Integer, CachedUser> cacheUserById;
-    private LoadingCache<String, Integer> cacheUserIdByAccountName;
 
-    public CachedUserDAO(UserDAO userDAO, DAOFactory daoFactory, int maxSize, long expireTime, TimeUnit expireTimeUnit) {
+    public CachedUserDAO(UserDAO userDAO, DAOFactory daoFactory, int cacheSize, int maxTime, TimeUnit maxTimeUnit) {
         this.userDAO = userDAO;
         this.daoFactory = daoFactory;
 
-        this.cacheUserById = CacheBuilder.newBuilder()
-                .maximumSize(maxSize)
-                .expireAfterWrite(expireTime, expireTimeUnit)
-                .build(new CacheLoader<Integer, CachedUser>() {
-                    @Override
-                    public CachedUser load(Integer key) throws Exception {
-                        Optional<UserEntity> userEntityOptional = userDAO.getUser(key, false);
-                        return new CachedUser(userEntityOptional, false);
-                    }
-                });
+        this.weakReferencesCache = CacheBuilder.newBuilder().weakValues().build();
 
-        this.cacheUserIdByAccountName = CacheBuilder.newBuilder()
-                .maximumSize(maxSize)
-                .expireAfterWrite(expireTime, expireTimeUnit)
-                .build(new CacheLoader<String, Integer>() {
-                    @Override
-                    public Integer load(String key) throws Exception {
-                        Optional<UserEntity> userEntityOptional = userDAO.getUserByAccountName(key, false);
-                        if (userEntityOptional.isPresent()) {
-                            UserEntity user = userEntityOptional.get();
-                            if (cacheUserById.getIfPresent(user.getId()) == null) {
-                                cacheUserById.put(user.getId(), new CachedUser(userEntityOptional, false));
+        this.strongCache =
+                CacheBuilder.newBuilder()
+                        .maximumSize(cacheSize)
+                        .expireAfterWrite(maxTime, maxTimeUnit)
+                        .recordStats()
+                        .build(new CacheLoader<Integer, Optional<UserEntity>>() {
+                            @Override
+                            public Optional<UserEntity> load(Integer key) throws Exception {
+                                UserEntity userEntity = weakReferencesCache.getIfPresent(key);
+                                if (userEntity != null) {
+                                    return Optional.of(userEntity);
+                                } else {
+                                    Optional<UserEntity> userEntityOptional = userDAO.getUser(key);
+                                    userEntityOptional.ifPresent(userEntity1 -> weakReferencesCache.put(key, userEntity1));
+                                    return userEntityOptional;
+                                }
                             }
-                            return user.getId();
-                        }
-                        return NO_USER;
-                    }
-                });
+                        });
+    }
+
+    private Optional<UserEntity> findFirstInCaches(Predicate<UserEntity> predicate) {
+        Optional<UserEntity> userEntityOptional =
+                strongCache.asMap()
+                        .entrySet()
+                        .parallelStream()
+                        .filter(entry -> entry.getValue().isPresent() && predicate.test(entry.getValue().get()))
+                        .map(integerOptionalEntry -> integerOptionalEntry.getValue().get())
+                        .findFirst();
+        if (userEntityOptional.isPresent()) {
+            return userEntityOptional;
+        } else {
+            userEntityOptional = weakReferencesCache.asMap().entrySet()
+                    .parallelStream()
+                    .filter(entry -> predicate.test(entry.getValue()))
+                    .map(Map.Entry::getValue)
+                    .findFirst();
+            return userEntityOptional;
+        }
     }
 
     @Override
-    public void addUser(UserEntity userEntity) throws SQLException {
-        userDAO.addUser(userEntity);
-        //   this.cacheUserById.put(userEntity.getId(), new CachedUser(Optional.of(userEntity), false));
+    public int addUser(UserEntity userEntity) throws SQLException {
+        int id = userDAO.addUser(userEntity);
+        this.strongCache.put(id, Optional.of(userEntity));
+        this.weakReferencesCache.put(id, userEntity);
+        return id;
     }
 
     @Override
     public Optional<UserEntity> getUser(int id) {
-        return this.getUser(id, true);
-    }
-
-    @Override
-    public Optional<UserEntity> getUser(int id, boolean retrieveSnake) {
         try {
-            CachedUser cachedUser = cacheUserById.get(id);
-            if (retrieveSnake) {
-                if (!cachedUser.retrievedSnake) {
-                    cachedUser.retrieveSnake();
-                }
-                return cachedUser.getUserEntity();
-            } else {
-                return cachedUser.getUserEntity();
-            }
+            return strongCache.get(id);
         } catch (ExecutionException e) {
+            return Optional.empty();
         }
-        return Optional.empty();
     }
 
     @Override
     public Optional<UserEntity> getUser(String accountName, String hash) {
-        return this.getUser(accountName, hash, true);
-    }
-
-    @Override
-    public Optional<UserEntity> getUser(String accountName, String hash, boolean retrieveSnake) {
-        Optional<UserEntity> userEntityOptional = getUserByAccountName(accountName, retrieveSnake);
-        if (userEntityOptional.isPresent()) {
-            UserEntity entity = userEntityOptional.get();
-            if (entity.getPassword().equals(hash)) {
-                return userEntityOptional;
-            } else {
-                return Optional.empty();
-            }
+        Optional<UserEntity> optional = findFirstInCaches(userEntity -> userEntity.getAccountName().equals(accountName) && userEntity.getPassword().equals(hash));
+        if (optional.isPresent()) {
+            return optional;
+        } else {
+            optional = userDAO.getUser(accountName, hash);
+            optional.ifPresent(userEntity -> {
+                weakReferencesCache.put(userEntity.getId(), userEntity);
+                strongCache.put(userEntity.getId(), Optional.of(userEntity));
+            });
+            return optional;
         }
-        return Optional.empty();
     }
 
     @Override
     public Collection<UserEntity> getUserByAlias(String alias) {
-        return this.getUserByAlias(alias, true);
-    }
-
-    @Override
-    public synchronized Collection<UserEntity> getUserByAlias(String alias, boolean retrieveSnake) {
-        Collection<UserEntity> results = userDAO.getUserByAlias(alias, retrieveSnake);
-
-        if (retrieveSnake) {
-            //We retrieved the snakes : we put everything in the cache
-            for (UserEntity userEntity : results) {
-                cacheUserById.put(userEntity.getId(), new CachedUser(Optional.of(userEntity), true));
-            }
-        } else {
-            //We retrieved the snake : we put in the cache only if there is not an earl
-            for (UserEntity userEntity : results) {
-                if (cacheUserById.getIfPresent(userEntity.getId()) == null) {
-                    cacheUserById.put(userEntity.getId(), new CachedUser(Optional.of(userEntity), false));
-                }
+        Collection<UserEntity> found = userDAO.getUserByAlias(alias);
+        Collection<UserEntity> results = Sets.newTreeSet(Comparator.comparingInt(UserEntity::getId));
+        for (UserEntity userEntity : found) {
+            try {
+                Optional<UserEntity> inCache = strongCache.get(
+                        userEntity.getId(), () -> Optional.of(
+                                weakReferencesCache.get(userEntity.getId(), () -> userEntity
+                                )
+                        )
+                );
+                results.add(inCache.orElse(userEntity));
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+                results.add(userEntity);
             }
         }
         return results;
     }
 
     @Override
-    public synchronized Optional<UserEntity> getUserByAccountName(String accountName) {
-        return getUserByAccountName(accountName, true);
-    }
-
-    @Override
-    public Optional<UserEntity> getUserByAccountName(String accountName, boolean retrieveSnake) {
-        try {
-            int id = cacheUserIdByAccountName.get(accountName);
-            if (id == NO_USER) {
-                return Optional.empty();
-            } else {
-                CachedUser cachedUser = cacheUserById.get(id);
-                if (retrieveSnake && !cachedUser.retrievedSnake) {
-                    cachedUser.retrieveSnake();
-                }
-                return cachedUser.getUserEntity();
-            }
-        } catch (ExecutionException e) {
-        }
-        return Optional.empty();
-    }
-
-    private class CachedUser {
-        @Nullable
-        UserEntity user;
-        boolean retrievedSnake;
-
-        private CachedUser(Optional<UserEntity> userOptional, boolean retrievedSnake) {
-            this.user = userOptional.orElse(null);
-            this.retrievedSnake = retrievedSnake;
-        }
-
-        void retrieveSnake() {
-            if (user != null && !retrievedSnake) {
-                SnakeDAO snakeDAO = daoFactory.getSnakeDAO();
-                Collection<SnakeEntity> snakeEntities = snakeDAO.getSnakeByUser(user.getId(), false);
-
-                user.setSnakes(snakeEntities);
-                this.retrievedSnake = true;
-            }
-        }
-
-        Optional<UserEntity> getUserEntity() {
-            return Optional.ofNullable(this.user);
+    public Optional<UserEntity> getUserByAccountName(String accountName) {
+        Optional<UserEntity> optional = findFirstInCaches(userEntity -> userEntity.getAccountName().equals(accountName));
+        if (optional.isPresent()) {
+            return optional;
+        } else {
+            optional = userDAO.getUserByAccountName(accountName);
+            optional.ifPresent(userEntity -> {
+                weakReferencesCache.put(userEntity.getId(), userEntity);
+                strongCache.put(userEntity.getId(), Optional.of(userEntity));
+            });
+            return optional;
         }
     }
 }
