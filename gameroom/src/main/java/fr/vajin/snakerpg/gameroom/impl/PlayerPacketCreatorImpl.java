@@ -6,9 +6,8 @@ import fr.vajin.snakerpg.engine.GameEngine;
 import fr.vajin.snakerpg.engine.utilities.Position;
 import fr.vajin.snakerpg.gameroom.PlayerPacketCreator;
 
-import javax.xml.crypto.Data;
 import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.util.Map;
 
@@ -16,10 +15,14 @@ public class PlayerPacketCreatorImpl implements PlayerPacketCreator{
 
     private GameEngine gameEngine;
     private Map<Integer,Entity> entities;
+    private int idProtocol;
+    private int lastIdReceived;
+    private byte [] ackBitfield;
 
-    public PlayerPacketCreatorImpl(){
+    public PlayerPacketCreatorImpl(int idProtocol){
 
         this.entities = Maps.newHashMap();
+        this.idProtocol = idProtocol;
     }
 
 
@@ -34,6 +37,31 @@ public class PlayerPacketCreatorImpl implements PlayerPacketCreator{
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
+        stream.write(idProtocol);
+
+        stream.write(this.lastIdReceived);
+
+        for(Entity entity : entities.values()){
+
+            while(entity.getEntityTilesInfosIterator().hasNext()){
+
+                Entity.EntityTileInfo tileInfo = entity.getEntityTilesInfosIterator().next();
+
+                try {
+
+                    stream.write(tileInfo.getRessourceKey().getBytes());
+                    stream.write(tileInfo.getPosition().getX());
+                    stream.write(tileInfo.getPosition().getY());
+                    stream.write(tileInfo.getId());
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+
+        }
 
         byte [] data = stream.toByteArray();
         DatagramPacket packet = new DatagramPacket(data,data.length);
@@ -44,6 +72,7 @@ public class PlayerPacketCreatorImpl implements PlayerPacketCreator{
     @Override
     public void acknowledgePacket(int idLastReceived, byte[] ackBitField) {
 
+
     }
 
 
@@ -51,7 +80,9 @@ public class PlayerPacketCreatorImpl implements PlayerPacketCreator{
 
     @Override
     public void notifyDestroyed(Entity entity) {
+        entity.removeObserver(this);
         this.entities.remove(entity.getEntityId());
+
     }
 
     @Override
@@ -64,6 +95,14 @@ public class PlayerPacketCreatorImpl implements PlayerPacketCreator{
     @Override
     public void notifyChangeAtPosition(Entity entity, Position position, int what) {
         //TODO
+        switch (what){
+            case Entity.NEW_COVERED_POSITION:
+                break;
+            case Entity.NOT_COVER_POSITION_ANYMORE:
+                break;
+            case Entity.ONE_LESS_COVER_ON_POSITION:
+                break;
+        }
     }
 
     @Override
@@ -88,6 +127,7 @@ public class PlayerPacketCreatorImpl implements PlayerPacketCreator{
 
     @Override
     public void notifyGameEnd() {
+
         //TODO
     }
 }

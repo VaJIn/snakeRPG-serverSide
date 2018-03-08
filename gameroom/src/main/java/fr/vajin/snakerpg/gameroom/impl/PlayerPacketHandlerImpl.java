@@ -9,8 +9,8 @@ public class PlayerPacketHandlerImpl implements PlayerPacketHandler{
 
     private PlayerPacketCreator packetCreator;
 
-    public PlayerPacketHandlerImpl(){
-        packetCreator = new PlayerPacketCreatorImpl();
+    public PlayerPacketHandlerImpl(PlayerPacketCreator packetCreator){
+        this.packetCreator = packetCreator;
     }
 
     @Override

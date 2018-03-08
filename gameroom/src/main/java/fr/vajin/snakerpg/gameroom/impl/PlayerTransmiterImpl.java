@@ -14,10 +14,10 @@ public class PlayerTransmiterImpl extends Thread implements PlayerTransmiter {
     private PlayerPacketCreator creator;
     private int packetsPerSecond;
 
-    public PlayerTransmiterImpl(DatagramSocket socket, int packetsPerSecond){
+    public PlayerTransmiterImpl(DatagramSocket socket, int idProtocol, int packetsPerSecond){
         this.socket = socket;
         this.packetsPerSecond = packetsPerSecond;
-        creator = new PlayerPacketCreatorImpl();
+        creator = new PlayerPacketCreatorImpl(idProtocol);
     }
 
     @Override
