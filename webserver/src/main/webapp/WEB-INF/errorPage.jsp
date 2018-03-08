@@ -6,7 +6,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Snake RPG</title>
+    <title>Error <c:out value="${errorCode}" default="500"/></title>
 
     <%-- Stylesheet : contains custom bootstrap + custom style element --%>
     <link rel="stylesheet"
@@ -18,13 +18,13 @@
 <%-- Jquery --%>
 <script src="<c:url value="/inc/js/ext/jquery.min.js"/>" type="text/javascript"></script>
 
+<%@include file="navbar.jsp" %>
 
-<%@ include file="navbar.jsp" %>
-
-<div id="main" class="container-fluid m-2">
-    <jsp:include page="/leaderboard?period=all">
-        <jsp:param name="max_entry" value="50"/>
-    </jsp:include>
+<div class="card">
+    <div class="card-header">
+        <h3>Error <c:out value="${errorCode}" default="500"/></h3>
+    </div>
+    <div class="card-body"><c:out value="${errorMsg}" default="An error has occured. Sorry :("/></div>
 </div>
 
 <script src="<c:url value="/inc/js/ext/popper.min.js" /> " type="text/javascript"></script>

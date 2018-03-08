@@ -25,12 +25,17 @@ public class DataGameServlet extends HttpServlet {
             return;
         }
 
-        Optional<GameEntity> game = FactoryProvider.getDAOFactory().getGameDAO().getGame(id);
+        Optional<GameEntity> gameEntityOptional = FactoryProvider.getDAOFactory().getGameDAO().getGame(id);
 
-        if(game.isPresent()){
+
+        if (gameEntityOptional.isPresent()) {
+
+            GameEntity gameEntity = gameEntityOptional.get();
+            gameEntity.getGameParticipationEntities();
+
             Gson gson = new Gson();
 
-            String gameJSON = gson.toJson(game.get());
+            String gameJSON = gson.toJson(gameEntityOptional.get());
 
             response.setContentType("application/json");
             response.getWriter().write(gameJSON);

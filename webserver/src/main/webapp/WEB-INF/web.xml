@@ -64,15 +64,19 @@
         <servlet-name>DataUserGamesServlet</servlet-name>
         <servlet-class>fr.vajin.snakerpg.servlet.data.DataUserGamesServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DataLeaderBoardServlet</servlet-name>
+        <servlet-class>fr.vajin.snakerpg.servlet.data.DataLeaderBoardServlet</servlet-class>
+    </servlet>
 
 
     <servlet-mapping>
         <servlet-name>PlayerProfileServlet</servlet-name>
-        <url-pattern>/player/*</url-pattern>
+        <url-pattern>/player</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>LeaderBoardServlet</servlet-name>
-        <url-pattern>/leaderboard/*</url-pattern>
+        <url-pattern>/leaderboard</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>GameViewServlet</servlet-name>
@@ -113,5 +117,9 @@
     <servlet-mapping>
         <servlet-name>DataUserGamesServlet</servlet-name>
         <url-pattern>/data/usergames</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DataLeaderBoardServlet</servlet-name>
+        <url-pattern>/data/leaderboard</url-pattern>
     </servlet-mapping>
 </web-app>
